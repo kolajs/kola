@@ -135,12 +135,60 @@
 			var AgencyClass = function() {};
 			AgencyClass.prototype = SuperClass.prototype;
 			agencyInstance = new AgencyClass();
-
+			
 			//	循环添加每个插件对象到原型上
+			var aops = [];
 			for ( var i = 1, il = arguments.length; i < il; i++ ) {
 				var proto = arguments[i];
 				for ( var item in proto ) {
-					agencyInstance[item] = proto[item];
+					var before = -1,
+						after = -1,
+						index = -1,
+						realName = '';
+						
+					//	如果存在前置切面方法，那就处理之
+					if ((before = item.indexOf('__before__')) != -1) {
+						realName = item.substring(0, before);
+						if (typeof (index = aops[realName]) != 'number') {
+							index = aops[realName] = aops.length;
+							aops.push({
+								name: realName,
+								befores: [],
+								afters: []
+							});
+						}
+						aops[index].befores.push(proto[item]);
+					}
+						
+					//	如果存在前置切面方法，那就处理之
+					if ((after = item.indexOf('__after__')) != -1) {
+						realName = item.substring(0, after);
+						if (typeof (index = aops[realName]) != 'number') {
+							index = aops[realName] = aops.length;
+							aops.push({
+								name: realName,
+								befores: [],
+								afters: []
+							});
+						}
+						aops[index].afters.push(proto[item]);
+					}
+					
+					//	只有当当前方法不是切面方法时，才予以添加
+					if (before != -1 && after != -1) {
+						agencyInstance[item] = proto[item];
+					}
+				}
+			}
+			
+			//	如果存在切面方法，那就替代相应方法
+			if (aops.length > 0) {
+				var Prototype = SuperClass.prototype;
+				for (var i = 0, il = aops.length; i < il; i++) {
+					var aop = aops[i];
+					
+					//	生成替代方法
+					agencyInstance[aop.name] = createAopedFunc(Prototype[aop.name], aop);
 				}
 			}
 
@@ -154,6 +202,49 @@
 		SubClass.prototype = agencyInstance;		//	设置新类的原型
 
 		return SubClass;
+	}
+	
+	/**
+	 * 生成一个新的Aop方法
+	 * @param {Function} func 原生的方法
+	 * @param {Object} aop aop配置参数
+	 */
+	function createAopedFunc(func, aop) {
+		return function() {
+			var args = [];
+			for (var i = 0, il = arguments.length; i < il; i++) {
+				args.push(arguments[i]);
+			}
+			
+			//	如果存在调用前的方法，那就调用之
+			var befores = aop.befores;
+			if (befores.length > 0) {
+				for (var i = 0, il = befores.length; i < il; i++) {
+					var tempResult = befores[i].apply(this, args);
+					if (typeof tempResult != 'undefined') {
+						args = tempResult;
+					}
+				}
+			}
+			
+			//	调用原来的方法
+			var result = func.apply(this, args);
+			
+			//	如果存在调用后的方法，那就调用之
+			var afters = aop.afters;
+			if (afters.length > 0) {
+				args.unshift(result);
+				for (var i = 0, il = afters.length; i < il; i++) {
+					var tempResult = afters[i].apply(this, args);
+					if (typeof tempResult != 'undefined') {
+						args = tempResult;
+					}
+				}
+				result = args[0];
+			}
+			
+			return result;
+		};
 	}
 
 	/********************************************** About DOMContentLoaded **********************************************/
@@ -517,7 +608,9 @@
 
 						//	获取主类的内容
 						mainClass = this._complete( package.name );
-						pluginPrototype.__ME = mainClass.prototype.__ME;
+						if (mainClass.prototype.__ME) {
+							pluginPrototype.__ME = mainClass.prototype.__ME;
+						}
 
 						plugins.unshift( pluginPrototype );
 						plugins.unshift( mainClass );
@@ -721,7 +814,9 @@
 
 						//	获取主类的内容
 						mainClass = this._complete( package.name );
-						pluginPrototype.__ME = mainClass.prototype.__ME;
+						if (mainClass.prototype.__ME) {
+							pluginPrototype.__ME = mainClass.prototype.__ME;
+						}
 
 						plugins.unshift( pluginPrototype );
 						plugins.unshift( mainClass );
@@ -823,8 +918,6 @@
 		}
 	};
 
-	kola.Package = Package;
-
 	/*
 	//	注册kola.Package类
 	Package.register( 'kola.Package', null, Package );
@@ -920,6 +1013,8 @@
 			}
 		}
 	};
+
+	kola.Package = Package;
 
 	//  如果kola替身已经收集到了要执行的方法，那就处理之
 	if ( cache && typeof( cache.length ) == 'number' && cache.length > 0 ) {

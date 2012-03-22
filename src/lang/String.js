@@ -18,7 +18,7 @@ kola('kola.lang.String',
 		 * @type Function
 		 */
 		trim: function(string) {
-			var reg = /^\s|\s$/g;
+			var reg = /^\s|\s$/mg;
 			return string.replace(reg,'');
 		},
 		/**
