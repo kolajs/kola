@@ -1,8 +1,6 @@
 /**
  * @fileOverview kola.bom.Event 事件支持类
  * @author Jady Yang
- * @version 2.0.0
- * @fix scope bug 2011-03-30 by flyhuang
  */
 
 
