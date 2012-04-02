@@ -903,7 +903,15 @@
 				//	创建script节点，并设置相关属性
 				var script = document.createElement('script');
 				script.src = path;
-				script.type = 'text/javascript';			
+				script.type = 'text/javascript';
+				
+				//	如果存在编码的配置，那就设置之
+				var charset;
+				if ((charset = this._config) && (charset = charset.charset)) {
+					script.charset = charset;
+				}
+				
+				//	设置加载错误后的处理方法	
 				script.onerror = function() {
 					 throw new Error("JS文件加载失败：" + path);
 					script.onerror = null;
