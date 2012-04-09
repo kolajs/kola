@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.lang.Array Êı×éÀà
+ * @fileOverview kola.lang.Array æ•°ç»„ç±»
  * @author Jady Yang
  * @version 2.0.0
  */
@@ -9,41 +9,41 @@ kola('kola.lang.Array',
 	null, 
 	function() {
 
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 	
 	var A = {
 		
 		/**
-		 * ÔÚÊı×éÖĞËÑË÷Ö¸¶¨ÔªËØµÄÎ»ÖÃ£¬¿ÉÒÔÉèÖÃÆğÊ¼Î»ÖÃ
-		 * @param {Array} array ±»ËÑË÷µÄÊı×é
-		 * @param {String} searchElement ÒªËÑË÷µÄÔªËØ
-		 * @param {Number} fromIndex ¿ªÊ¼Î»ÖÃ¡£Èç¹û²»ÊÇÊı×ÖµÄ»°£¬Ôò±íÊ¾´Ó0¿ªÊ¼£»Èç¹ûÊÇ¸ºÊı£¬ÄÇ¾Í±íÊ¾´Óµ¹ÊıµÚ¼¸¸ö¿ªÊ¼¡£
-		 * @return ËÑË÷µ½µÄÎ»ÖÃ£¬Èç¹ûÃ»ÓĞÔò·µ»Ø-1
+		 * åœ¨æ•°ç»„ä¸­æœç´¢æŒ‡å®šå…ƒç´ çš„ä½ç½®ï¼Œå¯ä»¥è®¾ç½®èµ·å§‹ä½ç½®
+		 * @param {Array} array è¢«æœç´¢çš„æ•°ç»„
+		 * @param {String} searchElement è¦æœç´¢çš„å…ƒç´ 
+		 * @param {Number} fromIndex å¼€å§‹ä½ç½®ã€‚å¦‚æœä¸æ˜¯æ•°å­—çš„è¯ï¼Œåˆ™è¡¨ç¤ºä»0å¼€å§‹ï¼›å¦‚æœæ˜¯è´Ÿæ•°ï¼Œé‚£å°±è¡¨ç¤ºä»å€’æ•°ç¬¬å‡ ä¸ªå¼€å§‹ã€‚
+		 * @return æœç´¢åˆ°çš„ä½ç½®ï¼Œå¦‚æœæ²¡æœ‰åˆ™è¿”å›-1
 		 * @type Number
 		 */
 		indexOf: function(array, searchElement, fromIndex) {
-			//	Èç¹û´æÔÚÔ­ÉúµÄ·½·¨£¬ÄÇ¾ÍÖ±½Óµ÷ÓÃÖ®
+			//	å¦‚æœå­˜åœ¨åŸç”Ÿçš„æ–¹æ³•ï¼Œé‚£å°±ç›´æ¥è°ƒç”¨ä¹‹
 			if (array.indexOf) return array.indexOf(searchElement, fromIndex);
 			
-			//	Èç¹ûÊı×é³¤¶ÈÎª0£¬ÄÇ¾Í·µ»Ø-1
+			//	å¦‚æœæ•°ç»„é•¿åº¦ä¸º0ï¼Œé‚£å°±è¿”å›-1
 			var length = array.length;
 			if (length == 0) return -1;
 			
-			//	ÄÃµ½ÆğÊ¼Î»ÖÃ
+			//	æ‹¿åˆ°èµ·å§‹ä½ç½®
 			var start = typeof(fromIndex) == 'number' ? fromIndex : 0,
 				absStart = start >= 0 ? start : Math.max(length + start, 0);
 			
-			//	Èç¹ûÆğÊ¼Î»ÖÃ´óÓÚÊı×é³¤¶È£¬ÄÇ¾Í·µ»Ø-1
+			//	å¦‚æœèµ·å§‹ä½ç½®å¤§äºæ•°ç»„é•¿åº¦ï¼Œé‚£å°±è¿”å›-1
 			if (absStart >= length) return -1;
 			
-			//	´ÓÆğÊ¼Î»ÖÃ¿ªÊ¼£¬Ñ°ÕÒÔªËØ
+			//	ä»èµ·å§‹ä½ç½®å¼€å§‹ï¼Œå¯»æ‰¾å…ƒç´ 
 			for (var i = absStart, il = array.length; i < il; i ++) {
 				if (array[i] === searchElement) return i;
 			}
 			return -1;
 		},
         /**
-            Êı×éÅÅ³ıÖØ¸´ÔªËØ
+            æ•°ç»„æ’é™¤é‡å¤å…ƒç´ 
         */
 		unique:function(array){
             var flag=false;
@@ -67,36 +67,36 @@ kola('kola.lang.Array',
             return array;
         },
 		/**
-		 * ÔÚÊı×éÖĞ´ÓºóÍùÇ°ËÑË÷Ö¸¶¨ÔªËØµÄÎ»ÖÃ£¬¿ÉÒÔÉèÖÃÆğÊ¼Î»ÖÃ
-		 * @param {Array} array ±»ËÑË÷µÄÊı×é
-		 * @param {String} searchElement ÒªËÑË÷µÄÔªËØ
-		 * @param {Number} fromIndex ¿ªÊ¼Î»ÖÃ¡£Èç¹û²»ÊÇÊı×ÖµÄ»°£¬Ôò±íÊ¾´Ó0¿ªÊ¼£»Èç¹ûÊÇ¸ºÊı£¬ÄÇ¾Í±íÊ¾´Óµ¹ÊıµÚ¼¸¸ö¿ªÊ¼¡£
-		 * @return ËÑË÷µ½µÄÎ»ÖÃ£¬Èç¹ûÃ»ÓĞÔò·µ»Ø-1
+		 * åœ¨æ•°ç»„ä¸­ä»åå¾€å‰æœç´¢æŒ‡å®šå…ƒç´ çš„ä½ç½®ï¼Œå¯ä»¥è®¾ç½®èµ·å§‹ä½ç½®
+		 * @param {Array} array è¢«æœç´¢çš„æ•°ç»„
+		 * @param {String} searchElement è¦æœç´¢çš„å…ƒç´ 
+		 * @param {Number} fromIndex å¼€å§‹ä½ç½®ã€‚å¦‚æœä¸æ˜¯æ•°å­—çš„è¯ï¼Œåˆ™è¡¨ç¤ºä»0å¼€å§‹ï¼›å¦‚æœæ˜¯è´Ÿæ•°ï¼Œé‚£å°±è¡¨ç¤ºä»å€’æ•°ç¬¬å‡ ä¸ªå¼€å§‹ã€‚
+		 * @return æœç´¢åˆ°çš„ä½ç½®ï¼Œå¦‚æœæ²¡æœ‰åˆ™è¿”å›-1
 		 * @type Number
 		 */
 		lastIndexOf: function(array, searchElement, fromIndex) {
-			//	Èç¹û´æÔÚÔ­ÉúµÄ·½·¨£¬ÄÇ¾ÍÖ±½Óµ÷ÓÃÖ®
+			//	å¦‚æœå­˜åœ¨åŸç”Ÿçš„æ–¹æ³•ï¼Œé‚£å°±ç›´æ¥è°ƒç”¨ä¹‹
 			if (array.lastIndexOf) return array.lastIndexOf(searchElement, fromIndex);
 			
-			//	Èç¹ûÊı×é³¤¶ÈÎª0£¬ÄÇ¾Í·µ»Ø-1
+			//	å¦‚æœæ•°ç»„é•¿åº¦ä¸º0ï¼Œé‚£å°±è¿”å›-1
 			var length = array.length;
 			if (length == 0) return -1;
 			
-			//	ÄÃµ½ÆğÊ¼Î»ÖÃ
+			//	æ‹¿åˆ°èµ·å§‹ä½ç½®
 			var start = typeof(fromIndex) == 'number' ? fromIndex : length - 1,
 				absStart = start >= 0 ? start : Math.max(length + start, 0);
 			
-			//	Èç¹ûÆğÊ¼Î»ÖÃ´óÓÚÊı×é³¤¶È£¬ÄÇ¾Í·µ»Ø-1
+			//	å¦‚æœèµ·å§‹ä½ç½®å¤§äºæ•°ç»„é•¿åº¦ï¼Œé‚£å°±è¿”å›-1
 			if (absStart >= length) return -1;
 			
-			//	´ÓÆğÊ¼Î»ÖÃ¿ªÊ¼£¬Ñ°ÕÒÔªËØ
+			//	ä»èµ·å§‹ä½ç½®å¼€å§‹ï¼Œå¯»æ‰¾å…ƒç´ 
 			for (var i = absStart; i >= 0; i --) {
 				if (array[i] === searchElement) return i;
 			}
 			return -1;
 		},
         /**
-            É¾³ıÊı×éÖĞµÄÄ³¸öÔªËØ
+            åˆ é™¤æ•°ç»„ä¸­çš„æŸä¸ªå…ƒç´ 
         */
 		remove:function(arr,item){
             var i=A.indexOf(arr,item);
@@ -104,11 +104,11 @@ kola('kola.lang.Array',
                 arr.splice(i,1);
         },
 		/**
-		 * Ñ­»·Êı×éÖĞµÄÃ¿Ò»Ïî£¬ÒÀ´Î½»¸øµü´úÆ÷£¬È·ÈÏËùÓĞµÄ·µ»ØÖµ¶¼ÊÇtrue£¬²Å»á·µ»Øtrue£¬ÆäËûÇé¿ö·µ»Øfalse
-		 * @param {Array} array ÒªÑ­»·µÄÊı×é
-		 * @param {Function} callbackfn µü´úÆ÷
-		 * @param {ANY} thisArg ¸øµü´úÆ÷ÉèÖÃµÄÉÏÏÂÎÄ¡£Èç¹û²»´æÔÚµÄ»°£¬ÄÇ¾ÍÊÇundefined
-		 * @return ·µ»ØÖµ
+		 * å¾ªç¯æ•°ç»„ä¸­çš„æ¯ä¸€é¡¹ï¼Œä¾æ¬¡äº¤ç»™è¿­ä»£å™¨ï¼Œç¡®è®¤æ‰€æœ‰çš„è¿”å›å€¼éƒ½æ˜¯trueï¼Œæ‰ä¼šè¿”å›trueï¼Œå…¶ä»–æƒ…å†µè¿”å›false
+		 * @param {Array} array è¦å¾ªç¯çš„æ•°ç»„
+		 * @param {Function} callbackfn è¿­ä»£å™¨
+		 * @param {ANY} thisArg ç»™è¿­ä»£å™¨è®¾ç½®çš„ä¸Šä¸‹æ–‡ã€‚å¦‚æœä¸å­˜åœ¨çš„è¯ï¼Œé‚£å°±æ˜¯undefined
+		 * @return è¿”å›å€¼
 		 * @type Boolean
 		 */
 		every: function(array, callbackfn, thisArg) {
@@ -118,11 +118,11 @@ kola('kola.lang.Array',
 		},
 		
 		/**
-		 * Ñ­»·Êı×éÖĞµÄÃ¿Ò»Ïî£¬ÒÀ´Î½»¸øµü´úÆ÷£¬Èç¹û´æÔÚ·µ»ØÖµÎªtrue£¬ÄÇ¾Í·µ»Øtrue£¬ÆäËûÇé¿ö·µ»Øfalse
-		 * @param {Array} array ÒªÑ­»·µÄÊı×é
-		 * @param {Function} callbackfn µü´úÆ÷
-		 * @param {ANY} thisArg ¸øµü´úÆ÷ÉèÖÃµÄÉÏÏÂÎÄ¡£Èç¹û²»´æÔÚµÄ»°£¬ÄÇ¾ÍÊÇundefined
-		 * @return ·µ»ØÖµ
+		 * å¾ªç¯æ•°ç»„ä¸­çš„æ¯ä¸€é¡¹ï¼Œä¾æ¬¡äº¤ç»™è¿­ä»£å™¨ï¼Œå¦‚æœå­˜åœ¨è¿”å›å€¼ä¸ºtrueï¼Œé‚£å°±è¿”å›trueï¼Œå…¶ä»–æƒ…å†µè¿”å›false
+		 * @param {Array} array è¦å¾ªç¯çš„æ•°ç»„
+		 * @param {Function} callbackfn è¿­ä»£å™¨
+		 * @param {ANY} thisArg ç»™è¿­ä»£å™¨è®¾ç½®çš„ä¸Šä¸‹æ–‡ã€‚å¦‚æœä¸å­˜åœ¨çš„è¯ï¼Œé‚£å°±æ˜¯undefined
+		 * @return è¿”å›å€¼
 		 * @type Boolean
 		 */
 		some: function(array, callbackfn, thisArg) {
@@ -132,10 +132,10 @@ kola('kola.lang.Array',
 		},
 		
 		/**
-		 * ÔÚÊı×éÖĞ´ÓºóÍùÇ°ËÑË÷Ö¸¶¨ÔªËØµÄÎ»ÖÃ£¬¿ÉÒÔÉèÖÃÆğÊ¼Î»ÖÃ
-		 * @param {Array} array ÒªÑ­»·µÄÊı×é
-		 * @param {Function} callbackfn µü´úÆ÷
-		 * @param {ANY} thisArg ¸øµü´úÆ÷ÉèÖÃµÄÉÏÏÂÎÄ¡£Èç¹û²»´æÔÚµÄ»°£¬ÄÇ¾ÍÊÇundefined
+		 * åœ¨æ•°ç»„ä¸­ä»åå¾€å‰æœç´¢æŒ‡å®šå…ƒç´ çš„ä½ç½®ï¼Œå¯ä»¥è®¾ç½®èµ·å§‹ä½ç½®
+		 * @param {Array} array è¦å¾ªç¯çš„æ•°ç»„
+		 * @param {Function} callbackfn è¿­ä»£å™¨
+		 * @param {ANY} thisArg ç»™è¿­ä»£å™¨è®¾ç½®çš„ä¸Šä¸‹æ–‡ã€‚å¦‚æœä¸å­˜åœ¨çš„è¯ï¼Œé‚£å°±æ˜¯undefined
 		 */
 		forEach: function(array, callbackfn, thisArg) {
 			each(array, 'forEach', function(item, i, array) {
@@ -144,11 +144,11 @@ kola('kola.lang.Array',
 		},
 		
 		/**
-		 * Ñ­»·Êı×éÖĞµÄÃ¿Ò»Ïî£¬ÒÀ´Î½»¸øµü´úÆ÷£¬µÃµ½µÄÃ¿¸ö·µ»ØÖµ£¬ÒÀ´Î×°ÈëµÃµ½Ò»¸öĞÂÊı×é
-		 * @param {Array} array ÒªÑ­»·µÄÊı×é
-		 * @param {Function} callbackfn µü´úÆ÷
-		 * @param {ANY} thisArg ¸øµü´úÆ÷ÉèÖÃµÄÉÏÏÂÎÄ¡£Èç¹û²»´æÔÚµÄ»°£¬ÄÇ¾ÍÊÇundefined
-		 * @return ·µ»ØÖµ
+		 * å¾ªç¯æ•°ç»„ä¸­çš„æ¯ä¸€é¡¹ï¼Œä¾æ¬¡äº¤ç»™è¿­ä»£å™¨ï¼Œå¾—åˆ°çš„æ¯ä¸ªè¿”å›å€¼ï¼Œä¾æ¬¡è£…å…¥å¾—åˆ°ä¸€ä¸ªæ–°æ•°ç»„
+		 * @param {Array} array è¦å¾ªç¯çš„æ•°ç»„
+		 * @param {Function} callbackfn è¿­ä»£å™¨
+		 * @param {ANY} thisArg ç»™è¿­ä»£å™¨è®¾ç½®çš„ä¸Šä¸‹æ–‡ã€‚å¦‚æœä¸å­˜åœ¨çš„è¯ï¼Œé‚£å°±æ˜¯undefined
+		 * @return è¿”å›å€¼
 		 * @type Boolean
 		 */
 		map: function(array, callbackfn, thisArg) {
@@ -160,11 +160,11 @@ kola('kola.lang.Array',
 		},
 		
 		/**
-		 * Ñ­»·Êı×éÖĞµÄÃ¿Ò»Ïî£¬ÒÀ´Î½»¸øµü´úÆ÷£¬Èç¹û·µ»ØÖµÎªtrue£¬ÄÇ¾Í½«¸ÃÏî´æ´¢µ½Ò»¸öĞÂÊı×éÖĞ
-		 * @param {Array} array ÒªÑ­»·µÄÊı×é
-		 * @param {Function} callbackfn µü´úÆ÷
-		 * @param {ANY} thisArg ¸øµü´úÆ÷ÉèÖÃµÄÉÏÏÂÎÄ¡£Èç¹û²»´æÔÚµÄ»°£¬ÄÇ¾ÍÊÇundefined
-		 * @return ·µ»ØÖµ
+		 * å¾ªç¯æ•°ç»„ä¸­çš„æ¯ä¸€é¡¹ï¼Œä¾æ¬¡äº¤ç»™è¿­ä»£å™¨ï¼Œå¦‚æœè¿”å›å€¼ä¸ºtrueï¼Œé‚£å°±å°†è¯¥é¡¹å­˜å‚¨åˆ°ä¸€ä¸ªæ–°æ•°ç»„ä¸­
+		 * @param {Array} array è¦å¾ªç¯çš„æ•°ç»„
+		 * @param {Function} callbackfn è¿­ä»£å™¨
+		 * @param {ANY} thisArg ç»™è¿­ä»£å™¨è®¾ç½®çš„ä¸Šä¸‹æ–‡ã€‚å¦‚æœä¸å­˜åœ¨çš„è¯ï¼Œé‚£å°±æ˜¯undefined
+		 * @return è¿”å›å€¼
 		 * @type Boolean
 		 */
 		filter: function(array, callbackfn, thisArg) {
@@ -179,26 +179,26 @@ kola('kola.lang.Array',
 		
 	};
 	
-	/********************************************** Ë½ÓĞ±äÁ¿ **********************************************/
+	/********************************************** ç§æœ‰å˜é‡ **********************************************/
 	
-	var ArrayOrg = [].constructor,			//	´æ´¢Ô­ÉúµÄArray·½·¨
+	var ArrayOrg = [].constructor,			//	å­˜å‚¨åŸç”Ÿçš„Arrayæ–¹æ³•
 		$break = {};
 	
-	/********************************************** Ë½ÓĞ·½·¨ **********************************************/
+	/********************************************** ç§æœ‰æ–¹æ³• **********************************************/
 		
 	/**
-	 * Ñ­»·Êı×éÖĞµÄÃ¿Ò»Ïî£¬ÒÀ´Î½»¸øµü´úÆ÷¡£Èç¹ûµü´úÃ»ÓĞ±»ÖĞ¶Ï£¬ÄÇ¾Í·µ»Øtrue£¬·ñÔò·µ»Øfalse
-	 * @param {Array} array ÒªÑ­»·µÄÊı×é
-	 * @param {Function} fn Òª¶ÔÊı×éµ÷ÓÃµÄ·½·¨µÄÃû³Æ
-	 * @param {Function} callbackfn µü´úÆ÷
-	 * @return ·µ»ØÖµ
+	 * å¾ªç¯æ•°ç»„ä¸­çš„æ¯ä¸€é¡¹ï¼Œä¾æ¬¡äº¤ç»™è¿­ä»£å™¨ã€‚å¦‚æœè¿­ä»£æ²¡æœ‰è¢«ä¸­æ–­ï¼Œé‚£å°±è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+	 * @param {Array} array è¦å¾ªç¯çš„æ•°ç»„
+	 * @param {Function} fn è¦å¯¹æ•°ç»„è°ƒç”¨çš„æ–¹æ³•çš„åç§°
+	 * @param {Function} callbackfn è¿­ä»£å™¨
+	 * @return è¿”å›å€¼
 	 * @type Boolean
 	 */
 	var each = function(array, fn, callbackfn) {
-		//	Èç¹û´æÔÚÔ­ÉúµÄ·½·¨£¬ÄÇ¾ÍÖ±½Óµ÷ÓÃÖ®
+		//	å¦‚æœå­˜åœ¨åŸç”Ÿçš„æ–¹æ³•ï¼Œé‚£å°±ç›´æ¥è°ƒç”¨ä¹‹
 		if (array[fn]) return array[fn](callbackfn);
 		
-		//	Ñ­»·Êı×éÖĞµÄÃ¿¸öÏî£¬ÒÀ´Î´«¸øµü´úÆ÷
+		//	å¾ªç¯æ•°ç»„ä¸­çš„æ¯ä¸ªé¡¹ï¼Œä¾æ¬¡ä¼ ç»™è¿­ä»£å™¨
 		for (var i = 0, il = array.length; i < il; i ++) {
 			if (array.hasOwnProperty(i.toString())) {
 				if (callbackfn(array[i], i, array) == $break) return false;
@@ -207,7 +207,7 @@ kola('kola.lang.Array',
 		return true;
 	};
 	
-	/********************************************** ·µ»ØÀà **********************************************/
+	/********************************************** è¿”å›ç±» **********************************************/
 	
 	return A;
 	

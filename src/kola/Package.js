@@ -1053,10 +1053,11 @@
         "Array"     :"kola.lang.Array",
         
         "Event"     :"kola.bom.Event",
-        "Dispatcher":"kola.bom.Dispatcher",
         "Cookie"    :"kola.bom.Cookie",
         "Browser"   :"kola.bom.Browser",
         "Document"  :"kola.bom.Document",
+        
+        "Dispatcher":"kola.event.Dispatcher",
         
         "Selector"  :"kola.css.Selector",
         

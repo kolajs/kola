@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.bom.Browser ä¯ÀÀÆ÷Ö§³ÖÀà
+ * @fileOverview kola.bom.Browser æµè§ˆå™¨æ”¯æŒç±»
  * @author Jady Yang
  * @version 2.0.0
  */
@@ -12,13 +12,13 @@ function( KolaFunction ) {
 	var Browser = {
 
 		/**
-		 * »ñÈ¡äÖÈ¾Ä£Ê½
+		 * è·å–æ¸²æŸ“æ¨¡å¼
 		 */
 		render: function() {
 			var agent = navigator.userAgent,
 				value;
 
-			//	ÅĞ¶ÏÊÇºÎÖÖäÖÈ¾Ä£Ê½
+			//	åˆ¤æ–­æ˜¯ä½•ç§æ¸²æŸ“æ¨¡å¼
 			if ( agent.indexOf( 'MSIE' ) != -1 ) {
 				value = 'ie';
 			} else if ( agent.indexOf( 'AppleWebKit' ) != -1 ) {
@@ -48,7 +48,7 @@ function( KolaFunction ) {
 					} else if ( agent.indexOf( 'SE') != -1 && agent.indexOf( 'MetaSr') != -1 ) {
 						value = 'sogou';
 					} else {
-						//	¸ÃÄ£Ê½ÏÂÎŞ·¨Ê¶±ğ³ö360
+						//	è¯¥æ¨¡å¼ä¸‹æ— æ³•è¯†åˆ«å‡º360
 						value = 'ie';
 					}
 					break;
@@ -64,7 +64,7 @@ function( KolaFunction ) {
 					} else if ( agent.indexOf( 'Version') != -1 && agent.indexOf( 'Safari') != -1 ) {
 						value = 'safari';
 					} else {
-						//	¸ÃÄ£Ê½ÏÂÎŞ·¨Ê¶±ğ³ö360¡¢åÛÓÎ
+						//	è¯¥æ¨¡å¼ä¸‹æ— æ³•è¯†åˆ«å‡º360ã€é¨æ¸¸
 						value = 'unkown';
 					}
 					break;

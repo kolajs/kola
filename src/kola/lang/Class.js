@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.lang.Class ÀàĞÍÖ§³ÖÀà
+ * @fileOverview kola.lang.Class ç±»å‹æ”¯æŒç±»
  * @author Jady Yang
  * @version 2.0.0
  */
@@ -8,26 +8,26 @@ kola('kola.lang.Class',
 	null,
 	function() {
 
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 
 	return {
 
 		/**
-		 * ´´½¨Ò»¸öĞÂÀà£¬²¢´ÓÖ¸¶¨µÄ¸¸Àà¼Ì³Ğ£¬²¢ÉèÖÃ±¾ÀàµÄ·½·¨
-		 * @param {Function} SuperClass ¸¸Àà
-		 * @param {Object} Methods ±¾ÀàµÄ·½·¨ÁĞ±í
-		 * @return ĞÂ´´½¨µÄÀà
+		 * åˆ›å»ºä¸€ä¸ªæ–°ç±»ï¼Œå¹¶ä»æŒ‡å®šçš„çˆ¶ç±»ç»§æ‰¿ï¼Œå¹¶è®¾ç½®æœ¬ç±»çš„æ–¹æ³•
+		 * @param {Function} SuperClass çˆ¶ç±»
+		 * @param {Object} Methods æœ¬ç±»çš„æ–¹æ³•åˆ—è¡¨
+		 * @return æ–°åˆ›å»ºçš„ç±»
 		 * @type Function
 		 */
 		/**
-		 * ´´½¨Ò»¸öĞÂÀà£¬²¢ÉèÖÃ±¾ÀàµÄ·½·¨
-		 * @param {Object} Methods ±¾ÀàµÄ·½·¨ÁĞ±í
-		 * @param {Object} flag Ä¬ÈÏ²»Ö´ĞĞ¹¹Ôìº¯Êı
-		 * @return ĞÂ´´½¨µÄÀà
+		 * åˆ›å»ºä¸€ä¸ªæ–°ç±»ï¼Œå¹¶è®¾ç½®æœ¬ç±»çš„æ–¹æ³•
+		 * @param {Object} Methods æœ¬ç±»çš„æ–¹æ³•åˆ—è¡¨
+		 * @param {Object} flag é»˜è®¤ä¸æ‰§è¡Œæ„é€ å‡½æ•°
+		 * @return æ–°åˆ›å»ºçš„ç±»
 		 * @type Function
 		 */
 		create: function( SuperClass, Methods ) {
-			//	ÅĞ¶ÏÊÇ·ñ´æÔÚÒª¼Ì³ĞµÄ¸¸Àà
+			//	åˆ¤æ–­æ˜¯å¦å­˜åœ¨è¦ç»§æ‰¿çš„çˆ¶ç±»
 			if ( typeof(Methods) == 'undefined' ) {
 				Methods = SuperClass;
 				SuperClass = null;
@@ -35,47 +35,47 @@ kola('kola.lang.Class',
 
 			var SubClass;
 
-			//	ÅĞ¶ÏÊÇ·ñ´æÔÚ·½·¨Ö±½ÓÁ¿
+			//	åˆ¤æ–­æ˜¯å¦å­˜åœ¨æ–¹æ³•ç›´æ¥é‡
 			var me = Methods.__ME;
 			if ( me ) {
-				//	´æÔÚ·½·¨Ö±½ÓÁ¿
+				//	å­˜åœ¨æ–¹æ³•ç›´æ¥é‡
 
-				//	Ìá¹©ÄÜ¹»Ê¶±ğÁ½ÖÖµ÷ÓÃÄ£Ê½µÄ·½·¨¹¹ÔìÌå
+				//	æä¾›èƒ½å¤Ÿè¯†åˆ«ä¸¤ç§è°ƒç”¨æ¨¡å¼çš„æ–¹æ³•æ„é€ ä½“
 				SubClass = function() {
 
-					//	Èç¹û±êÊ¶·û²»ÊÇÊı×Ö£¬ÄÇËµÃ÷Àà¼Ì³ĞÌåÏµ³öÏÖÁËÎÊÌâ
+					//	å¦‚æœæ ‡è¯†ç¬¦ä¸æ˜¯æ•°å­—ï¼Œé‚£è¯´æ˜ç±»ç»§æ‰¿ä½“ç³»å‡ºç°äº†é—®é¢˜
 					var i = this.__I;
 					if ( typeof( i ) != 'number' || i !== 0) {
-						//	Ö±½Óµ÷ÓÃ·½Ê½
+						//	ç›´æ¥è°ƒç”¨æ–¹å¼
 						return me.apply( SubClass, arguments );
 					} else {
 						this.constructor = SubClass;
 						this.__I = 1;
-						//	ÕâÊÇÀà·½Ê½
+						//	è¿™æ˜¯ç±»æ–¹å¼
 						this._init.apply( this, arguments );
 						this.__I = 4;
 					}
 				};
 			} else {
-				//	´´½¨ĞÂÀàµÄ·½·¨
+				//	åˆ›å»ºæ–°ç±»çš„æ–¹æ³•
 				SubClass = function() {
 					this.constructor = SubClass;
 					this._init.apply(this, arguments);
 				};
 			}
 			
-			//	¸ø¹¹Ôìº¯Êı¸½¼Ó¸¸¶ÔÏóµÄid
+			//	ç»™æ„é€ å‡½æ•°é™„åŠ çˆ¶å¯¹è±¡çš„id
 			SubClass._super = SuperClass || null;
 
-			//	Ôö¼ÓÏµÍ³±êÊ¶·û
-			SubClass.__CLASS = true;		//	±êÊ¶ÕâÊÇ¸öÀà£¬µ«ÊÇ×îÖÕĞèÒªÌæ»»³ÉÀàµÄÃû³Æ
+			//	å¢åŠ ç³»ç»Ÿæ ‡è¯†ç¬¦
+			SubClass.__CLASS = true;		//	æ ‡è¯†è¿™æ˜¯ä¸ªç±»ï¼Œä½†æ˜¯æœ€ç»ˆéœ€è¦æ›¿æ¢æˆç±»çš„åç§°
 
 			var agencyInstance;
 			if ( SuperClass == null ) {
-				//	²»´æÔÚ¸¸ÀàµÄ»°
+				//	ä¸å­˜åœ¨çˆ¶ç±»çš„è¯
 				agencyInstance = Methods;
 			} else {
-				//	´æÔÚ¸¸ÀàµÄ»°£¬ÄÇ¾Í´´½¨Ò»¸öÖĞ¼äµÄ»º³åÀà
+				//	å­˜åœ¨çˆ¶ç±»çš„è¯ï¼Œé‚£å°±åˆ›å»ºä¸€ä¸ªä¸­é—´çš„ç¼“å†²ç±»
 				
 				var AgencyClass = function() {};
 				AgencyClass.prototype = SuperClass.prototype;
@@ -85,11 +85,11 @@ kola('kola.lang.Class',
 				}
 			}
 
-			//	ÉèÖÃÀàÊµÀı±êÊ¶·û
+			//	è®¾ç½®ç±»å®ä¾‹æ ‡è¯†ç¬¦
 			agencyInstance.__I = 0;
 
-			SubClass.prototype = agencyInstance;		//	ÉèÖÃĞÂÀàµÄÔ­ĞÍ
-            // ¿½±´ÀàµÄ¾²Ì¬·½·¨£¨Ö»ÓĞ±»¼ÇÂ¼ÔÚ°¸µÄ£©
+			SubClass.prototype = agencyInstance;		//	è®¾ç½®æ–°ç±»çš„åŸå‹
+            // æ‹·è´ç±»çš„é™æ€æ–¹æ³•ï¼ˆåªæœ‰è¢«è®°å½•åœ¨æ¡ˆçš„ï¼‰
             if(SuperClass && SuperClass.__GENE){
                 for(var i=0,il=SuperClass.__GENE.length;i<il;i++){
                     SubClass[SuperClass.__GENE[i]]=SuperClass[SuperClass.__GENE[i]]
@@ -99,31 +99,55 @@ kola('kola.lang.Class',
 		},
 
 		/**
-		 * ÅĞ¶ÏÒ»¸öÊµÀıÊÇ·ñÊÇÄ³¸öÀàĞÍ
+		 * åˆ¤æ–­ä¸€ä¸ªå®ä¾‹æ˜¯å¦æ˜¯æŸä¸ªç±»å‹
 		 * @param object
 		 * @param type
 		 */
 		isInstance: function( object, type ) {
 
-			//	Èç¹û²»´æÔÚÒª¼ì²âµÄÊµÀı£¬ĞèÒª±¨´í
+			//	å¦‚æœä¸å­˜åœ¨è¦æ£€æµ‹çš„å®ä¾‹ï¼Œéœ€è¦æŠ¥é”™
 			if ( !object ) {
-				throw new Error( 'Òª¼ì²âµÄÊµÀı²»´æÔÚ' );
+				throw new Error( 'è¦æ£€æµ‹çš„å®ä¾‹ä¸å­˜åœ¨' );
 				return;
 			}
 
-			//	ÅĞ¶ÏÒª¼ì²âµÄÊ¾ÀıÊÇ·ñ´æÔÚ¹¹ÔìÆ÷£¬²»´æÔÚµÄ»°Ö±½Ó·µ»Øfalse
+			//	åˆ¤æ–­è¦æ£€æµ‹çš„ç¤ºä¾‹æ˜¯å¦å­˜åœ¨æ„é€ å™¨ï¼Œä¸å­˜åœ¨çš„è¯ç›´æ¥è¿”å›false
 			var constructor = object.constructor, className;
 			while ( constructor ) {
 
-				//	Èç¹û¹¹ÔìÆ÷µÄÔ­ĞÍÖĞ´æÔÚ__CLASSÊôĞÔ£¬²¢ÇÒÊÇÎÒÃÇÒª¼ì²âµÄÀàĞÍ£¬ÄÇ¾Í·µ»Øtrue
+				//	å¦‚æœæ„é€ å™¨çš„åŸå‹ä¸­å­˜åœ¨__CLASSå±æ€§ï¼Œå¹¶ä¸”æ˜¯æˆ‘ä»¬è¦æ£€æµ‹çš„ç±»å‹ï¼Œé‚£å°±è¿”å›true
 				if ( typeof( className = constructor.__CLASS) == 'string' && className === type ) return true;
 
-				//	ÕÒµ½¸¸Àà£¬¼ÌĞøÅĞ¶Ï
+				//	æ‰¾åˆ°çˆ¶ç±»ï¼Œç»§ç»­åˆ¤æ–­
 				constructor = constructor._super;
 			}
 
-			//	Ö´ĞĞµ½ÕâÀï£¬±íÃ÷¸ÃÊµÀı²»ÊÇÖ¸¶¨µÄÀàĞÍµÄÊµÀı
+			//	æ‰§è¡Œåˆ°è¿™é‡Œï¼Œè¡¨æ˜è¯¥å®ä¾‹ä¸æ˜¯æŒ‡å®šçš„ç±»å‹çš„å®ä¾‹
 			return false;
-		}
+		},
+        /**
+            é€šè¿‡ä¿®æ”¹åŸå‹é“¾æ–¹å¼å®ç°ç»§æ‰¿
+            origClassï¼šæ„é€ å‡½æ•°
+            protoObjectï¼šåŸå‹
+            protoLinkï¼šåŸå‹ç»§æ‰¿
+            
+            ä¸class.createç›¸æ¯”ï¼Œå¯¹debugå‹å¥½
+        */
+        buildProto:function(origClass,protoObject,protoLink){
+            var agencyObject;
+            if ( protoLink == null ) {
+                agencyObject = protoObject;
+            } else {
+                var AgencyClass = function() {};
+                AgencyClass.prototype = protoLink.prototype;
+                agencyObject = new AgencyClass();
+                for ( var item in protoObject ) {
+                    agencyObject[item] = protoObject[item];
+                }
+            }
+            origClass.prototype = agencyObject;
+            origClass.prototype.base = protoLink;
+            origClass.prototype.constructor = origClass;
+        }
 	};
 });

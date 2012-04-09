@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.lang.Function FunctionÀà
+ * @fileOverview kola.lang.Function Functionç±»
  * @author Jady Yang
  * @version 2.0.0
  */
@@ -9,18 +9,18 @@ kola('kola.lang.Function',
 	null, 
 	function() {
 	
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 	
 	var func= {
 		
 		/**
-		 * ¸ø·½·¨°ó¶¨thisºÍ²ÎÊı£¬¶øÇÒÕâĞ©²ÎÊıÅÅÔÚ·½·¨±»µ÷ÓÃÊ±Ëù´«ÈëµÄ²ÎÊıÖ®Ç°
-		 * @param {Function} callbackfn ±»°ó¶¨µÄ·½·¨
-		 * @param {ANY} thisArg ·½·¨Ö´ĞĞÊ±µÄthis
-		 * @param {ANY} arg1 Òª°ó¶¨µÄ²ÎÊı1
-		 * @param {ANY} arg2 Òª°ó¶¨µÄ²ÎÊı2
-		 * @param {ANY} argN Òª°ó¶¨µÄ²ÎÊıN
-		 * @return °ó¶¨¹ıÖ®ºóµÄĞÂ·½·¨
+		 * ç»™æ–¹æ³•ç»‘å®šthiså’Œå‚æ•°ï¼Œè€Œä¸”è¿™äº›å‚æ•°æ’åœ¨æ–¹æ³•è¢«è°ƒç”¨æ—¶æ‰€ä¼ å…¥çš„å‚æ•°ä¹‹å‰
+		 * @param {Function} callbackfn è¢«ç»‘å®šçš„æ–¹æ³•
+		 * @param {ANY} thisArg æ–¹æ³•æ‰§è¡Œæ—¶çš„this
+		 * @param {ANY} arg1 è¦ç»‘å®šçš„å‚æ•°1
+		 * @param {ANY} arg2 è¦ç»‘å®šçš„å‚æ•°2
+		 * @param {ANY} argN è¦ç»‘å®šçš„å‚æ•°N
+		 * @return ç»‘å®šè¿‡ä¹‹åçš„æ–°æ–¹æ³•
 		 * @type Function
 		 */
 		bind: function(callbackfn, thisArg) {
@@ -38,13 +38,13 @@ kola('kola.lang.Function',
 		},
 		
 		/**
-		 * ¸ø·½·¨°ó¶¨thisºÍ²ÎÊı£¬¶øÇÒÕâĞ©²ÎÊıÅÅÔÚ·½·¨±»µ÷ÓÃÊ±Ëù´«ÈëµÄ²ÎÊıÖ®ºó
-		 * @param {Function} callbackfn ±»°ó¶¨µÄ·½·¨
-		 * @param {ANY} thisArg ·½·¨Ö´ĞĞÊ±µÄthis
-		 * @param {ANY} arg1 Òª°ó¶¨µÄ²ÎÊı1
-		 * @param {ANY} arg2 Òª°ó¶¨µÄ²ÎÊı2
-		 * @param {ANY} argN Òª°ó¶¨µÄ²ÎÊıN
-		 * @return °ó¶¨¹ıÖ®ºóµÄĞÂ·½·¨
+		 * ç»™æ–¹æ³•ç»‘å®šthiså’Œå‚æ•°ï¼Œè€Œä¸”è¿™äº›å‚æ•°æ’åœ¨æ–¹æ³•è¢«è°ƒç”¨æ—¶æ‰€ä¼ å…¥çš„å‚æ•°ä¹‹å
+		 * @param {Function} callbackfn è¢«ç»‘å®šçš„æ–¹æ³•
+		 * @param {ANY} thisArg æ–¹æ³•æ‰§è¡Œæ—¶çš„this
+		 * @param {ANY} arg1 è¦ç»‘å®šçš„å‚æ•°1
+		 * @param {ANY} arg2 è¦ç»‘å®šçš„å‚æ•°2
+		 * @param {ANY} argN è¦ç»‘å®šçš„å‚æ•°N
+		 * @return ç»‘å®šè¿‡ä¹‹åçš„æ–°æ–¹æ³•
 		 * @type Function
 		 */
 		bindAfter: function(callbackfn, thisArg) {
@@ -62,12 +62,12 @@ kola('kola.lang.Function',
 		},
 
 		/**
-		 * ¿É±»È«¾ÖÊ¹ÓÃµÄ¿Õº¯Êı
+		 * å¯è¢«å…¨å±€ä½¿ç”¨çš„ç©ºå‡½æ•°
 		 */
 		empty: function() {},
 
 		/**
-		 * ·µ»ØÒ»¸öĞÂ·½·¨£¬ÓÃÓÚ·µ»ØÖ¸¶¨µÄÒ»¸öÖµ
+		 * è¿”å›ä¸€ä¸ªæ–°æ–¹æ³•ï¼Œç”¨äºè¿”å›æŒ‡å®šçš„ä¸€ä¸ªå€¼
 		 * @param value
 		 */
 		x: function( value ) {

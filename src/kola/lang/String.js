@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.lang.String ×Ö·û´®Àà
+ * @fileOverview kola.lang.String å­—ç¬¦ä¸²ç±»
  * @author Jady Yang
  * @version 2.0.0
  */
@@ -9,12 +9,12 @@ kola('kola.lang.String',
 	null, 
 	function() {
 	
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 	
 	var String = {
 		
 		/**
-		 * È¥³ıµô×Ö·û´®×óÓÒÁ½²àµÄ¿Õ¸ñ
+		 * å»é™¤æ‰å­—ç¬¦ä¸²å·¦å³ä¸¤ä¾§çš„ç©ºæ ¼
 		 * @type Function
 		 */
 		trim: function(string) {
@@ -22,10 +22,10 @@ kola('kola.lang.String',
 			return string.replace(reg,'');
 		},
 		/**
-		 * ¸ñÊ½»¯×Ö·û´®
-		 * @param {String} ĞèÒª¸ñÊ½»¯µÄ×Ö·û´®
-		 * @param {ANY} ¸ñÊ½»¯²ÎÊı£¬²ÎÊıÓÃ¶ººÅ·Ö¸ô
-		 * @return ¸ñÊ½»¯ºóµÄĞÂ×Ö·û´®
+		 * æ ¼å¼åŒ–å­—ç¬¦ä¸²
+		 * @param {String} éœ€è¦æ ¼å¼åŒ–çš„å­—ç¬¦ä¸²
+		 * @param {ANY} æ ¼å¼åŒ–å‚æ•°ï¼Œå‚æ•°ç”¨é€—å·åˆ†éš”
+		 * @return æ ¼å¼åŒ–åçš„æ–°å­—ç¬¦ä¸²
 		 * @type String
 		 */
 		format:function() {
@@ -39,9 +39,9 @@ kola('kola.lang.String',
 	    return str;
 		},
 		/**
-		 * ¼ÆËã×Ö·û´®³¤¶È£¬°ë½Ç×Ö·ûÁ½¸öËãÒ»¸ö
-		 * @param str {String} ×Ö·û´®
-		 * @return {Int} ×Ö·û´®³¤¶È
+		 * è®¡ç®—å­—ç¬¦ä¸²é•¿åº¦ï¼ŒåŠè§’å­—ç¬¦ä¸¤ä¸ªç®—ä¸€ä¸ª
+		 * @param str {String} å­—ç¬¦ä¸²
+		 * @return {Int} å­—ç¬¦ä¸²é•¿åº¦
 		 */
 		SimpinLen:function(str){
 			var half=0,full=0;
@@ -55,10 +55,10 @@ kola('kola.lang.String',
 			return Math.ceil(half/2)+full;
 		},
 		/**
-		 * °´ÕÕ°ë½Ç×Ö·ûÁ½¸öËãÒ»¸öµÄ¹æÔò²éÕÒµ½¶ÔÓ¦³¤¶ÈÎªlengthµÄ×Ö·ûÔÚÊµ¼Ê×Ö·û´®µÄË÷ÒıÖµ
-		 * @param str {String} ×Ö·û´®
-		 * @param index {Int} ×Ö·û´®
-		 * @return {Int} Ë÷ÒıÖµ
+		 * æŒ‰ç…§åŠè§’å­—ç¬¦ä¸¤ä¸ªç®—ä¸€ä¸ªçš„è§„åˆ™æŸ¥æ‰¾åˆ°å¯¹åº”é•¿åº¦ä¸ºlengthçš„å­—ç¬¦åœ¨å®é™…å­—ç¬¦ä¸²çš„ç´¢å¼•å€¼
+		 * @param str {String} å­—ç¬¦ä¸²
+		 * @param index {Int} å­—ç¬¦ä¸²
+		 * @return {Int} ç´¢å¼•å€¼
 		 */
 		findIndex:function(str,length){
 			var full=0;
@@ -86,10 +86,10 @@ kola('kola.lang.String',
 			return i+1;		
 		},
 		/**
-		 * °´ÕÕ°ë½Ç×Ö·û·Ö¸î³¤¶ÈÎªlengthµÄ×Ó´®
-		 * @param str {String} ×Ö·û´®
-		 * @param length {Int} ×Ö·û´®
-		 * @return {String} ·Ö¸îºóµÄ×Ó´®
+		 * æŒ‰ç…§åŠè§’å­—ç¬¦åˆ†å‰²é•¿åº¦ä¸ºlengthçš„å­ä¸²
+		 * @param str {String} å­—ç¬¦ä¸²
+		 * @param length {Int} å­—ç¬¦ä¸²
+		 * @return {String} åˆ†å‰²åçš„å­ä¸²
 		 */
 		cutSimpStr:function(str,length){
 			return str.substring(0,this.findIndex(str,length));

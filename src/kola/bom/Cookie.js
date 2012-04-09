@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.bom.Event ÊÂ¼şÖ§³ÖÀà
+ * @fileOverview kola.bom.Event äº‹ä»¶æ”¯æŒç±»
  * @author Jady Yang
  * @version 2.0.0
  */
@@ -7,7 +7,7 @@
 
 kola('kola.bom.Cookie',null,function() {
 
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 
     var Cookie = {
         get: function(name) {
@@ -19,12 +19,12 @@ kola('kola.bom.Cookie',null,function() {
 
 /**
 * @function
-* @description ÉèÖÃcookie
+* @description è®¾ç½®cookie
 * @param name cookie name.
-* @param value cookie value, »á×Ô¶¯ escape È»ºó´æ´¢.
-* @param expires Ê§Ğ§Ê±¼ä£¬Ä¬ÈÏÎªä¯ÀÀÆ÷sessionÓĞĞ§.ÎªDate¶ÔÏó
-* @param path cookie ´æÓÚºÎ path ÏÂ£¬Ä¬ÈÏÖµÎªÖÖÏÂcookieÊ±µÄÂ·¾¶.
-* @param domain cookie ´æÓÚºÎ domain ÏÂ£¬Ä¬ÈÏÎªµ±Ç°Óò.
+* @param value cookie value, ä¼šè‡ªåŠ¨ escape ç„¶åå­˜å‚¨.
+* @param expires å¤±æ•ˆæ—¶é—´ï¼Œé»˜è®¤ä¸ºæµè§ˆå™¨sessionæœ‰æ•ˆ.ä¸ºDateå¯¹è±¡
+* @param path cookie å­˜äºä½• path ä¸‹ï¼Œé»˜è®¤å€¼ä¸ºç§ä¸‹cookieæ—¶çš„è·¯å¾„.
+* @param domain cookie å­˜äºä½• domain ä¸‹ï¼Œé»˜è®¤ä¸ºå½“å‰åŸŸ.
 *
 * @return
 */

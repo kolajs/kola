@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.bom.Event ÊÂ¼şÖ§³ÖÀà
+ * @fileOverview kola.bom.Event äº‹ä»¶æ”¯æŒç±»
  * @author Jady Yang
  * @version 2.0.0
  * @fix scope bug 2011-03-30 by flyhuang
@@ -7,15 +7,37 @@
 
 
 kola('kola.bom.Event', 
-	null,
-	function() {
-	
-	/********************************************** Àà¶¨Òå **********************************************/
+	[":Class",":Browser"],
+function(C,B) {
 
-	var Event = {
+    /**
+    kolaäº‹ä»¶å¯¹è±¡
+    
+    preventDefault  é˜»æ­¢é»˜è®¤äº‹ä»¶
+    stopPropagation é˜»æ­¢å†’æ³¡
+    */
+    function DomEvent(e){
+        this.event=e;
+        this.target=e.srcElement;
+        this.keyCode=e.keyCode;
+    }
+    if(C.isIE678){
+        C.buildProto(DomEvent,{
+            preventDefault:function(){this.event.returnValue=false;},
+            stopPropagation:function(){this.event.cancelBubble=true;}
+        });
+    }else{
+        C.buildProto(DomEvent,{
+            preventDefault:Event.prototype.preventDefault,
+            stopPropagation:Event.prototype.stopPropagation
+        });
+    }
+	/********************************************** ç±»å®šä¹‰ **********************************************/
+
+	var KolaEvent = {
 		
 		/**
-		 * ¼àÌıÒ»¸öÊÂ¼ş
+		 * ç›‘å¬ä¸€ä¸ªäº‹ä»¶
 		 */
 		on: function(element, name, listenerfn) {
 			if (!element || !name || !listenerfn) return this;
@@ -37,7 +59,7 @@ kola('kola.bom.Event',
 				handler:fn
 			});
 					
-			//	°ó¶¨ÊÂ¼ş
+			//	ç»‘å®šäº‹ä»¶
 			if (element.addEventListener) {
 				element.addEventListener(name, fn, false);
 			} else {
@@ -48,14 +70,14 @@ kola('kola.bom.Event',
 		},
 		
 		/**
-		 * È¡Ïû¶ÔÊÂ¼şµÄ¼àÌı
+		 * å–æ¶ˆå¯¹äº‹ä»¶çš„ç›‘å¬
 		 */
 		un: function(element, name, listenerfn, origin) {
 			if (!element || !name) return this;
 							
 			if(listenerfn){							
 				if(origin){				
-					Event._remove(element, name, listenerfn);
+					KolaEvent._remove(element, name, listenerfn);
 				} else {				
 					var events=element.events;
 					if(!events) return;
@@ -65,7 +87,7 @@ kola('kola.bom.Event',
 								
 					for(var i=0,len=eventType.length;i<len;i++){
 						if(eventType[i].srcHandler==listenerfn){
-							Event._remove(element ,name , eventType[i].handler);
+							KolaEvent._remove(element ,name , eventType[i].handler);
 							eventType.splice(i,1);
 							i--;
 							len--;
@@ -81,7 +103,7 @@ kola('kola.bom.Event',
 				if(!eventType) return;	
 			
 				for(var i=0,len=eventType.length;i<len;i++){
-					Event._remove(element, name, eventType[i].handler , true);
+					KolaEvent._remove(element, name, eventType[i].handler , true);
 				}			
 				delete events[name];
 			}		
@@ -89,125 +111,42 @@ kola('kola.bom.Event',
 		},
 		
 		/**
-		 * É¾³ıÖ¸¶¨µÄÊÂ¼ş
+		 * åˆ é™¤æŒ‡å®šçš„äº‹ä»¶
 		 */
 		_remove:function(element, name, listenerfn){
-			//	É¾³ılistener
+			//	åˆ é™¤listener
 			if (element.removeEventListener) {
 				element.removeEventListener(name, listenerfn, false);
 			} else {
 				element.detachEvent('on' + name, listenerfn);
 			}	
 		},
-		
 		/**
-		 * ¼àÌı·¢ÉúÔÚÍâ²¿µÄÄ³¸öÊÂ¼ş
-		 */
-		onout: function(element, name, listenerfn) {
-			var f = Event._listener.out(element, name, listenerfn),
-				kolaEvent = element._kolaEvent;
-			if (!kolaEvent) {
-				kolaEvent = element._kolaEvent = {
-					out: []
-				};
-			}
-			kolaEvent.out.push({e: element, n: name, l: listenerfn, f: f});
-			Event.on(document.body, name, f);
-			
-			return this;
-		},
-		
-		/**
-		 * È¡Ïû¶ÔÍâ²¿Ä³¸öÊÂ¼şµÄ¼àÌı
-		 */
-		unout: function(element, name, listenerfn) {
-			var events;
-			if ((events = element._kolaEvent) && (events = events.out) && (events.length > 0)) {
-		
-				for (var i = 0, il = events.length; i < il; i++) {
-					var event = events[i];
-					if (event.e === element && event.n === name && event.l === listenerfn) {
-						Event.un(document.body, name, event.f);
-						events.splice(i, 1);
-						break;
-					}
-				}
-			}
-			
-			return this;
-		},
-		/**
-		 * ÅÉ·¢ÊÂ¼ş
+		 * æ´¾å‘äº‹ä»¶
 		 * @param element
 		 * @param name
 		 * @param event
 		 */
 		fire: function( element, name, event ) {
-			//	TODO: ÔİÊ±Ã»ÓĞÄÚä¯ÀÀÆ÷ÄÚÖÃÊÂ¼şÔö¼ÓÁ¼ºÃÖ§³Ö
+			//	TODO: æš‚æ—¶æ²¡æœ‰å†…æµè§ˆå™¨å†…ç½®äº‹ä»¶å¢åŠ è‰¯å¥½æ”¯æŒ
 
-			//	Èç¹ûÃ»ÓĞ¼àÌıÆ÷£¬ÄÇ¾Í²»×ö´¦Àí
+			//	å¦‚æœæ²¡æœ‰ç›‘å¬å™¨ï¼Œé‚£å°±ä¸åšå¤„ç†
 			var listeners;
 			if ( !( listeners = element.__events ) || !( listeners = listeners[ name ] ) ) return;
 
-			//	Èç¹û²»´æÔÚÊÂ¼ş¶ÔÏó£¬ÄÇ¾Í½¨Á¢Ö®
+			//	å¦‚æœä¸å­˜åœ¨äº‹ä»¶å¯¹è±¡ï¼Œé‚£å°±å»ºç«‹ä¹‹
 			event = event || {};
 			event.type = name;
 
-			//	Ñ­»·Ã¿¸ö¼àÌıÆ÷£¬ÒÀ´ÎÖ´ĞĞÖ®
+			//	å¾ªç¯æ¯ä¸ªç›‘å¬å™¨ï¼Œä¾æ¬¡æ‰§è¡Œä¹‹
 			for ( var i = 0, il = listeners.length; i < il; i++ ) {
 				listeners[ i ].h.call( element, event );
 			}
 		},		
 		/**
-		 * ×èÖ¹ÊÂ¼şµÄ´«µİºÍÄ¬ÈÏĞĞÎª
-		 */
-		stop: function(e) {
-			Event.stopPropagation(e);
-			Event.preventDefault(e);
-		},
-		
-		/**
-		 * ×èÖ¹ÊÂ¼şµÄ´«µİ
-		 */
-		stopPropagation: function(e) {
-			e.cancelBubble = true;
-			if (e.stopPropagation) {
-				e.stopPropagation();
-			}
-		},
-		
-		/**
-		 * ×èÖ¹ÊÂ¼şµÄÄ¬ÈÏĞĞÎª
-		 */
-		preventDefault: function(e) {
-			e.returnValue = false;
-			if (e.preventDefault) {
-				e.preventDefault();
-			}
-		},
-		
-		/**
-		 * »ñÈ¡ÊÂ¼ş·¢ÉúµÄÔ´¶ÔÏó
-		 */
-		element: function(e) {
-			return e.target || e.srcElement;
-		},	
-		/**
-		 * ´æ´¢ËùÓĞÌØÊâÊÂ¼şÀàĞÍµÄ¼àÌıÆ÷Éú³É·½·¨
-		 */
-		_listener: {
-			out: function(element, name, listenerfn) {
-				return function(e) {
-					if (!Event.contains(element,(Event.element(e)))) {
-						listenerfn.call(window, e);
-					}
-				};
-			}
-		},
-		/**
-		 * ÅĞ¶ÏÊÇ·ñ°üº¬Ö¸¶¨µÄ¶ÔÏó
-		 * @param {KolaElement} element ¶ÔÏó
-		 * @return true »òÕß false
+		 * åˆ¤æ–­æ˜¯å¦åŒ…å«æŒ‡å®šçš„å¯¹è±¡
+		 * @param {KolaElement} element å¯¹è±¡
+		 * @return true æˆ–è€… false
 		 * @type boolean
 		 */
 		contains: function(parent,child) {
@@ -220,6 +159,6 @@ kola('kola.bom.Event',
 		}		
 	};
 
-	return Event;
+	return KolaEvent;
 	
 });

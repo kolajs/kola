@@ -4,7 +4,7 @@ function(B){
     var head = document.getElementsByTagName('head')[0];
     return{
         /**
-            生成一块内联css
+            鐢熸垚涓�鍧楀唴鑱攃ss
         */
         createInlineCss:function(text){
             style = document.createElement('style'),
@@ -17,10 +17,10 @@ function(B){
             head.appendChild(style);
         },
         /**
-            页面大小
+            椤甸潰澶у皬
             @return 
-                w:宽度
-                h:高度
+                w:瀹藉害
+                h:楂樺害
         */
         pageSize:function(){
             var pageW=document.documentElement.scrollWidth;
@@ -28,18 +28,18 @@ function(B){
             return {w:pageW,h:pageH};
         },
         /**
-            视图大小
+            瑙嗗浘澶у皬
             @return 
-                w:宽度
-                h:高度
+                w:瀹藉害
+                h:楂樺害
         */
         clientSize:function(){
         },
         /**
-            视图大小
+            瑙嗗浘澶у皬
             @return 
-                w:宽度
-                h:高度
+                w:瀹藉害
+                h:楂樺害
         */
         scroll:function(){
             if(B.isIE){

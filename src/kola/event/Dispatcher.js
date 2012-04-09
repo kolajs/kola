@@ -1,22 +1,22 @@
 /**
- * @fileOverview kola.bom.Dispatcher ÊÂ¼ş·Ö·¢Õß
+ * @fileOverview kola.bom.Dispatcher äº‹ä»¶åˆ†å‘è€…
  * @author Jady Yang
  * @version 2.0.0
  */
 
 
-kola('kola.bom.Dispatcher',
+kola('kola.event.Dispatcher',
 	[':Class',':Type',':Array'],
 function(C,Type,A) {
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 	var Dispatcher=C.create({
 		_init: function() {
 		},
 
 		/**
-		 * ¼àÌıÄ³¸öÊÂ¼ş
-		 * @param {String} name ÊÂ¼şÃû³Æ
-		 * @param {Function} listener ¼àÌıÕß
+		 * ç›‘å¬æŸä¸ªäº‹ä»¶
+		 * @param {String} name äº‹ä»¶åç§°
+		 * @param {Function} listener ç›‘å¬è€…
          * @param {Object} option
 		 */
 		observe: function(name,listener,option) {
@@ -28,9 +28,9 @@ function(C,Type,A) {
 		},
 
 		/**
-		 * È¡Ïû¶ÔÄ³¸öÊÂ¼şµÄ¼àÌı
-		 * @param {String} name ÊÂ¼şÃû³Æ
-		 * @param {Function} listener ¼àÌıÕß
+		 * å–æ¶ˆå¯¹æŸä¸ªäº‹ä»¶çš„ç›‘å¬
+		 * @param {String} name äº‹ä»¶åç§°
+		 * @param {Function} listener ç›‘å¬è€…
 		 */
 		unObserve: function(name, listener) {
             if(!this._obverver || !this._obverver[name])    return;
@@ -47,9 +47,9 @@ function(C,Type,A) {
 		},
 
 		/**
-		 * ´¥·¢Ä³¸öÊÂ¼ş
-		 * @param {String} name ÊÂ¼şÃû³Æ
-		 * @param {Object} e ÊÂ¼ş¶ÔÏó
+		 * è§¦å‘æŸä¸ªäº‹ä»¶
+		 * @param {String} name äº‹ä»¶åç§°
+		 * @param {Object} e äº‹ä»¶å¯¹è±¡
 		 */
 		dispatch: function(e) {
             if(!this._obverver) return;

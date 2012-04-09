@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.lang.Object ObjectÀà
+ * @fileOverview kola.lang.Object Objectç±»
  * @author flyhuang
  * @version 2.0.0
  */
@@ -9,188 +9,155 @@ kola('kola.lang.Object',
 	null, 
 	function() {
 	
-	/********************************************** Àà¶¨Òå **********************************************/
+	/********************************************** ç±»å®šä¹‰ **********************************************/
 	
 	var obj= {
 		
 		/**
-		 * ¶ÔÏóµÄÊôĞÔ¼Ì³Ğ
-		 * @param {deep} ÊÇ·ñĞèÒªÉî¶È¿½±´£¬¿ÉÑ¡Ïî
-		 * @param {target} Ä¿±ê¶ÔÏó
-		 * @param {src} Ô´¶ÔÏó
-		 * @return Ä¿±ê¶ÔÏó
+		 * å¯¹è±¡çš„å±æ€§ç»§æ‰¿
+		 * @param {deep} æ˜¯å¦éœ€è¦æ·±åº¦æ‹·è´ï¼Œå¯é€‰é¡¹
+		 * @param {target} ç›®æ ‡å¯¹è±¡
+		 * @param {src} æºå¯¹è±¡
+		 * @return ç›®æ ‡å¯¹è±¡
 		 * @type Function
 		 */
 		extend: function() {
 
-			var options, name, src, copy, copyIsArray, clone,
-				target = arguments[0] || {},
-				i = 1,
-				length = arguments.length,
-				deep = false;
-		
-			//ÊÇ·ñĞèÒªÉî¶È¸´ÖÆ¶ÔÏó
-			if ( typeof target === "boolean" ) {
-				deep = target;
-				target = arguments[1] || {};
-				i = 2;
-			}
-		
-			if ( typeof target !== "object" && !this.isFunction(target) ) {
-				target = {};
-			}
-		
-			if ( length === i ) {
-				target = {};
-				--i;
-			}
-		
-			for ( ; i < length; i++ ) {
-				if ( (options = arguments[ i ]) != null ) {
-					for ( name in options ) {
-						src = target[ name ];
-						copy = options[ name ];
+                var options, name, src, copy, copyIsArray, clone,
+                    target = arguments[0] || {},
+                    i = 1,
+                    length = arguments.length,
+                    deep = false;
+            
+                //æ˜¯å¦éœ€è¦æ·±åº¦å¤åˆ¶å¯¹è±¡
+                if ( typeof target === "boolean" ) {
+                    deep = target;
+                    target = arguments[1] || {};
+                    i = 2;
+                }
+            
+                if ( typeof target !== "object" && !this.isFunction(target) ) {
+                    target = {};
+                }
+            
+                if ( length === i ) {
+                    target = {};
+                    --i;
+                }
+            
+                for ( ; i < length; i++ ) {
+                    if ( (options = arguments[ i ]) != null ) {
+                        for ( name in options ) {
+                            src = target[ name ];
+                            copy = options[ name ];
 
-						if ( target === copy ) {
-							continue;
-						}
-		
-						if ( deep && copy && ( this.isPlainObject(copy) || (copyIsArray = this.isArray(copy)) ) ) {
-							if ( copyIsArray ) {
-								copyIsArray = false;
-								clone = src && this.isArray(src) ? src : [];
-		
-							} else {
-								clone = src && this.isPlainObject(src) ? src : {};
-							}
-							target[ name ] = this.extend( deep, clone, copy );
-						} else if ( copy !== undefined ) {
-							target[ name ] = copy;
-						}
-					}
-				}
-			}
-		
-			return target;
-    },
+                            if ( target === copy ) {
+                                continue;
+                            }
+            
+                            if ( deep && copy && ( this.isPlainObject(copy) || (copyIsArray = this.isArray(copy)) ) ) {
+                                if ( copyIsArray ) {
+                                    copyIsArray = false;
+                                    clone = src && this.isArray(src) ? src : [];
+            
+                                } else {
+                                    clone = src && this.isPlainObject(src) ? src : {};
+                                }
+                                target[ name ] = this.extend( deep, clone, copy );
+                            } else if ( copy !== undefined ) {
+                                target[ name ] = copy;
+                            }
+                        }
+                    }
+                }
+            
+                return target;
+        },
 		/**
-		 * ¶ÔÏóµÄÊôĞÔ¿½±´
-		 * @param {obj} Ä¿±ê¶ÔÏó
-		 * @param {options} Ô´¶ÔÏó
-		 * @return Ä¿±ê¶ÔÏó
+		 * å¯¹è±¡çš„å±æ€§æ‹·è´
+		 * @param {obj} ç›®æ ‡å¯¹è±¡
+		 * @param {options} æºå¯¹è±¡
+		 * @return ç›®æ ‡å¯¹è±¡
 		 * @type object
 		 */
-    clone: function(obj) {
-      var n = {};  
-      for (var it in obj) {
-        n[it] = obj[it];
-      }
-			return n;
-		},
-		/**
-		 * ¶ÔÏóµÄµü´ú´¦Àí
-		 * @param {obj} Ä¿±ê¶ÔÏó
-		 * @param {options} Ô´¶ÔÏó
-		 * @return Ä¿±ê¶ÔÏó
-		 * @type object
-		 */
-		each : function(object, callback, args) {
-			var name, i = 0,
-			length = object.length,
-			isObj = length === undefined || this.isFunction(object);
+        clone: function(obj) {
+            var n = {};  
+            for (var it in obj) {
+                n[it] = obj[it];
+            }
+            return n;
+        },
+        /**
+         * å¯¹è±¡çš„è¿­ä»£å¤„ç†
+         * @param {obj} ç›®æ ‡å¯¹è±¡
+         * @param {options} æºå¯¹è±¡
+         * @return ç›®æ ‡å¯¹è±¡
+         * @type object
+         */
+        each : function(object, callback, args) {
+            var name, i = 0,
+            length = object.length,
+            isObj = length === undefined || this.isFunction(object);
 
-			if ( args ) {
-				if ( isObj ) {
-					for ( name in object ) {
-						if ( callback.apply( object[ name ], args ) === false ) {
-							break;
-						}
-					}
-				} else {
-					for ( ; i < length; ) {
-						if ( callback.apply( object[ i++ ], args ) === false ) {
-							break;
-						}
-					}
-				}
-			} else {
-				if ( isObj ) {
-					for ( name in object ) {
-						if ( callback.call( object[ name ], name, object[ name ] ) === false ) {
-							break;
-						}
-					}
-				} else {
-					for ( var value = object[0];
-						i < length && callback.call( value, i, value ) !== false; value = object[++i] ) {}
-				}
-			}
-	
-			return object;
-    },
-    /*
-     *@brief ÅĞ¶ÏÊÇ·ñfunction
-     */
-    isFunction: function( obj ) {
-			return this.type(obj) === "function";
-		},
-		/*
-     *@brief ÅĞ¶ÏÊÇ·ñfunction
-     */
-		type: function( obj ) {
-			return obj == null ?
-				String( obj ) :
-				class2type[ this.toString.call(obj) ] || "object";
-		},
-		/*
-		 *@brief ÅĞ¶Ï¶ÔÏóÊÇ·ñÊÇÊı×é
-		 */
-		isArray: Array.isArray || function( obj ) {
-			return this.type(obj) === "array";
-		},
-		/*
-		 *@brief ÅĞ¶Ï¶ÔÏóÊÇ·ñÊÇÊı×é
-		 */
-		isArray: Array.isArray || function( obj ) {
-			return this.type(obj) === "array";
-		},
-		/*
-		 *@brief ÅĞ¶ÏÊÇ·ñÊÇÒ»¸öÔ­Éú¶ÔÏó¶ø²»ÊÇÓÉ¹¹Ôìº¯ÊıÅÉÉúµÄ¶ÔÏó
-		 */
-		isPlainObject: function( obj ) {
-			if ( !obj || this.type(obj) !== "object" || obj.nodeType || this.isWindow( obj ) ) {
-				return false;
-			}
+            if ( args ) {
+                if ( isObj ) {
+                    for ( name in object ) {
+                        if ( callback.apply( object[ name ], args ) === false ) {
+                            break;
+                        }
+                    }
+                } else {
+                    for ( ; i < length; ) {
+                        if ( callback.apply( object[ i++ ], args ) === false ) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                if ( isObj ) {
+                    for ( name in object ) {
+                        if ( callback.call( object[ name ], name, object[ name ] ) === false ) {
+                            break;
+                        }
+                    }
+                } else {
+                    for ( var value = object[0];
+                        i < length && callback.call( value, i, value ) !== false; value = object[++i] ) {}
+                }
+            }
 
-			if ( obj.constructor &&
-				!this.hasOwn.call(obj, "constructor") &&
-				!this.hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
-				return false;
-			}
-	
-			var key;
-			for ( key in obj ) {}
-	
-			return key === undefined || this.hasOwn.call( obj, key );
-		},		
-		//ÅĞ¶ÏÊÇ·ñwindow¶ÔÏó
-		isWindow: function( obj ) {
-			return obj && typeof obj === "object" && "setInterval" in obj;
-		},
-		/*
-		 *@brief »º´æÔ­Éú¶ÔÏó
-		 */
-		toString :Object.prototype.toString,
-		hasOwn : Object.prototype.hasOwnProperty
-		
-	};
-	
-	var class2type={};
-	
-	//³õÊ¼»¯map
-	obj.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
-		class2type[ "[object " + name + "]" ] = name.toLowerCase();
-	});
+            return object;
+            },
+        /*
+         *@brief åˆ¤æ–­æ˜¯å¦æ˜¯ä¸€ä¸ªåŸç”Ÿå¯¹è±¡è€Œä¸æ˜¯ç”±æ„é€ å‡½æ•°æ´¾ç”Ÿçš„å¯¹è±¡
+         */
+        isPlainObject: function( obj ) {
+            if ( !obj || this.type(obj) !== "object" || obj.nodeType || this.isWindow( obj ) ) {
+                return false;
+            }
+
+            if ( obj.constructor &&
+                !this.hasOwn.call(obj, "constructor") &&
+                !this.hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+                return false;
+            }
+
+            var key;
+            for ( key in obj ) {}
+
+            return key === undefined || this.hasOwn.call( obj, key );
+        },		
+        //åˆ¤æ–­æ˜¯å¦windowå¯¹è±¡
+        isWindow: function( obj ) {
+            return obj && typeof obj === "object" && "setInterval" in obj;
+        },
+        /*
+         *@brief ç¼“å­˜åŸç”Ÿå¯¹è±¡
+         */
+        toString :Object.prototype.toString,
+        hasOwn : Object.prototype.hasOwnProperty
+        
+    };
 	
 	return obj;
 	
