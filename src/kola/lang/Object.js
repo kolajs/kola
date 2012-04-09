@@ -154,6 +154,6 @@ kola('kola.lang.Object',
         
     };
 	
-	return obj;
+	return exports;
 
 });

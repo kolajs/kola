@@ -5,7 +5,7 @@
 
 
 kola('kola.bom.Event', 
-	[":Class",":Browser"],
+	["kola.lang.Class","kola.bom.Browser"],
 function(C,B) {
 
     /**
@@ -30,6 +30,7 @@ function(C,B) {
             stopPropagation:Event.prototype.stopPropagation
         });
     }
+    var willLeak;
 	var KolaEvent = {
 		
 		/**
@@ -474,6 +475,6 @@ function(C,B) {
 		} )();
 	}
 
-	return Event;
+	return KolaEvent;
 	
 });

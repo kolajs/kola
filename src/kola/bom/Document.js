@@ -1,5 +1,5 @@
 kola("kola.bom.Document",
-    [":Browser"],
+    ["kola.bom.Browser"],
 function(B){
     var head = document.getElementsByTagName('head')[0];
     return{

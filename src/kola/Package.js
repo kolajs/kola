@@ -1023,29 +1023,7 @@
 	};
 
 	kola.Package = Package;
-    
-    kola.Package = Package;
-    Package.addNS({
-        "Object"    :"kola.lang.Object",
-        "Function"  :"kola.lang.Function",
-        "Type"      :"kola.lang.Type",
-        "String"    :"kola.lang.String",
-        "Class"     :"kola.lang.Class",
-        "Array"     :"kola.lang.Array",
-        
-        "Event"     :"kola.bom.Event",
-        "Cookie"    :"kola.bom.Cookie",
-        "Browser"   :"kola.bom.Browser",
-        "Document"  :"kola.bom.Document",
-        
-        "Dispatcher":"kola.event.Dispatcher",
-        
-        "Selector"  :"kola.css.Selector",
-        
-        "Element"   :"kola.html.Element",
-        
-        "Ajax"      :"kola.net.Ajax"
-    });
+
 	//  如果kola替身已经收集到了要执行的方法，那就处理之
 	if ( cache && typeof( cache.length ) == 'number' && cache.length > 0 ) {
 

@@ -6,7 +6,7 @@
 
 
 kola('kola.event.Dispatcher',
-	[':Class',':Type',':Array'],
+	['kola.lang.Class','kola.lang.Type','kola.lang.Array'],
 function(C,Type,A) {
 	/********************************************** 类定义 **********************************************/
 	var Dispatcher=C.create({
