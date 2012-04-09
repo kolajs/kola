@@ -801,25 +801,33 @@ kola('kola.css.Selector',
 					type = match[2],
 					check = match[4];
 
+				/**
+				 * 杰华@2011-7-14
+				 * 下边这段代码，是解决ie下不能识别 *[ATTR]选择器的问题，貌似没有针对 [ATTR]进行判断和处理
+				 */
+				if ( ( typeof type == 'undefined' || type == "" ) && result !== null ) {
+					return true;
+				}
+
 				return result == null ?
 					type === "!=" :
 					type === "=" ?
-					value === check :
-					type === "*=" ?
-					value.indexOf(check) >= 0 :
-					type === "~=" ?
-					(" " + value + " ").indexOf(check) >= 0 :
-					!check ?
-					value && result !== false :
-					type === "!=" ?
-					value !== check :
-					type === "^=" ?
-					value.indexOf(check) === 0 :
-					type === "$=" ?
-					value.substr(value.length - check.length) === check :
-					type === "|=" ?
-					value === check || value.substr(0, check.length + 1) === check + "-" :
-					false;
+						value === check :
+						type === "*=" ?
+							value.indexOf(check) >= 0 :
+							type === "~=" ?
+								(" " + value + " ").indexOf(check) >= 0 :
+								!check ?
+									value && result !== false :
+									type === "!=" ?
+										value !== check :
+										type === "^=" ?
+											value.indexOf(check) === 0 :
+											type === "$=" ?
+												value.substr(value.length - check.length) === check :
+												type === "|=" ?
+													value === check || value.substr(0, check.length + 1) === check + "-" :
+													false;
 			},
 
 			POS: function( elem, match, i, array ) {

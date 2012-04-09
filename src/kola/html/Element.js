@@ -9,7 +9,7 @@
 kola('kola.html.Element', 
 	['kola.lang.Object','kola.html.ElementCore','kola.html.Event','kola.html.Properties','kola.html.Content','kola.html.Display','kola.html.Traveller'],
 function(O,Core,FunEvent,FunProp,FunContent,FunDisp,FunTravel) {
-	/**********************************************组装Element*********************************************/
+
     O.extend(Core.prototype,FunEvent,FunProp,FunContent,FunDisp,FunTravel);
 	/********************************************** 插件配置 **********************************************/
 
@@ -17,7 +17,6 @@ function(O,Core,FunEvent,FunProp,FunContent,FunDisp,FunTravel) {
 		type: 'Class'
 	};
 	
-	/********************************************** 返回类 **********************************************/
 	//debug only
     window.K=Core
 	return Core;

@@ -11,7 +11,7 @@ kola('kola.lang.Function',
 	
 	/********************************************** 类定义 **********************************************/
 	
-	var func= {
+	return {
 		
 		/**
 		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前
@@ -38,7 +38,6 @@ kola('kola.lang.Function',
 		},
 		
 		/**
-		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之后
 		 * @param {Function} callbackfn 被绑定的方法
 		 * @param {ANY} thisArg 方法执行时的this
 		 * @param {ANY} arg1 要绑定的参数1
@@ -47,16 +46,17 @@ kola('kola.lang.Function',
 		 * @return 绑定过之后的新方法
 		 * @type Function
 		 */
-		bindAfter: function(callbackfn, thisArg) {
+		bindEvent: function(callbackfn, thisArg) {
 			var args = [];
 			for (var i = 2, il = arguments.length; i < il; i ++) {
 				args.push(arguments[i]); 
 			}
 			return function() {
 				var newArgs = args.concat();
-				for (var i = arguments.length - 1; i >= 0; i --) {
+				for (var i = arguments.length - 1; i > 0; i --) {
 					newArgs.unshift(arguments[i]);
 				}
+				newArgs.unshift( arguments.length > 0 ? ( arguments[0] || window.event ) : window.event );
 				return callbackfn.apply(thisArg, newArgs);
 			};
 		},
@@ -76,7 +76,5 @@ kola('kola.lang.Function',
 			};
 		}
 	};
-	
-	return func;
 	
 });

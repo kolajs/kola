@@ -5,8 +5,8 @@
  */
 
 kola('kola.lang.Class',
-	null,
-	function() {
+	['kola.lang.Function'],
+	function(KolaFunction) {
 
 	/********************************************** 类定义 **********************************************/
 
@@ -52,7 +52,9 @@ kola('kola.lang.Class',
 						this.constructor = SubClass;
 						this.__I = 1;
 						//	这是类方式
+                        
 						this._init.apply( this, arguments );
+
 						this.__I = 4;
 					}
 				};
@@ -60,7 +62,11 @@ kola('kola.lang.Class',
 				//	创建新类的方法
 				SubClass = function() {
 					this.constructor = SubClass;
-					this._init.apply(this, arguments);
+					if (!this._init) {
+						this._init = KolaFunction.empty;
+					} else {
+						this._init.apply( this, arguments );
+					}
 				};
 			}
 			
@@ -89,12 +95,14 @@ kola('kola.lang.Class',
 			agencyInstance.__I = 0;
 
 			SubClass.prototype = agencyInstance;		//	设置新类的原型
+
             // 拷贝类的静态方法（只有被记录在案的）
             if(SuperClass && SuperClass.__GENE){
                 for(var i=0,il=SuperClass.__GENE.length;i<il;i++){
                     SubClass[SuperClass.__GENE[i]]=SuperClass[SuperClass.__GENE[i]]
                 }
             }
+
 			return SubClass;
 		},
 

@@ -1,17 +1,12 @@
 /**
- * @fileOverview kola.lang.Object Object类
- * @author flyhuang
- * @version 2.0.0
+ * @fileOverview kola.lang.Object类
+ * @author Jady Yang
  */
-
 
 kola('kola.lang.Object', 
 	null, 
 	function() {
-	
-	/********************************************** 类定义 **********************************************/
-	
-	var obj= {
+	var exports = {
 		
 		/**
 		 * 对象的属性继承
@@ -160,5 +155,5 @@ kola('kola.lang.Object',
     };
 	
 	return obj;
-	
+
 });

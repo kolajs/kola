@@ -10,48 +10,95 @@ kola('kola.net.Ajax',
 	function(Function) {
 	/********************************************** 类定义 **********************************************/
 
+	/**
+	 * request的mock替代方法
+	 * @param url
+	 * @param options
+	 */
+	var requestMock = function( url, options ) {
+
+		setTimeout( function() {
+			Ajax._onStateChange( options.mock( url, options ), url, options);
+		}, 0 );
+
+		return {};
+	};
+
+	/**
+	 * Ajax类
+	 */
 	var Ajax = {
-        post:function(url,options){
-            options.method="post";
-            Ajax.request(url,options);
-        },
-        get:function(url,options){
-            options.method="get";
-            Ajax.request(url,options);
-        },
-		request: function(url, options){
 
-            var trans = getTransport();
+		request: function(url, options) {
 
+			//	有默认的设置
 			var opt = {
                 method: 'get',
-                async: true,
-                format: "json"
+                async: true
             };
+
+			//	增加调用者的配置
 			for (var it in (options = options || {})) {
 				opt[it] = options[it];
 			}
-            if (!opt.method) opt.method = 'get';
+			var method = opt.method,
+				data = opt.data;
 
-            if (opt.method == 'get' && typeof(opt.data) == 'string') {
-                url += (url.indexOf('?') == -1 ? '?' : '&') + opt.data;
-                opt.data = null;
+			//	设置默认method
+            if ( !method ) {
+				method = opt.method = 'get';
+			}
+
+			//	如果method只能通过url传递参数，那就放到url上
+			if ( ( method == 'get' || method == 'delete' ) && typeof(data) == 'string' ) {
+                url += (url.indexOf('?') == -1 ? '?' : '&') + data;
+                data = null;
             }
 
-            trans.open(opt.method, url, opt.async);
+			if ( opt.mock ) {
+				return requestMock( url, opt );
+			}
 
-            if (opt.method == 'post') {
+			//	获取原生Ajax
+			var trans = getTransport();
+
+			//	打开Ajax
+            trans.open(method, url, opt.async);
+
+			//	如果是post或者put，那就设置内容编码类型
+            if ( method == 'post' || method == 'put' ) {
                 trans.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
             }
 
+			//	设置ajax的跟踪事件
             trans.onreadystatechange = Function.bind(this._onStateChange, this, trans, url, opt);
-            trans.send(opt.data || null);
+
+			//	发送数据
+            trans.send(data || null);
+
             return trans;
         },
+
+        text: function(url, options) {
+            options.format = 'text';
+            return this.request(url, options);
+        },
+
+        json: function(url, options) {
+            options.format = 'json';
+            return this.request(url, options);
+        },
+
+        xml: function(url, options) {
+            options.format = 'xml';
+            return this.request(url, options);
+        },
+
         _onStateChange: function(trans, url, options) {
             if (trans.readyState == 4) {
                 trans.onreadystatechange = function() {};
                 var s = trans.status;
+
                 if ((typeof(s) == 'number') && s >= 200 && s < 300) {
                     if (typeof(options.succ) != 'function') return;
 
@@ -76,7 +123,8 @@ kola('kola.net.Ajax',
                     if (typeof(options.fail) == 'function') {
                         var error = {
                             status: trans.status,
-                            statusText: trans.statusText
+                            statusText: trans.statusText,
+							data:trans.responseText
                         }
                         //	判断是否是网络断线或者根本就请求不到服务器
                         if (trans.readyState == 4 && (trans.status == 0 || trans.status == 12030)) {
@@ -92,6 +140,9 @@ kola('kola.net.Ajax',
 
 	/********************************************** 私有方法 **********************************************/
 
+	/**
+	 * 获取原生的Ajax
+	 */
     var getTransport = function() {
         if (window.XMLHttpRequest) return new XMLHttpRequest();
         else {

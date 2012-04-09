@@ -5,21 +5,17 @@
  */
 
 
-kola('kola.lang.String', 
-	null, 
-	function() {
-	
-	/********************************************** 类定义 **********************************************/
-	
-	var String = {
+kola('kola.lang.String', null, function() {
+
+	return {
 		
 		/**
 		 * 去除掉字符串左右两侧的空格
 		 * @type Function
 		 */
 		trim: function(string) {
-			var reg = /^\s|\s$/g;
-			return string.replace(reg,'');
+			var reg = /^\s|\s$/mg;
+			return string.replace(reg, '');
 		},
 		/**
 		 * 格式化字符串
@@ -96,7 +92,5 @@ kola('kola.lang.String',
 		}
 		
 	};
-
-	return String;
 	
 });

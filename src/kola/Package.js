@@ -461,7 +461,7 @@
 		_contentMap: {},
 		_requiresMap: {},
 		_pathStatus: null,		//	路径的状态信息
-        nameSpace:{},
+
 		/**
 		 * 请求包，然后执行回调
 		 * @param {Array} packages 需要加载的包列表
@@ -641,26 +641,7 @@
 			//	TODO: 这里应该是增量累加（相同覆盖）配置，现在先简单化处理
 			this._config = options;
 		},
-        addNS:function(ns,content){
-            if(typeof content=="undefined"){content=ns;ns="kola"}
-            this.nameSpace[ns]=content;
-        },
-        normalize:function(org){
-            var arr=toArray(org);
-            if(!arr) return arr;
-            for(var i=0;i<arr.length;i++){
-                var cut=arr[i].indexOf(":")
-                if(cut!=-1){
-                    var ns=arr[i].substring(0,cut);
-                    var name=arr[i].substring(cut+1);
-                    if(ns.length==0) ns="kola";
-                    arr[i]=this.nameSpace[ns][name];
-                    if(!arr[i])
-                        debugger;
-                }
-            }
-            return arr;
-        },
+
 		/**
 		 * 获取某个包所在的文件路径地址
 		 * @param {String} name 包名
@@ -962,7 +943,7 @@
 
 		if (ct == 'function') {
 			//	这是要注册一个包
-			Package.register(a, Package.normalize(b), c);
+			Package.register(a, toArray(b), c);
 		} else {
 			//	这是要执行一段代码
 
@@ -1029,7 +1010,7 @@
 			callback = waitLoaded(callback, options && options.feedback);
 			
 			//	拿到依赖包的数据，并转成符合的类型
-			requires = Package.normalize(requires);
+			requires = toArray(requires);
 			
 			//	根据是否存在依赖信息，进行不同的处理
 			if (requires == null) {

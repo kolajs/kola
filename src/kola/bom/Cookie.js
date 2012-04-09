@@ -17,17 +17,17 @@ kola('kola.bom.Cookie',null,function() {
             return null;
         },
 
-/**
-* @function
-* @description 设置cookie
-* @param name cookie name.
-* @param value cookie value, 会自动 escape 然后存储.
-* @param expires 失效时间，默认为浏览器session有效.为Date对象
-* @param path cookie 存于何 path 下，默认值为种下cookie时的路径.
-* @param domain cookie 存于何 domain 下，默认为当前域.
-*
-* @return
-*/
+        /**
+        * @function
+        * @description 设置cookie
+        * @param name cookie name.
+        * @param value cookie value, 会自动 escape 然后存储.
+        * @param expires 失效时间，默认为浏览器session有效.为Date对象
+        * @param path cookie 存于何 path 下，默认值为种下cookie时的路径.
+        * @param domain cookie 存于何 domain 下，默认为当前域.
+        *
+        * @return
+        */
         set: function(name, value, expires, path, domain) {
             var str = name + "=" + escape(value);
             if (expires) {
