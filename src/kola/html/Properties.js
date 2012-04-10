@@ -87,7 +87,9 @@ function(KElement,Browser){
 		 * @param {ANY} value 属性值
 		 * @return 当前的Element对象
 		 * @type kola.html.Element
+           @warning 在ie67下设置可能会导致内存泄露
 		 */
+         
 		prop: function(name, value) {
 			if (typeof(value) == 'undefined') {
 				//	获取属性值

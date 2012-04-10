@@ -1,7 +1,22 @@
 kola('kola.html.Traveller', 
 	['kola.lang.Object','kola.html.ElementCore','kola.lang.Array','kola.lang.Type','kola.css.Selector'],
 function(O,KElement,A,Type,Selector){
-    var Traveller={};
+    var Traveller={
+        /*
+            TODO:
+                add()
+                remove()
+                first()
+                last()
+                index()
+        */
+        filter:function(selector){
+            return new KElement(Selector(selector,this._elements));
+        },
+        is:function(){
+            return new Selector(selector,[this[0]]).length!=0;
+        }
+    };
     var SingleTraveller={
         /**
             得到父元素
@@ -19,8 +34,14 @@ function(O,KElement,A,Type,Selector){
             }
             return Selector(selector,nodes);
         },
+        /**
+            元素及其祖先元素中最靠近当前元素的符合条件的元素
+        */
         closest:function(element,selector){
-            
+            while ((element = element.parentNode) && (element.nodeType == 1)) {
+                if(Selector(selector,[element]).length==1)
+                    return element;
+            }
         },
         /**
             得到符合selector的子元素

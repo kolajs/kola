@@ -1,6 +1,6 @@
 kola('kola.html.Content', 
-	['kola.html.ElementCore','kola.lang.Array','kola.bom.Browser'],
-function(KElement,A,Browser){
+	['kola.html.ElementCore','kola.lang.Array','kola.lang.Function','kola.bom.Browser','kola.bom.Event'],
+function(KElement,A,F,Browser,KEvent){
     var Content={
 		/**
 		 * 获取节点中的html
@@ -281,7 +281,7 @@ function(KElement,A,Browser){
 	 */
 	var innerHtml = function(el, value) {
 		//	先解除旗下所有节点的事件，避免内存泄露
-		clearChildsEvents( el );
+		purgeChildren( el );
 		
 		//	这里主要对table,select进行特殊处理，还有其他元素待处理
 		var translations = {
@@ -312,7 +312,7 @@ function(KElement,A,Browser){
 			}
 
 			//	如果是ie9以前的版本，并且设置的是select，那就默认聚焦到第一个。这主要是解决ie9之前的版本都是默认设置到最后一个，而别的浏览器级版本都是聚焦到第一个
-			if ( tagName == 'select' && Browser.render() == 'ie' && Browser.renderVersion() < 10 ) {
+			if ( tagName == 'select' && Browser.isIEStyle ) {
 				el.selectedIndex = 0;
 			}
 		} else {
@@ -321,52 +321,27 @@ function(KElement,A,Browser){
 
 		return el.childNodes;
 	};
-	/* ---------------------- 跟踪页面销毁事件，用于避免内存泄露 ---------------------*/
-	
+    
 	/**
-	 * 移除某个节点的所有事件，并循环调用所有子节点，依次调用之
+	 * 移除某个节点所有子孙节点对js的引用，避免内存泄露
 	 */
-	var clearEvent = function( node, notThis ) {
-		
-		//	如果本对象存在事件
-		if ( !notThis ) {
-			Event.un( node );
-		}
-		
-		//	获得所有子节点，依次判断之
-		var nodes = node.children,
-			count;
-		if ( nodes && ( count = nodes.length ) > 0 ) {
-			for ( var i = count - 1; i >= 0; i-- ) {
-				clearEvent( nodes[ i ] );
-			}
-		}
-	};
-	
-	/**
-	 * 移除某个节点所有子孙节点的事件监听
-	 */
-	var clearChildsEvents = function( element, includeThis ) {
-		//	非IE或者是IE8及其以上版本，才需要移除所有事件
-		if ( !window.ActiveXObject || window.XDomainRequest ) {
-			clearChildsEvents = F.empty;
-			return;
-		}
-		
-		if ( includeThis ) {
-			Event.un( element );
-		}
-		
-		//	如果支持document.all属性
-		var nodes = element.all,
-			count;
-		if ( nodes && ( count = nodes.length ) > 0 ) {
-			for ( var i = count - 1; i >= 0; i-- ) {
-				Event.un( nodes[ i ] );
-			}
-		} else {
-			clearEvent( element, true );
-		}
-	};
+    if(!window.ActiveXObject || window.XDomainRequest){//IE6,7需要移除所有事件
+        var purgeChildren = F.empty;
+    }else{
+        var purgeChildren = function( element ) {
+            var nodes = element.all,count;
+            for ( var i = nodes.length - 1; i >= 0; i-- ) {
+                KEvent.un( nodes[ i ] );
+                node[ElementCore.expando]=null;
+            }
+        };
+        /**
+         * 如果会引起内存泄露，那就跟踪unload事件，处理这些
+         */
+
+        KEvent.on( window, 'unload', function() {
+            purgeChildren(document);
+        });
+    }
     return Content;
 });

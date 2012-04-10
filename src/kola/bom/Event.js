@@ -1,42 +1,120 @@
 /**
  * @fileOverview kola.bom.Event 事件支持类
  * @author Jady Yang
+ * @version 2.0.0
+ * @fix scope bug 2011-03-30 by flyhuang
  */
 
 
 kola('kola.bom.Event', 
-	["kola.lang.Class","kola.bom.Browser"],
-function(C,B) {
-
+	[ 'kola.lang.Function', 'kola.lang.Array' ,'kola.bom.Browser','kola.lang.Class'],
+	function( KolaFunction, KolaArray ,B,C) {
+	
+	/********************************************** 类定义 **********************************************/
     /**
-    kola事件对象
-    
-    preventDefault  阻止默认事件
-    stopPropagation 阻止冒泡
+        kola事件对象
+        
+        target
+        relatedTarget
+        currentTarget
+        preventDefault
+        stopPropagation
+        
+        keyCode
+        
+        stop
     */
     function DomEvent(e){
         this.event=e;
-        this.target=e.srcElement;
+        if(B.isIEStyle){
+            this.target=e.srcElement;
+            this.relatedTarget = ( e.fromElement == e.srcElement ? e.toElement : e.fromElement );
+            if(e.button==1)
+                this.button=0;
+            if(e.button==4)
+                this.button=1;
+            if(e.button==2)
+                this.button=2;
+        }else{
+            this.target=e.target;
+            this.button=e.button;
+            this.relatedTarget = e.relatedTarget;
+        }
         this.keyCode=e.keyCode;
+        //TODO copy params
+     }
+     if(B.isIEStyle){
+         C.buildProto(DomEvent,{
+             preventDefault:function(){this.event.returnValue=false;},
+             stopPropagation:function(){this.event.cancelBubble=true;},
+         });
+     }else{
+         C.buildProto(DomEvent,{
+             preventDefault:Event.prototype.preventDefault,
+             stopPropagation:Event.prototype.stopPropagation
+         });
+     }
+     DomEvent.prototype.stop=function(){
+        this.preventDefault();
+        this.stopPropagation();
+     }
+	/**
+	 *
+	 * @param element
+	 * @param name
+	 * @param listenerfn
+	 */
+	var eventAgent = function( listenerfn, option, e ) {
+		if ( B.isIEStyle ) {
+            e= new DomEvent(window.event);
+			e.currentTarget = this;
+		}else{
+            e= new DomEvent(e);
+        }
+		listenerfn.call( option.scope||this, e );
+	};
+    //light bind
+    function eventBind(callbackfn,scope,listenerfn,option) {
+        return function(e) {
+            return callbackfn.call(scope,listenerfn,option,e);
+        };
     }
-    if(C.isIE678){
-        C.buildProto(DomEvent,{
-            preventDefault:function(){this.event.returnValue=false;},
-            stopPropagation:function(){this.event.cancelBubble=true;}
-        });
-    }else{
-        C.buildProto(DomEvent,{
-            preventDefault:Event.prototype.preventDefault,
-            stopPropagation:Event.prototype.stopPropagation
-        });
-    }
-    var willLeak;
-	var KolaEvent = {
-		
+	/**
+	 * 删除指定的事件
+	 */
+	var remove = function( element, name, listenerfn, obj ) {
+		//	删除listener
+		if ( element.removeEventListener ) {
+			element.removeEventListener( name, listenerfn, false );
+		} else {
+			//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
+			if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
+				CheckboxChange.un( element, obj );
+			} else {
+				element.detachEvent( 'on' + name, listenerfn );
+			}
+		}
+	};
+	
+	/**
+	 * 是否会引起内存泄露，主要是针对小于IE8的IE版本
+	 */
+	var willLeak = window.ActiveXObject && !window.XDomainRequest;
+	
+	/**
+	 * 常见的inline事件
+	 */
+	var inlineEvents = [
+		'onclick', 'ondblclick', 'onmouseover', 'onmouseout', 'onmouseup', 'onmousedown',
+		'onblur', 'onfocus', 'onchange', 'onsubmit'
+	];
+
+	var KEvent = {
+        
 		/**
 		 * 监听一个事件
 		 */
-		on: function(element, name, listenerfn ) {
+		on: function(element, name, listenerfn, option) {
 			if ( !element || !name || !listenerfn ) return this;
 			
 			//	如果是IE7下触发unload事件，那就直接设置方法
@@ -60,38 +138,33 @@ function(C,B) {
 			var obj;
 
 			//	如果是采用attachEvent方法监听事件，那就进行一些特殊处理
-			if ( !element.addEventListener ) {
+			if ( B.isIEStyle ) {
 				//	某一个方法只能监听某一个对象的某一个事件一次。主要是解决ie9之前的ie，同一方法可以监听同一对象的同一事件，多次的问题
 				for ( var i = eventType.length - 1; i >= 0; i-- ) {
 					if ( eventType[ i ].l == listenerfn ) {
 						return this;
 					}
 				}
-
-				//	建立替代方法，主要是设定作用域
-				obj = {
-					l: listenerfn,
-					h: KolaFunction.bind( ieCallbackfn, element, listenerfn )
-				};
-				listenerfn = obj.h;
-			} else {
-				obj = {
-					h: listenerfn
-				};
-			}
+            }
+            
+            //	建立替代方法，主要是设定作用域
+            obj = {
+                l: listenerfn,
+                h: eventBind(eventAgent, element, listenerfn, option||{})
+            };
 
 			//	缓存事件处理方法
 			eventType.push( obj );
 					
 			//	绑定事件
-			if ( element.addEventListener ) {
-				element.addEventListener( name, listenerfn, false );
+			if ( !B.isIEStyle ) {
+				element.addEventListener( name, obj.h, false );
 			} else {
 				//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 				if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
-					CheckboxChange.on( element, listenerfn, obj );
+					CheckboxChange.on( element, obj.h, obj );
 				} else {
-					element.attachEvent( 'on' + name, listenerfn );
+					element.attachEvent( 'on' + name, obj.h );
 				}
 			}
 					
@@ -115,7 +188,7 @@ function(C,B) {
 				for ( var key in events ) {
 					if ( key == 'out' ) {
 						//	如果是out事件，那就删除所有out事件
-						Event.unout( element );
+						KEvent.unout( element );
 					} else {
 						listeners = events[ key ];
 						if ( typeof listeners != 'object' || ( listeners == null ) || !listeners.length ) continue;
@@ -127,25 +200,7 @@ function(C,B) {
 						}
 					}
 				}
-
-				var eventType=events[name];			
-				if(!eventType) return;	
-			
-				for(var i=0,len=eventType.length;i<len;i++){
-					KolaEvent._remove(element, name, eventType[i].handler , true);
-				}			
-				delete events[name];
-			}		
-			return this;
-		},
-		
-		/**
-		 * 删除指定的事件
-		 */
-		_remove:function(element, name, listenerfn){
-			//	删除listener
-			if (element.removeEventListener) {
-				element.removeEventListener(name, listenerfn, false);
+				
 				//	删除常见的inline事件
 				for ( var j = inlineEvents.length - 1; j >= 0; j-- ) {
 					element[ inlineEvents[ i ] ] = null;
@@ -177,7 +232,6 @@ function(C,B) {
 		
 				} else {
 					//	删除所有监听事件
-	
 					for( var i = 0, il = listeners.length; i < il; i++ ) {
 						remove( element, name, listeners[i].h, listeners[i] );
 					}
@@ -187,12 +241,13 @@ function(C,B) {
 				}		
 				return this;
 			}
-		},		
+		},
+		
 		/**
 		 * 监听发生在外部的某个事件
 		 */
 		onout: function(element, name, listenerfn) {
-			var f = Event._listener.out(element, name, listenerfn),
+			var f = KEvent._listener.out(element, name, listenerfn),
 				kolaEvent = element.__events;
 			if ( !kolaEvent ) {
 				kolaEvent = element.__events = {
@@ -203,7 +258,7 @@ function(C,B) {
 			}
 			
 			kolaEvent.out.push({n: name, l: listenerfn, f: f});
-			Event.on(document.body, name, f);
+			KEvent.on(document.body, name, f);
 			
 			return this;
 		},
@@ -219,7 +274,7 @@ function(C,B) {
 					for (var i = 0, il = events.length; i < il; i++) {
 						var event = events[i];
 						if (event.n === name && event.l === listenerfn) {
-							Event.un(document.body, name, event.f);
+							KEvent.un(document.body, name, event.f);
 							events.splice(i, 1);
 							break;
 						}
@@ -231,7 +286,7 @@ function(C,B) {
 						
 						for( var i = 0, il = events.length; i < il; i++ ) {
 							var event = events[i];
-							Event.un(document.body, event.n, event.f);
+							KEvent.un(document.body, event.n, event.f);
 						}
 		
 						//	删除缓存
@@ -266,66 +321,6 @@ function(C,B) {
 			}
 		},
 		
-		/**
-		 * 阻止事件的传递和默认行为
-		 */
-		stop: function(e) {
-			Event.stopPropagation(e);
-			Event.preventDefault(e);
-		},
-		
-		/**
-		 * 阻止事件的传递
-		 */
-		stopPropagation: function(e) {
-			e.cancelBubble = true;
-			if (e.stopPropagation) {
-				e.stopPropagation();
-			}
-		},
-		
-		/**
-		 * 阻止事件的默认行为
-		 */
-		preventDefault: function(e) {
-			e.returnValue = false;
-			if (e.preventDefault) {
-				e.preventDefault();
-			}
-		},
-		
-		/**
-		 * 获取事件发生的源对象
-		 */
-		element: function(e) {
-			return e.target || e.srcElement;
-		},
-
-		/**
-		 * 获取触发事件的源对象
-		 * @param e
-		 */
-		target: function( e ) {
-			return e.target || e.srcElement;
-		},
-
-		/**
-		 * 获取触发事件的相关对象，主要用在鼠标事件中
-		 * @param e
-		 */
-		relatedTarget: function( e ) {
-			return e.relatedTarget || ( e.fromElement == e.srcElement ? e.toElement : e.fromElement );
-		},
-
-		/**
-		 * 获取当前对象
-		 * @param e
-		 */
-		currentTarget: function( e ) {
-			//	FIXME：暂时还不支持ie
-			return e.currentTarget;
-		},
-
 		/**
 		 * 获取该事件发生时，其在页面上的位置
 		 * @param e
@@ -431,50 +426,6 @@ function(C,B) {
 		}
 	};
 
-	/**
-	 * 如果会引起内存泄露，那就跟踪unload事件，处理这些
-	 */
-	if ( willLeak ) {
-		( function() {
-			/**
-			 * 移除某个节点的所有事件，并循环调用所有子节点，依次调用之
-			 */
-			var clearEvent = function( node ) {
-				
-				//	如果本对象存在事件
-				Event.un( node );
-				
-				//	获得所有子节点，依次判断之
-				var nodes = node.children,
-					count;
-				if ( nodes && ( count = nodes.length ) > 0 ) {
-					for ( var i = count - 1; i >= 0; i-- ) {
-						clearEvent( nodes[ i ] );
-					}
-				}
-			};
-			
-			/**
-			 * 绑定页面销毁事件，当撤销时，解绑所有事件
-			 */
-			Event.on( window, 'unload', function() {
-				//	如果支持document.all属性
-				var nodes = document.all,
-					count;
-				if ( nodes && ( count = nodes.length ) > 0 ) {
-					for ( var i = count - 1; i >= 0; i-- ) {
-						Event.un( nodes[ i ] );
-					}
-					
-					window.onload = null;
-					window.onunload = null;
-				}
-				
-				window.kola = null;
-			} );
-		} )();
-	}
-
-	return KolaEvent;
+	return KEvent;
 	
 });

@@ -105,7 +105,8 @@ function( KolaFunction ) {
 	};
     Browser.isIE=(Browser.render()=='ie');
     Browser.isIE6=(Browser.render()=='ie' && Browser.renderVersion()==6);
-
+    Browser.isIEStyle=(Browser.render()=='ie' && Browser.renderVersion()<9);
+    
     Browser.isWebkit=(Browser.render()=='webkit');
     Browser.isGecko=(Browser.render()=='gecko');
 	return Browser;

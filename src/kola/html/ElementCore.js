@@ -11,7 +11,7 @@ function(C, Type, Dispatcher, Selector){
     */
     var cache={};
     var cache_attr_name="kola" + new Date().getTime();
-    var cacheSize=0;
+    var cacheSize=1;
     
     var ElementCore=C.create(Dispatcher,{
         __ME:function(selector, context){
@@ -59,16 +59,16 @@ function(C, Type, Dispatcher, Selector){
         */
         data:function(name,data){
             if(Type.isUndefined(data)){
-                index=this.attr(cache_attr_name);
+                index=this[0][cache_attr_name];
                 if(!index || !cache[index])
                     return null;
                 return cache[index][name];
             }else{
-                this.each(function(e){
-                    index=this.attr(cache_attr_name);
+                this._each(function(e){
+                    index=e[cache_attr_name];
                     if(!index){
                         index=cacheSize++;
-                        this.attr(cache_attr_name,index);
+                        e[cache_attr_name]=index;
                     }
                     if(!cache[index])
                         cache[index]={};
@@ -80,8 +80,8 @@ function(C, Type, Dispatcher, Selector){
             移除所有元素的data[name]
         */
         removeData:function(name){
-            this.each(function(e){
-                index=this.attr(cache_attr_name);
+            this._each(function(e){
+                index=e[cache_attr_name];
                 if(!index || !cache[index])
                     return;
                 cache[index][name]=null;
@@ -91,8 +91,8 @@ function(C, Type, Dispatcher, Selector){
             移除所有元素的所有data
         */
         removeAllData:function(){
-            this.each(function(e){
-                index=this.attr(cache_attr_name);
+            this._each(function(e){
+                index=e[cache_attr_name];
                 if(!index)
                     return;
                 cache[index]=null;
@@ -103,7 +103,7 @@ function(C, Type, Dispatcher, Selector){
             return this._elements;
         },
         /**
-		 * 获取查获的元素数量
+		 * 迭代处理每一个元素
 		 */
 		each: function( fn ) {
 			//	使用迭代器循环每个元素
@@ -112,12 +112,6 @@ function(C, Type, Dispatcher, Selector){
 			}
 			return this;
 		},
-        /*
-            TODO:
-                add()
-                remove()
-                filter()
-        */
         /*-------------------------------------- KolaElement内部函数 --------------------------------------*/
         /**
         简单each
@@ -139,6 +133,7 @@ function(C, Type, Dispatcher, Selector){
 			return '-' + match.toLowerCase();
 		});
 	}
+    ElementCore.expando=cache_attr_name;
     ElementCore.util={
         /**
          * 获取样式属性
