@@ -24,6 +24,7 @@ kola('kola.bom.Event',
         
         stop
     */
+    var copyParams=["keyCode","ctrlKey"];
     function DomEvent(e){
         this.event=e;
         if(B.isIEStyle){
@@ -40,18 +41,20 @@ kola('kola.bom.Event',
             this.button=e.button;
             this.relatedTarget = e.relatedTarget;
         }
-        this.keyCode=e.keyCode;
+        for(var i=0,il=copyParams;i<il;i++){
+            this[copyParams[i]]=e[copyParams[i]];
+        }
         //TODO copy params
      }
      if(B.isIEStyle){
          C.buildProto(DomEvent,{
              preventDefault:function(){this.event.returnValue=false;},
-             stopPropagation:function(){this.event.cancelBubble=true;},
+             stopPropagation:function(){this.event.cancelBubble=true;}
          });
      }else{
          C.buildProto(DomEvent,{
-             preventDefault:Event.prototype.preventDefault,
-             stopPropagation:Event.prototype.stopPropagation
+             preventDefault:function(){this.event.preventDefault()},
+             stopPropagation:function(){this.event.stopPropagation()}
          });
      }
      DomEvent.prototype.stop=function(){

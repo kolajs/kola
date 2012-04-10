@@ -38,9 +38,10 @@ function(O,KElement,A,Type,Selector){
             元素及其祖先元素中最靠近当前元素的符合条件的元素
         */
         closest:function(element,selector){
-            while ((element = element.parentNode) && (element.nodeType == 1)) {
-                if(Selector(selector,[element]).length==1)
+            while (element.nodeType == 1) {
+                if(Selector.matchesSelector(element,selector))
                     return element;
+                element = element.parentNode
             }
         },
         /**
@@ -120,7 +121,9 @@ function(O,KElement,A,Type,Selector){
                     nodes.push(res);
                 }
 			});
-            return new KElement(A.unique(nodes));
+            nodes=A.unique(nodes);
+            if(nodes.length>0)
+                return new KElement(nodes);
         }
     });
     return Traveller;

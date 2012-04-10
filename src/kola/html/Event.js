@@ -9,9 +9,9 @@ function(E,A){
 		 * @return 当前的Element对象
 		 * @type kola.html.Element
 		 */
-		on: function(name, listenerfn) {
+		on: function(name, listenerfn,option) {
 			this._each( function(element) {
-				E.on(element, name, listenerfn);
+				E.on(element, name, listenerfn,option);
 			});
 			return this;
 		},
