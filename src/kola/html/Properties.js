@@ -102,7 +102,17 @@ function(KElement,Browser){
 				return this;
 			}
 		},
-	
+		/**
+		 * 删除某个属性值
+		 * @param {String} name 属性名
+		 * @type String
+		 */
+		removeProp: function(name) {
+            this._each( function(element) {
+                element[name] = null;
+            });
+            return this;
+		},
 		/**
 		 * 判断当前对象是否存在指定的样式
 		 * @param {String} name 样式名儿
