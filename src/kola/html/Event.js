@@ -39,9 +39,9 @@ function(E,A){
         */
     };
     A.forEach('click,mouseover,mouseout,mouseup,mousedown,keyup,keydown,keypress'.split(','),function(name){
-        DomEvent[name]=function(listenerfn){
+        DomEvent[name]=function(listenerfn,option){
             this._each( function(element) {
-				E.on(element,name, listenerfn);
+				E.on(element,name, listenerfn,option);
 			});
         }
     });
