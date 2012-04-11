@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.html.ElementCore domÔªËØµÄ·â×°
+ * @fileOverview kola.html.ElementCore domÔªï¿½ØµÄ·ï¿½×°
  * @author Jady Yang Yuxin Guan
  * @version 2.0.0
  */
@@ -7,7 +7,7 @@ kola('kola.html.ElementCore',
 	['kola.lang.Class','kola.lang.Object','kola.event.Dispatcher','kola.css.Selector'],
 function(C, O, Dispatcher, Selector){
     /**
-        ÓÃÓÚelement.dataµÄ´æ´¢
+        ï¿½ï¿½ï¿½ï¿½element.dataï¿½Ä´æ´¢
     */
     var cache={};
     var cache_attr_name="kola" + new Date().getTime();
@@ -16,10 +16,10 @@ function(C, O, Dispatcher, Selector){
     var ElementCore=C.create(Dispatcher,{
         __ME:function(selector, context){
             if(O.isString(selector) && selector.charAt(0)!='<'){
-                //	Èç¹ûÎªcss selector
+                //	ï¿½ï¿½ï¿½Îªcss selector
                 var nodes;
 
-                //	È·ÈÏÊÇ·ñ´æÔÚcontext
+                //	È·ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½context
                 if(O.isUndefined(context)){
                     context=null;
                 }else{
@@ -27,23 +27,23 @@ function(C, O, Dispatcher, Selector){
                     if(context.length==0)
                         context=null;
                 }
-                //	¸ù¾ÝÓÐÎÞcontext½øÐÐ²»Í¬µÄ´¦Àí
+                //	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½contextï¿½ï¿½ï¿½Ð²ï¿½Í¬ï¿½Ä´ï¿½ï¿½ï¿½
                 if (context === null) {
                     nodes = Selector(selector);
                 } else {
-                    //	contextÎªÊý×é£¬ÐèÒªÔÚÃ¿¸öcontextÖÐÑ°ÕÒ
-                    //	TODO: ÕâÀïÊÇÓÐÎÊÌâµÄ£¬ÒòÎªÈç¹ûselector¾ÍÊÇ»ñÈ¡µÚÒ»¸ö£¬»òÕßÖ¸¶¨µÄÄ³¸ö
+                    //	contextÎªï¿½ï¿½ï¿½é£¬ï¿½ï¿½Òªï¿½ï¿½Ã¿ï¿½ï¿½contextï¿½ï¿½Ñ°ï¿½ï¿½
+                    //	TODO: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½selectorï¿½ï¿½ï¿½Ç»ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½
                     nodes = [];
                     for (var i = 0, il = context.length; i < il; i ++) {
                         nodes = nodes.concat(Selector(selector, context[i]));
                     }
                 }
-                return new ElementCore(nodes);
+                return new this(nodes);
             }else{
                 var nodes=ElementCore.util.toElements(selector);
             }
             if(nodes)
-                return new ElementCore(nodes);
+                return new this(nodes);
             return null;
         },
         _init:function(elements){
@@ -52,10 +52,10 @@ function(C, O, Dispatcher, Selector){
                 this[i]=elements[i];
             this._elements = elements;
         },
-        /*-------------------------------------- dataÏà¹Ø --------------------------------------*/
+        /*-------------------------------------- dataï¿½ï¿½ï¿½ --------------------------------------*/
         /**
-            µÃµ½µÚ0¸öÔªËØµÄdata[name]
-            »òÕßÉèÖÃËùÓÐÔªËØµÄdata[name]
+            ï¿½Ãµï¿½ï¿½ï¿½0ï¿½ï¿½Ôªï¿½Øµï¿½data[name]
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½data[name]
         */
         data:function(name,data){
             if(O.isUndefined(data)){
@@ -77,7 +77,7 @@ function(C, O, Dispatcher, Selector){
             }
         },
         /**
-            ÒÆ³ýËùÓÐÔªËØµÄdata[name]
+            ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½data[name]
         */
         removeData:function(name){
             this._each(function(e){
@@ -88,7 +88,7 @@ function(C, O, Dispatcher, Selector){
             });
         },
         /**
-            ÒÆ³ýËùÓÐÔªËØµÄËùÓÐdata
+            ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½data
         */
         removeAllData:function(){
             this._each(function(e){
@@ -98,35 +98,35 @@ function(C, O, Dispatcher, Selector){
                 cache[index]=null;
             });
         },
-		/*-------------------------------------- Êý×éÏà¹Ø --------------------------------------*/
+		/*-------------------------------------- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ --------------------------------------*/
 		elements: function(){
             return this._elements;
         },
         /**
-		 * µü´ú´¦ÀíÃ¿Ò»¸öÔªËØ
+		 * ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿Ò»ï¿½ï¿½Ôªï¿½ï¿½
 		 */
 		each: function( fn ) {
-			//	Ê¹ÓÃµü´úÆ÷Ñ­»·Ã¿¸öÔªËØ
+			//	Ê¹ï¿½Ãµï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½Ã¿ï¿½ï¿½Ôªï¿½ï¿½
 			for ( var i = 0, il = this.length; i < il; i++ ) {
-				fn.call( this.constructor( this[i] ), i );
+				fn.call( this, this.constructor( this[i] ), i );
 			}
 			return this;
 		},
-        /*-------------------------------------- KolaElementÄÚ²¿º¯Êý --------------------------------------*/
+        /*-------------------------------------- KolaElementï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ --------------------------------------*/
         /**
-        ¼òµ¥each
+        ï¿½ï¿½each
         */
         _each:function(callBack){
             for(var i=0,il=this.length;i<il;i++)
                 callBack.call(this,this[i]);
         },
-        //Ê¹µÃä¯ÀÀÆ÷ÈÏÎªÊµÀýÊÇÒ»¸öÊý×é£¬·½±ãµ÷ÊÔ
+        //Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÊµï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         length:0,
         splice:[].splice
     });
     
     /**
-	* ½«ÍÕ·åÊ½×ª»»ÎªcssÐ´·¨
+	* ï¿½ï¿½ï¿½Õ·ï¿½Ê½×ªï¿½ï¿½ÎªcssÐ´ï¿½ï¿½
 	*/
 	function hyphenate(name) {
 		return name.replace(/[A-Z]/g, function(match) {
@@ -136,7 +136,7 @@ function(C, O, Dispatcher, Selector){
     ElementCore.expando=cache_attr_name;
     ElementCore.util={
         /**
-         * »ñÈ¡ÑùÊ½ÊôÐÔ
+         * ï¿½ï¿½È¡ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
          * @param element
          * @param name
          */
@@ -155,18 +155,18 @@ function(C, O, Dispatcher, Selector){
             return element.style[name];
         },
         /**
-        µÃµ½ÔªËØÊý×é
-            Array[element] :²»±ä
-            element£º[element]
-            kolaElement:kolaElementµÄ_elements
-            String(html):×ª»»³Éelement
+        ï¿½Ãµï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            Array[element] :ï¿½ï¿½ï¿½ï¿½
+            elementï¿½ï¿½[element]
+            kolaElement:kolaElementï¿½ï¿½_elements
+            String(html):×ªï¿½ï¿½ï¿½ï¿½element
         */
         toElements : function(selector){
             if(O.isArray(selector)){
                 return selector;
             }
             if(O.isString(selector)){
-                //	Èç¹ûÎªhtml
+                //	ï¿½ï¿½ï¿½Îªhtml
                 var ctr = document.createElement('div');
                 ctr.innerHTML = selector;
                 var arr=[];
@@ -176,10 +176,10 @@ function(C, O, Dispatcher, Selector){
                 ElementCore.dispatch({type:"ElementCreate",data:arr});
                 return arr;
             }
-            //	Èç¹ûÎªkola.html.Element
+            //	ï¿½ï¿½ï¿½Îªkola.html.Element
             if ( selector instanceof ElementCore )
                 return selector.elements();
-            //	Èç¹ûÎªDOMLElement
+            //	ï¿½ï¿½ï¿½ÎªDOMLElement
             if (selector.nodeType === 1) 
                 return [selector];
             if(selector.nodeType === 9){

@@ -22,7 +22,7 @@ function( KolaArray, Event ) {
 
 			//	循环获得所有控件
 			for ( var i = 0, items = [ 'input', 'select', 'textarea' ], il = items.length; i < il; i++ ) {
-				if ( results = this.down( items[ i ] ) ) {
+				if ( results = this.find( items[ i ] ) ) {
 					elements = elements.concat( results.elements() );
 				}
 			}
