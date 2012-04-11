@@ -3,10 +3,10 @@ kola('kola.html.Event',
 function(E,A){
     var DomEvent={
         /**
-		 * ¼àÌıÊÂ¼ş
-		 * @param {String} name ¼àÌıµÄÊÂ¼şÃû³Æ
-		 * @param {Function} listenerfn ÊÂ¼ş´¦Àí·½·¨
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * ç›‘å¬äº‹ä»¶
+		 * @param {String} name ç›‘å¬çš„äº‹ä»¶åç§°
+		 * @param {Function} listenerfn äº‹ä»¶å¤„ç†æ–¹æ³•
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		on: function(name, listenerfn,option) {
@@ -17,10 +17,10 @@ function(E,A){
 		},
 		
 		/**
-		 * È¡Ïû¶ÔÊÂ¼şµÄ¼àÌı
-		 * @param {String} name ¼àÌıµÄÊÂ¼şÃû³Æ
-		 * @param {Function} listenerfn ÊÂ¼ş´¦Àí·½·¨
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * å–æ¶ˆå¯¹äº‹ä»¶çš„ç›‘å¬
+		 * @param {String} name ç›‘å¬çš„äº‹ä»¶åç§°
+		 * @param {Function} listenerfn äº‹ä»¶å¤„ç†æ–¹æ³•
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		un: function(name, listenerfn) {

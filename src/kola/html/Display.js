@@ -3,19 +3,19 @@ kola('kola.html.Display',
 function(KElement){
     var Display={
         /**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏóµÄÎ»ÖÃ£¬Ïà¶ÔÓÚÆä¶¨Î»¶ÔÏóµÄÎ»ÖÃ
-		 * @return Î»ÖÃ
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡çš„ä½ç½®ï¼Œç›¸å¯¹äºå…¶å®šä½å¯¹è±¡çš„ä½ç½®
+		 * @return ä½ç½®
 		 * @type Object
 		 */
 		/**
-		 * ÉèÖÃ¶ÔÏóµÄÎ»ÖÃ£¬Ïà¶ÔÓÚÆä¶¨Î»¶ÔÏóµÄÎ»ÖÃ
-		 * @param {Object} position ĞÂÎ»ÖÃ
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®å¯¹è±¡çš„ä½ç½®ï¼Œç›¸å¯¹äºå…¶å®šä½å¯¹è±¡çš„ä½ç½®
+		 * @param {Object} position æ–°ä½ç½®
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		pos: function(position) {
 			if (typeof(position) == 'undefined') {
-				//	»ñÈ¡Î»ÖÃÖµ
+				//	è·å–ä½ç½®å€¼
 				
 				var element = this[0];
 				return {
@@ -23,7 +23,7 @@ function(KElement){
 					top: element.offsetTop
 				};
 			} else {
-				//	ÉèÖÃÎ»ÖÃÖµ
+				//	è®¾ç½®ä½ç½®å€¼
 				
 				this._each( function(element) {
 					if ( !isNaN( position.left ) ) element.style.left = position.left + 'px';
@@ -34,19 +34,19 @@ function(KElement){
 		},
 		
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏóµÄÎ»ÖÃ£¬Ïà¶ÔÓÚä¯ÀÀÆ÷´°¿ÚÇøÓòµÄÎ»ÖÃ
-		 * @return Î»ÖÃ
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡çš„ä½ç½®ï¼Œç›¸å¯¹äºæµè§ˆå™¨çª—å£åŒºåŸŸçš„ä½ç½®
+		 * @return ä½ç½®
 		 * @type Object
 		 */
 		/**
-		 * ÉèÖÃ¶ÔÏóµÄÎ»ÖÃ£¬Ïà¶ÔÓÚä¯ÀÀÆ÷´°¿ÚÇøÓòµÄÎ»ÖÃ
-		 * @param {Object} position ĞÂÎ»ÖÃ
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®å¯¹è±¡çš„ä½ç½®ï¼Œç›¸å¯¹äºæµè§ˆå™¨çª—å£åŒºåŸŸçš„ä½ç½®
+		 * @param {Object} position æ–°ä½ç½®
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		clientPos: function(position) {
 			if (typeof(position) == 'undefined') {
-				//	»ñÈ¡Î»ÖÃÖµ
+				//	è·å–ä½ç½®å€¼
 				
 				var pos = pagePos(this[0]),
 					db = document.body,
@@ -56,9 +56,9 @@ function(KElement){
 					top: pos.top - Math.max(db.scrollTop, de.scrollTop)
 				};
 			} else {
-				//	ÉèÖÃÎ»ÖÃÖµ
+				//	è®¾ç½®ä½ç½®å€¼
 				
-				//	FIXME: ÕâÀïÓ¦¸ÃÊÇÉèÖÃÏà¶ÔÓÚä¯ÀÀÆ÷´°¿ÚÇøÓòµÄ£¬¶ø²»ÊÇÏÖÔÚµÄleftºÍtopÖµ
+				//	FIXME: è¿™é‡Œåº”è¯¥æ˜¯è®¾ç½®ç›¸å¯¹äºæµè§ˆå™¨çª—å£åŒºåŸŸçš„ï¼Œè€Œä¸æ˜¯ç°åœ¨çš„leftå’Œtopå€¼
 				this._each( function(element) {
 					element.style.left = position.left + 'px';
 					element.style.top = position.top + 'px';
@@ -68,28 +68,28 @@ function(KElement){
 		},
 		
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏóÔÚÒ³ÃæÉÏµÄ¾ø¶ÔÎ»ÖÃ
-		 * @return Î»ÖÃ
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡åœ¨é¡µé¢ä¸Šçš„ç»å¯¹ä½ç½®
+		 * @return ä½ç½®
 		 * @type Object
 		 */
 		/**
-		 * ÉèÖÃ¶ÔÏóµÄ¾ø¶ÔÎ»ÖÃ
-		 * @param {Object} position ĞÂÎ»ÖÃ
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®å¯¹è±¡çš„ç»å¯¹ä½ç½®
+		 * @param {Object} position æ–°ä½ç½®
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		pagePos: function(position) {
 			if (typeof(position) == 'undefined') {
-				//	»ñÈ¡¶ÔÏóµÄ¾ø¶ÔÎ»ÖÃ
+				//	è·å–å¯¹è±¡çš„ç»å¯¹ä½ç½®
 				
 				return pagePos(this[0]);
 			} else {
-				//	ÉèÖÃ¶ÔÏóµÄ¾ø¶ÔÎ»ÖÃ
+				//	è®¾ç½®å¯¹è±¡çš„ç»å¯¹ä½ç½®
 				
-				//	FIXME: ÕâÀïÓ¦¸ÃÊÇÉèÖÃ¾ø¶ÔÎ»ÖÃ£¬¶ø²»ÊÇÏÖÔÚµÄleftºÍtopÖµ
+				//	FIXME: è¿™é‡Œåº”è¯¥æ˜¯è®¾ç½®ç»å¯¹ä½ç½®ï¼Œè€Œä¸æ˜¯ç°åœ¨çš„leftå’Œtopå€¼
 				this._each( function(element) {
 					var pos = pagePos( element );
-					//	Èç¹ûÉèÖÃÁËleftÖµ£¬ÄÇ¾Í¼ÆËãleft×ø±ê
+					//	å¦‚æœè®¾ç½®äº†leftå€¼ï¼Œé‚£å°±è®¡ç®—leftåæ ‡
 					if ( typeof position.left == 'number' ) {
 						var left = KElement.util.getComputedStyle( element, 'left' );
 						if ( !left ) {
@@ -101,7 +101,7 @@ function(KElement){
 						}
 						element.style.left = ( position.left + left - pos.left) + 'px';
 					}
-					//	Èç¹ûÉèÖÃÁËtopÖµ£¬ÄÇ¾Í¼ÆËãtop×ø±ê
+					//	å¦‚æœè®¾ç½®äº†topå€¼ï¼Œé‚£å°±è®¡ç®—topåæ ‡
 					if ( typeof position.top == 'number' ) {
 						var top = KElement.util.getComputedStyle( element, 'top' );
 						if ( !top ) {
@@ -119,22 +119,22 @@ function(KElement){
 		},
 		
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏóµÄ¿í¶È
-		 * @return ¿í¶È
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡çš„å®½åº¦
+		 * @return å®½åº¦
 		 * @type Number
 		 */
 		/**
-		 * ÉèÖÃ¶ÔÏóµÄ¿í¶È
-		 * @param {Number} value ĞÂ¿í¶È
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®å¯¹è±¡çš„å®½åº¦
+		 * @param {Number} value æ–°å®½åº¦
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		width: function(value) {
 			if (typeof(value) == 'undefined') {
-				//	»ñÈ¡¿í¶È
+				//	è·å–å®½åº¦
 				return this[0].offsetWidth;
 			} else {
-				//	ÉèÖÃ¿í¶È
+				//	è®¾ç½®å®½åº¦
 				
 				this._each( function(element) {
 					element.style.width = value + 'px';
@@ -144,23 +144,23 @@ function(KElement){
 		},
 		
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏóµÄ¸ß¶È
-		 * @return ¸ß¶È
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡çš„é«˜åº¦
+		 * @return é«˜åº¦
 		 * @type Number
 		 */
 		/**
-		 * ÉèÖÃ¶ÔÏóµÄ¸ß¶È
-		 * @param {Number} value ĞÂ¸ß¶È
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®å¯¹è±¡çš„é«˜åº¦
+		 * @param {Number} value æ–°é«˜åº¦
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		height: function(value) {
 			if (typeof(value) == 'undefined') {
-				//	»ñÈ¡¿í¶È
+				//	è·å–å®½åº¦
 				
 				return this[0].offsetHeight;
 			} else {
-				//	ÉèÖÃ¿í¶È
+				//	è®¾ç½®å®½åº¦
 				
 				this._each( function(element) {
 					element.style.height = value + 'px';
@@ -170,42 +170,42 @@ function(KElement){
 		},
 
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏó¿Í»§ÇøÓòµÄ¿í¶È
-		 * @return ¿í¶È
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡å®¢æˆ·åŒºåŸŸçš„å®½åº¦
+		 * @return å®½åº¦
 		 * @type Number
 		 */
 		clientWidth: function(value) {
-			//	»ñÈ¡¿í¶È
+			//	è·å–å®½åº¦
 			return this[0].clientWidth;
 		},
 
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏó¿Í»§ÇøÓòµÄ¸ß¶È
-		 * @return ¸ß¶È
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡å®¢æˆ·åŒºåŸŸçš„é«˜åº¦
+		 * @return é«˜åº¦
 		 * @type Number
 		 */
 		clientHeight: function() {
-			//	»ñÈ¡¿í¶È
+			//	è·å–å®½åº¦
 			return this[0].clientHeight;
 		},
 
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏó¹ö¶¯ÇøÓòµÄ¿í¶È
-		 * @return ¿í¶È
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡æ»šåŠ¨åŒºåŸŸçš„å®½åº¦
+		 * @return å®½åº¦
 		 * @type Number
 		 */
 		scrollWidth: function(value) {
-			//	»ñÈ¡¿í¶È
+			//	è·å–å®½åº¦
 			return this[0].scrollWidth;
 		},
 
 		/**
-		 * »ñÈ¡µÚÒ»¸ö¶ÔÏó¹ö¶¯ÇøÓòµÄ¸ß¶È
-		 * @return ¸ß¶È
+		 * è·å–ç¬¬ä¸€ä¸ªå¯¹è±¡æ»šåŠ¨åŒºåŸŸçš„é«˜åº¦
+		 * @return é«˜åº¦
 		 * @type Number
 		 */
 		scrollHeight: function() {
-			//	»ñÈ¡¿í¶È
+			//	è·å–å®½åº¦
 			return this[0].scrollHeight;
 		}
     }

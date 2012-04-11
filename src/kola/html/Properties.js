@@ -3,21 +3,21 @@ kola('kola.html.Properties',
 function(KElement,Browser){
     var Properties={
         /**
-		 * »ñÈ¡Ä³¸öÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @return ÊôĞÔÖµ
+		 * è·å–æŸä¸ªå±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @return å±æ€§å€¼
 		 * @type String
 		 */
 		/**
-		 * ÉèÖÃÄ³¸öÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @param value ÊôĞÔÖµ
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®æŸä¸ªå±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @param value å±æ€§å€¼
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type Element
 		 */
 		attr: function(name, value) {
 			if (typeof(value) == 'undefined') {
-				//	ÏÖÔÚÊÇÒª»ñÈ¡ÊôĞÔÖµ
+				//	ç°åœ¨æ˜¯è¦è·å–å±æ€§å€¼
 				var element = this[0];
 				switch(name) {
 					case 'class':
@@ -28,7 +28,7 @@ function(KElement,Browser){
 						return attr(element, name);
 				}
 			} else {
-				//	ÏÖÔÚÊÇÒªÉèÖÃÊôĞÔÖµ
+				//	ç°åœ¨æ˜¯è¦è®¾ç½®å±æ€§å€¼
 				this._each( function(element) {
 					switch(name) {
 						case 'class':
@@ -38,9 +38,9 @@ function(KElement,Browser){
 							element.style.cssText = value;
 							break;
 						default:
-							//	Èç¹ûÊÇÉèÖÃÒ»¸öÊÂ¼ş£¬¶øÇÒÊÇieÏÂµÄ»°£¬ĞèÒª²ÉÓÃ.on...µÄĞÎÊ½£¬setAttributeµÄĞÎÊ½ÊÇÓĞÎÊÌâµÄ
+							//	å¦‚æœæ˜¯è®¾ç½®ä¸€ä¸ªäº‹ä»¶ï¼Œè€Œä¸”æ˜¯ieä¸‹çš„è¯ï¼Œéœ€è¦é‡‡ç”¨.on...çš„å½¢å¼ï¼ŒsetAttributeçš„å½¢å¼æ˜¯æœ‰é—®é¢˜çš„
 							if (document.all && name.indexOf('on') == 0) {
-								//	Èç¹ûÊÇ×Ö·û´®£¬ĞèÒª×ª»»³ÉÒ»¸ö·½·¨£¬ieÏÂÖ»ÄÜ½ÓÊÜ·½·¨
+								//	å¦‚æœæ˜¯å­—ç¬¦ä¸²ï¼Œéœ€è¦è½¬æ¢æˆä¸€ä¸ªæ–¹æ³•ï¼Œieä¸‹åªèƒ½æ¥å—æ–¹æ³•
 								if (typeof(value) == 'string') {
 									value = new Function(value);
 								}
@@ -55,7 +55,7 @@ function(KElement,Browser){
 		},
 
 		/**
-		 * ÅĞ¶ÏÊÇ·ñ´æÔÚÄ³¸öÊôĞÔ
+		 * åˆ¤æ–­æ˜¯å¦å­˜åœ¨æŸä¸ªå±æ€§
 		 */
 		hasAttr: function( name ) {
 			var element = this[0];
@@ -63,9 +63,9 @@ function(KElement,Browser){
 		},
 		
 		/**
-		 * É¾³ıÄ³¸öÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * åˆ é™¤æŸä¸ªå±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		removeAttr: function(name) {
@@ -76,26 +76,26 @@ function(KElement,Browser){
 		},
 	
 		/**
-		 * »ñÈ¡Ä³¸öÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @return ÊôĞÔÖµ
+		 * è·å–æŸä¸ªå±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @return å±æ€§å€¼
 		 * @type String
 		 */
 		/**
-		 * ÉèÖÃÄ³¸öÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @param {ANY} value ÊôĞÔÖµ
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®æŸä¸ªå±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @param {ANY} value å±æ€§å€¼
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
-           @warning ÔÚie67ÏÂÉèÖÃ¿ÉÄÜ»áµ¼ÖÂÄÚ´æĞ¹Â¶
+           @warning åœ¨ie67ä¸‹è®¾ç½®å¯èƒ½ä¼šå¯¼è‡´å†…å­˜æ³„éœ²
 		 */
          
 		prop: function(name, value) {
 			if (typeof(value) == 'undefined') {
-				//	»ñÈ¡ÊôĞÔÖµ
+				//	è·å–å±æ€§å€¼
 				return this[0][name];
 			} else {
-				//	ÉèÖÃÊôĞÔÖµ
+				//	è®¾ç½®å±æ€§å€¼
 				this._each( function(element) {
 					element[name] = value;
 				});
@@ -104,9 +104,9 @@ function(KElement,Browser){
 		},
 	
 		/**
-		 * ÅĞ¶Ïµ±Ç°¶ÔÏóÊÇ·ñ´æÔÚÖ¸¶¨µÄÑùÊ½
-		 * @param {String} name ÑùÊ½Ãû¶ù
-		 * @return ´æÔÚ·µ»Øtrue£¬²»´æÔÚ·µ»Øfalse
+		 * åˆ¤æ–­å½“å‰å¯¹è±¡æ˜¯å¦å­˜åœ¨æŒ‡å®šçš„æ ·å¼
+		 * @param {String} name æ ·å¼åå„¿
+		 * @return å­˜åœ¨è¿”å›trueï¼Œä¸å­˜åœ¨è¿”å›false
 		 * @type Boolean
 		 */
 		hasClass: function(name) {
@@ -115,9 +115,9 @@ function(KElement,Browser){
 		},
 		
 		/**
-		 * ÅĞ¶Ïµ±Ç°¶ÔÏóÊÇ·ñ´æÔÚÖ¸¶¨µÄÑùÊ½
-		 * @param {String} name ÑùÊ½Ãû¶ù
-		 * @return ´æÔÚ·µ»Øtrue£¬²»´æÔÚ·µ»Øfalse
+		 * åˆ¤æ–­å½“å‰å¯¹è±¡æ˜¯å¦å­˜åœ¨æŒ‡å®šçš„æ ·å¼
+		 * @param {String} name æ ·å¼åå„¿
+		 * @return å­˜åœ¨è¿”å›trueï¼Œä¸å­˜åœ¨è¿”å›false
 		 * @type Boolean
 		 */
 		addClass: function(name) {
@@ -131,9 +131,9 @@ function(KElement,Browser){
 			return this;
 		},
 		/**
-		 * ÒÆ³ıÖ¸¶¨ÑùÊ½
-		 * @param {String} name ÑùÊ½Ãû¶ù
-		 * @return ´æÔÚ·µ»Øtrue£¬²»´æÔÚ·µ»Øfalse
+		 * ç§»é™¤æŒ‡å®šæ ·å¼
+		 * @param {String} name æ ·å¼åå„¿
+		 * @return å­˜åœ¨è¿”å›trueï¼Œä¸å­˜åœ¨è¿”å›false
 		 * @type Boolean
 		 */
 		removeClass: function(name) {
@@ -146,29 +146,29 @@ function(KElement,Browser){
 			});
 			return this;
 		},
-		/*-------------------------------------- ÑùÊ½ºÍÎ»ÖÃÏà¹Ø --------------------------------------*/
+		/*-------------------------------------- æ ·å¼å’Œä½ç½®ç›¸å…³ --------------------------------------*/
 		/**
-		 * »ñÈ¡Ä³¸öÑùÊ½ÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @return ÊôĞÔÖµ
+		 * è·å–æŸä¸ªæ ·å¼å±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @return å±æ€§å€¼
 		 * @type String
 		 */
 		/**
-		 * ÉèÖÃÄ³¸öÑùÊ½ÊôĞÔÖµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @param {ANY} value ÊôĞÔÖµ
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * è®¾ç½®æŸä¸ªæ ·å¼å±æ€§å€¼
+		 * @param {String} name å±æ€§å
+		 * @param {ANY} value å±æ€§å€¼
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		style: function(name, value) {
-            //½«Ãû³Æ×ªÎªÍÕ·åÊ½
+            //å°†åç§°è½¬ä¸ºé©¼å³°å¼
             name=name.replace(/-([a-z])/ig,function( all, letter ) {return letter.toUpperCase();});
 			if (typeof(value) == 'undefined') {
 				var element = this[0],
 					st = element.style;
 				if (name == 'opacity') {
 					var filter;
-					if (Browser.isIE) {
+					if (Browser.IEStyle) {
 						return filter.indexOf("opacity=") >= 0 ? parseFloat(filter.match(/opacity=([^)]*)/)[1]) / 100 : 1;
 					} else {
 						return (filter = st.opacity) ? parseFloat(filter) : 1;
@@ -180,13 +180,13 @@ function(KElement,Browser){
 				this._each(function(element) {
 					var st = element.style;
 					if (name == 'opacity') {
-						if (Browser.isIE) {
+						if (Browser.IEStyle) {
 							st.filter = 'Alpha(Opacity=' + value*100 + ')'; 
 						} else {
 							st.opacity = (value == 1 ? '': '' + value);
 						}
 					} else {
-                        //Èç¹ûÊÇÊı×Ö£¬×Ô¶¯¼Ópx
+                        //å¦‚æœæ˜¯æ•°å­—ï¼Œè‡ªåŠ¨åŠ px
                         var newValue=parseInt(value);
                         if(newValue==value && !noPx[name])
                             value=value+"px";
@@ -198,9 +198,9 @@ function(KElement,Browser){
 		},
 		
 		/**
-		 * É¾³ıÄ³¸öÑùÊ½Öµ
-		 * @param {String} name ÊôĞÔÃû
-		 * @return µ±Ç°µÄElement¶ÔÏó
+		 * åˆ é™¤æŸä¸ªæ ·å¼å€¼
+		 * @param {String} name å±æ€§å
+		 * @return å½“å‰çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		removeStyle: function(name) {
@@ -228,13 +228,13 @@ function(KElement,Browser){
 		"lineHeight": true
 	};
     /**
-	 * »ñÈ¡Ò»¸ö¶ÔÏóµÄÄ³¸öattribute£¬Ö÷ÒªÊÇÎªÁË½â¾öIEÏÂÔÚform½ÚµãÉÏ»ñÈ¡attribute²»¶ÔµÄÎÊÌâ
+	 * è·å–ä¸€ä¸ªå¯¹è±¡çš„æŸä¸ªattributeï¼Œä¸»è¦æ˜¯ä¸ºäº†è§£å†³IEä¸‹åœ¨formèŠ‚ç‚¹ä¸Šè·å–attributeä¸å¯¹çš„é—®é¢˜
 	 */
 	var attr = function(element, name) {
 	
 		var value = element.getAttribute(name);
 		
-		//todo:¶Ô±íµ¥ÔªËØÊôĞÔµÄ·â×°
+		//todo:å¯¹è¡¨å•å…ƒç´ å±æ€§çš„å°è£…
 		if(value==null)
 			value=element[name];
 		if (document.all && typeof(value) == 'object' && value != null) {

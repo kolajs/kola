@@ -1,6 +1,6 @@
-kola("kola.bom.Document",
-    ["kola.bom.Browser"],
-function(B){
+kola("kola.html.Document",[
+    "kola.bom.Browser"
+ ],function(Browser){
     var head = document.getElementsByTagName('head')[0];
     return{
         /**
@@ -10,7 +10,7 @@ function(B){
             style = document.createElement('style'),
             rules = document.createTextNode(text);
             style.type = 'text/css';
-            if(B.isIE) 
+            if(Browser.IE) 
                 style.styleSheet.cssText = rules.nodeValue;
             else 
                 style.appendChild(rules);
@@ -42,7 +42,7 @@ function(B){
                 h:高度
         */
         scroll:function(){
-            if(B.isIE){
+            if(Browser.IE){
                 return{
                     top:document.documentElement.scrollTop,
                     left:document.documentElement.scrollLeft

@@ -1,6 +1,6 @@
 kola('kola.html.Traveller', 
-	['kola.lang.Object','kola.html.ElementCore','kola.lang.Array','kola.lang.Type','kola.css.Selector'],
-function(O,KElement,A,Type,Selector){
+	['kola.lang.Object','kola.html.ElementCore','kola.lang.Array','kola.css.Selector'],
+function(O,KElement,A,Selector){
     var Traveller={
         /*
             TODO:
@@ -115,16 +115,40 @@ function(O,KElement,A,Type,Selector){
             var _this=this;
             this._each(function(element){
                 var res=func.call(_this,element,selector);
-                if(Type.isArray(res))
+                if(O.isArray(res))
                     nodes=nodes.concat(res);
                 else if(res){
                     nodes.push(res);
                 }
 			});
-            nodes=A.unique(nodes);
+            nodes=unique(nodes);
             if(nodes.length>0)
                 return new KElement(nodes);
         }
     });
+    /**
+    数组排除重复元素
+    */
+	var unique=function(array){
+        var flag=false;
+        var le=array.length;
+        for(var i=0;i<le;i++){
+            for(j=i+1;j<le;j++){
+                if(array[i]===array[j]){
+                    array[j]=null;
+                    flag=true;
+                }
+            }
+        }
+        if(flag){
+            var top=0;
+            for(var i=0;le;i++){
+                if(array[i]!==null)
+                    array[top++]=array[i];
+            }
+            array.splice(top,le-top);
+        }
+        return array;
+    }
     return Traveller;
 });
