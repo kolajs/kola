@@ -36,30 +36,6 @@ kola('kola.lang.Function',
 				return callbackfn.apply(thisArg, newArgs);
 			};
 		},
-		
-		/**
-		 * @param {Function} callbackfn 被绑定的方法
-		 * @param {ANY} thisArg 方法执行时的this
-		 * @param {ANY} arg1 要绑定的参数1
-		 * @param {ANY} arg2 要绑定的参数2
-		 * @param {ANY} argN 要绑定的参数N
-		 * @return 绑定过之后的新方法
-		 * @type Function
-		 */
-		bindEvent: function(callbackfn, thisArg) {
-			var args = [];
-			for (var i = 2, il = arguments.length; i < il; i ++) {
-				args.push(arguments[i]); 
-			}
-			return function() {
-				var newArgs = args.concat();
-				for (var i = arguments.length - 1; i > 0; i --) {
-					newArgs.unshift(arguments[i]);
-				}
-				newArgs.unshift( arguments.length > 0 ? ( arguments[0] || window.event ) : window.event );
-				return callbackfn.apply(thisArg, newArgs);
-			};
-		},
 
 		/**
 		 * 可被全局使用的空函数

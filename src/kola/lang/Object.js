@@ -6,6 +6,7 @@
 kola('kola.lang.Object', 
 	null, 
 	function() {
+    var eye=Object.prototype.toString;
 	var exports = {
 		
 		/**
@@ -82,6 +83,24 @@ kola('kola.lang.Object',
             }
             return n;
         },
+        isFunction:function(o){
+            return (eye.call(o)=="[object Function]");
+        },
+        isArray:function(o){
+            return (eye.call(o)=="[object Array]");
+        },
+        isString:function(o){
+            return (eye.call(o)=="[object String]");
+        },
+        isRegExp:function(o){
+            return (eye.call(o)=="[object RegExp]");
+        },
+        isNumber:function(o){
+            return (eye.call(o)=="[object Number]");
+        },
+        isUndefined:function(o){
+            return (typeof o=="undefined");
+        },
         /**
          * 对象的迭代处理
          * @param {obj} 目标对象
@@ -122,7 +141,7 @@ kola('kola.lang.Object',
             }
 
             return object;
-            },
+        },
         /*
          *@brief 判断是否是一个原生对象而不是由构造函数派生的对象
          */

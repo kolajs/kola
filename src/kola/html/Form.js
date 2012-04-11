@@ -34,11 +34,12 @@ function( KolaArray, Event ) {
 		},
 
 		/**
-		 * 获取form的可输入值
+		 * 获取form的提交值Map
 		 */
-		values: function() {
+		formData: function() {
 
-			var data = {};
+			var data = {},
+				hadData = false;
 
 			//	FIXME: 如果当前对象为form，可以直接使用elements属性获取所有节点
 			this.elementNodes().each( function( element ) {
@@ -65,6 +66,9 @@ function( KolaArray, Event ) {
 						value = '';
 					}
 				}
+				
+				//	设置有值
+				hadData = true;
 
 				//	存储值
 				var old = data[ name ];
@@ -86,7 +90,7 @@ function( KolaArray, Event ) {
 				}
 			});
 
-			return data;
+			return hadData ? data : null;
 		},
 
 		/**

@@ -175,7 +175,7 @@
 					}
 					
 					//	只有当当前方法不是切面方法时，才予以添加
-					if (before != -1 && after != -1) {
+					if (before == -1 && after == -1) {
 						agencyInstance[item] = proto[item];
 					}
 				}

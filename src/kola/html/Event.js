@@ -3,10 +3,10 @@ kola('kola.html.Event',
 function(E,A){
     var DomEvent={
         /**
-		 * �����¼�
-		 * @param {String} name ������¼����
-		 * @param {Function} listenerfn �¼����?��
-		 * @return ��ǰ��Element����
+		 * 监听事件
+		 * @param {String} name 监听的事件名称
+		 * @param {Function} listenerfn 事件处理方法
+		 * @return 当前的Element对象
 		 * @type kola.html.Element
 		 */
 		on: function(name, listenerfn,option) {
@@ -17,10 +17,10 @@ function(E,A){
 		},
 		
 		/**
-		 * ȡ����¼��ļ���
-		 * @param {String} name ������¼����
-		 * @param {Function} listenerfn �¼����?��
-		 * @return ��ǰ��Element����
+		 * 取消对事件的监听
+		 * @param {String} name 监听的事件名称
+		 * @param {Function} listenerfn 事件处理方法
+		 * @return 当前的Element对象
 		 * @type kola.html.Element
 		 */
 		un: function(name, listenerfn) {

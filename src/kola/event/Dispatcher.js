@@ -5,9 +5,11 @@
  */
 
 
-kola('kola.event.Dispatcher',
-	['kola.lang.Class','kola.lang.Type','kola.lang.Array'],
-function(C,Type,A) {
+kola('kola.event.Dispatcher',[
+    'kola.lang.Class',
+    'kola.lang.Object',
+    'kola.lang.Array'
+],function(C,KolaObject,A) {
 	/********************************************** 类定义 **********************************************/
 	var Dispatcher=C.create({
 		_init: function() {
@@ -53,7 +55,7 @@ function(C,Type,A) {
 		 */
 		dispatch: function(e) {
             if(!this._obverver) return;
-            if(Type.isString(e)){
+            if(KolaObject.isString(e)){
                 e={
                     type:e
                 }

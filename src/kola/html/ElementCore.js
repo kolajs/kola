@@ -4,8 +4,8 @@
  * @version 2.0.0
  */
 kola('kola.html.ElementCore', 
-	['kola.lang.Class','kola.lang.Type','kola.event.Dispatcher','kola.css.Selector'],
-function(C, Type, Dispatcher, Selector){
+	['kola.lang.Class','kola.lang.Object','kola.event.Dispatcher','kola.css.Selector'],
+function(C, O, Dispatcher, Selector){
     /**
         用于element.data的存储
     */
@@ -15,12 +15,12 @@ function(C, Type, Dispatcher, Selector){
     
     var ElementCore=C.create(Dispatcher,{
         __ME:function(selector, context){
-            if(Type.isString(selector) && selector.charAt(0)!='<'){
+            if(O.isString(selector) && selector.charAt(0)!='<'){
                 //	如果为css selector
                 var nodes;
 
                 //	确认是否存在context
-                if(Type.isUndefined(context)){
+                if(O.isUndefined(context)){
                     context=null;
                 }else{
                     context=ElementCore.util.toElements(context);
@@ -58,7 +58,7 @@ function(C, Type, Dispatcher, Selector){
             或者设置所有元素的data[name]
         */
         data:function(name,data){
-            if(Type.isUndefined(data)){
+            if(O.isUndefined(data)){
                 index=this[0][cache_attr_name];
                 if(!index || !cache[index])
                     return null;
@@ -162,10 +162,10 @@ function(C, Type, Dispatcher, Selector){
             String(html):转换成element
         */
         toElements : function(selector){
-            if(Type.isArray(selector)){
+            if(O.isArray(selector)){
                 return selector;
             }
-            if(Type.isString(selector)){
+            if(O.isString(selector)){
                 //	如果为html
                 var ctr = document.createElement('div');
                 ctr.innerHTML = selector;

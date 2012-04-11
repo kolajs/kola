@@ -103,12 +103,12 @@ function( KolaFunction ) {
 			return value;
 		}
 	};
-    Browser.isIE=(Browser.render()=='ie');
-    Browser.isIE6=(Browser.render()=='ie' && Browser.renderVersion()==6);
-    Browser.isIEStyle=(Browser.render()=='ie' && Browser.renderVersion()<9);
+    Browser.IE=(Browser.render()=='ie');
+    Browser.IE6=(Browser.render()=='ie' && Browser.renderVersion()==6);
+    Browser.IEStyle=(Browser.render()=='ie' && Browser.renderVersion()<9);
     
-    Browser.isWebkit=(Browser.render()=='webkit');
-    Browser.isGecko=(Browser.render()=='gecko');
+    Browser.Webkit=(Browser.render()=='webkit');
+    Browser.Gecko=(Browser.render()=='gecko');
 	return Browser;
 	
 });

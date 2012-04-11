@@ -42,30 +42,6 @@ kola('kola.lang.Array',
 			}
 			return -1;
 		},
-        /**
-            数组排除重复元素
-        */
-		unique:function(array){
-            var flag=false;
-            var le=array.length;
-            for(var i=0;i<le;i++){
-                for(j=i+1;j<le;j++){
-                    if(array[i]===array[j]){
-                        array[j]=null;
-                        flag=true;
-                    }
-                }
-            }
-            if(flag){
-                var top=0;
-                for(var i=0;le;i++){
-                    if(array[i]!==null)
-                        array[top++]=array[i];
-                }
-                array.splice(top,le-top);
-            }
-            return array;
-        },
 		/**
 		 * 在数组中从后往前搜索指定元素的位置，可以设置起始位置
 		 * @param {Array} array 被搜索的数组
@@ -95,14 +71,6 @@ kola('kola.lang.Array',
 			}
 			return -1;
 		},
-        /**
-            删除数组中的某个元素
-        */
-		remove:function(arr,item){
-            var i=A.indexOf(arr,item);
-            if(i!=-1)
-                arr.splice(i,1);
-        },
 		/**
 		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值都是true，才会返回true，其他情况返回false
 		 * @param {Array} array 要循环的数组
