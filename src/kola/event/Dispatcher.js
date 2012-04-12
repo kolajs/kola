@@ -1,6 +1,6 @@
 /**
- * @fileOverview kola.bom.Dispatcher 事件分发者
- * @author Jady Yang
+ * @fileOverview kola.event.Dispatcher 事件分发者
+ * @author Guan Yuxin
  * @version 2.0.0
  */
 
@@ -21,7 +21,7 @@ kola('kola.event.Dispatcher',[
 		 * @param {Function} listener 监听者
          * @param {Object} option
 		 */
-		observe: function(name,listener,option) {
+		on: function(name,listener,option) {
             if(!this._obverver)
                 this._obverver={};
             if(!this._obverver[name])
@@ -34,7 +34,7 @@ kola('kola.event.Dispatcher',[
 		 * @param {String} name 事件名称
 		 * @param {Function} listener 监听者
 		 */
-		unObserve: function(name, listener) {
+		off: function(name, listener) {
             if(!this._obverver || !this._obverver[name])    return;
             if(!listener)
                 this._obverver[name]=[];
@@ -53,26 +53,30 @@ kola('kola.event.Dispatcher',[
 		 * @param {String} name 事件名称
 		 * @param {Object} e 事件对象
 		 */
-		dispatch: function(e) {
-            if(!this._obverver) return;
+		fire: function(e) {
+
             if(KolaObject.isString(e)){
                 e={
                     type:e
                 }
             }
-            var instanceObserver=this._obverver[e.type];
-            if(instanceObserver){
-                for(var i=0,il=instanceObserver.length;i<il;i++){
-                    var ob=instanceObserver[i];
-                    ob.listener.call(ob.option.scope||this,e);
+            e.target=this;
+            
+            if(this._obverver){
+                var instanceObserver=this._obverver[e.type];
+                if(instanceObserver){
+                    for(var i=0,il=instanceObserver.length;i<il;i++){
+                        var ob=instanceObserver[i];
+                        ob.listener.call(ob.option.scope||this,e);
+                    }
                 }
             }
-            if(this.constructor.dispatch)
-                this.constructor.dispatch(e)
+            if(this.constructor.fire)
+                this.constructor.fire(e)
 		}
 	});
     Dispatcher._obverver={};
-	Dispatcher.dispatch=function(e){
+	Dispatcher.fire=function(e){
         var instanceObserver=this._obverver[e.type];
         if(instanceObserver){
             for(var i=0,il=instanceObserver.length;i<il;i++)
@@ -80,14 +84,14 @@ kola('kola.event.Dispatcher',[
                 ob.listener.call(ob.option.scope||this,e);
         }
     }
-    Dispatcher.observe=function(name,listener,option){
+    Dispatcher.on=function(name,listener,option){
         if(!this._obverver[name])
             this._obverver[name]=[];
         this._obverver[name].push({listener:listener,option:option||{}});
     }
-    Dispatcher.unObserve=function(name,listener){
+    Dispatcher.off=function(name,listener){
         this._obverver[name].push({listener:listener,option:option||{}});
     }
-    Dispatcher.__GENE=["_obverver","observe","unObserve","dispatch"];
+    Dispatcher.__GENE=["_obverver","on","off","fire"];
     return Dispatcher
 });

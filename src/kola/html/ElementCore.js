@@ -173,7 +173,7 @@ function(C, O, Dispatcher, Selector){
                 for(var i=ctr.children.length-1;i>=0;i--){
                     arr[i]=ctr.children[i];
                 }
-                ElementCore.dispatch({type:"ElementCreate",data:arr});
+                ElementCore.fire({type:"ElementCreate",data:arr});
                 return arr;
             }
             //	���Ϊkola.html.Element

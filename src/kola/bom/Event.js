@@ -6,9 +6,13 @@
  */
 
 
-kola('kola.bom.Event', 
-	[ 'kola.lang.Function', 'kola.lang.Array' ,'kola.bom.Browser','kola.lang.Class'],
-	function( KolaFunction, KolaArray ,B,C) {
+kola('kola.bom.Event', [
+    'kola.lang.Object',
+    'kola.lang.Function',
+    'kola.lang.Array',
+    'kola.bom.Browser',
+    'kola.lang.Class'
+],function(KolaObject, KolaFunction, KolaArray ,B, C) {
 	
 	/********************************************** 类定义 **********************************************/
     /**
@@ -70,10 +74,12 @@ kola('kola.bom.Event',
 	var eventAgent = function( listenerfn, option, e ) {
 		if ( B.isIEStyle ) {
             e= new DomEvent(window.event);
-			e.currentTarget = this;
 		}else{
             e= new DomEvent(e);
         }
+        e.currentTarget = this;
+        if(!KolaObject.isUndefined(option.data))
+            e.data=option.data;
 		listenerfn.call( option.scope||this, e );
 	};
     //light bind
@@ -92,7 +98,7 @@ kola('kola.bom.Event',
 		} else {
 			//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 			if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
-				CheckboxChange.un( element, obj );
+				CheckboxChange.off( element, obj );
 			} else {
 				element.detachEvent( 'on' + name, listenerfn );
 			}
@@ -177,7 +183,7 @@ kola('kola.bom.Event',
 		/**
 		 * 取消对事件的监听
 		 */
-		un: function( element, name, listenerfn ) {
+		off: function( element, name, listenerfn ) {
 			if ( !element ) return this;
 
 			//	如果不存在事件缓存，那就不做处理
@@ -277,7 +283,7 @@ kola('kola.bom.Event',
 					for (var i = 0, il = events.length; i < il; i++) {
 						var event = events[i];
 						if (event.n === name && event.l === listenerfn) {
-							KEvent.un(document.body, name, event.f);
+							KEvent.off(document.body, name, event.f);
 							events.splice(i, 1);
 							break;
 						}
@@ -289,7 +295,7 @@ kola('kola.bom.Event',
 						
 						for( var i = 0, il = events.length; i < il; i++ ) {
 							var event = events[i];
-							KEvent.un(document.body, event.n, event.f);
+							KEvent.off(document.body, event.n, event.f);
 						}
 		
 						//	删除缓存
@@ -399,9 +405,9 @@ kola('kola.bom.Event',
 		/**
 		 * 取消对元素的替代事件的监听
 		 */
-		un: function( element, obj ) {
-			Event.un( element, 'click', obj.click );
-			Event.un( element, 'keypress', obj.keypressfn );
+		off: function( element, obj ) {
+			Event.off( element, 'click', obj.click );
+			Event.off( element, 'keypress', obj.keypressfn );
 		},
 
 		/**

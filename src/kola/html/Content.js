@@ -332,7 +332,7 @@ function(KElement,A,F,Browser,KEvent){
         var purgeChildren = function( element ) {
             var nodes = element.all,count;
             for ( var i = nodes.length - 1; i >= 0; i-- ) {
-                KEvent.un( nodes[ i ] );
+                KEvent.off( nodes[ i ] );
                 node[ElementCore.expando]=null;
             }
         };
