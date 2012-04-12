@@ -13,7 +13,7 @@ kola('kola.html.Event', [
 		 * @type kola.html.Element
 		 */
 		on: function(name, listenerfn, option) {
-            if(domEventType.indexOf(name)){
+            if(domEventType.indexOf(name)!=-1){
                 this._each( function(element) {
                     E.on(element, name, listenerfn,option);
                 });
@@ -22,7 +22,14 @@ kola('kola.html.Event', [
             }
 			return this;
 		},
-		
+		onout: function(name, listenerfn, option) {
+            E.on(document, name, function(e){
+                if(e.target.closest(this._elements()))
+                    return
+                listenerfn.call(this, e, option);
+            },option);
+			return this;
+		},
 		/**
 		 * 取消对事件的监听
 		 * @param {String} name 监听的事件名称
@@ -31,7 +38,7 @@ kola('kola.html.Event', [
 		 * @type kola.html.Element
 		 */
 		off: function(name, listenerfn) {
-            if(domEventType.indexOf(name)){
+            if(domEventType.indexOf(name)!=-1){
                 this._each( function(element) {
                     E.off(element, name, listenerfn);
                 });
@@ -41,7 +48,7 @@ kola('kola.html.Event', [
 			return this;
 		},
         fire:function(name){
-            if(domEventType.indexOf(name)){
+            if(domEventType.indexOf(name)!=-1){
                 this._each( function(element) {
                     E.fire(element, name);
                 });

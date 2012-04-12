@@ -151,7 +151,7 @@ function(KElement,Browser){
 			this._each( function(element) {
 				var str = element.className,index;
 				if (str.length > 0 && (index = (str = (' ' + str + ' ')).indexOf(name)) != -1) {
-					element.className = str.split(name).join(' ');
+					element.className = str.split(name).join(' ').replace(/[ ]{2,}/g,' ');
 				}
 			});
 			return this;

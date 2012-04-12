@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.html.ElementCore domÔªËØµÄ·â×°
+ * @fileOverview kola.html.ElementCore domå…ƒç´ çš„å°è£…
  * @author Jady Yang Yuxin Guan
  * @version 2.0.0
  */
@@ -7,7 +7,7 @@ kola('kola.html.ElementCore',
 	['kola.lang.Class','kola.lang.Object','kola.event.Dispatcher','kola.css.Selector'],
 function(C, O, Dispatcher, Selector){
     /**
-        ÓÃÓÚelement.dataµÄ´æ´¢
+        ç”¨äºelement.dataçš„å­˜å‚¨
     */
     var cache={};
     var cache_attr_name="kola" + new Date().getTime();
@@ -16,10 +16,10 @@ function(C, O, Dispatcher, Selector){
     var ElementCore=C.create(Dispatcher,{
         __ME:function(selector, context){
             if(O.isString(selector) && selector.charAt(0)!='<'){
-                //	Èç¹ûÎªcss selector
+                //	å¦‚æœä¸ºcss selector
                 var nodes;
 
-                //	È·ÈÏÊÇ·ñ´æÔÚcontext
+                //	ç¡®è®¤æ˜¯å¦å­˜åœ¨context
                 if(O.isUndefined(context)){
                     context=null;
                 }else{
@@ -27,12 +27,12 @@ function(C, O, Dispatcher, Selector){
                     if(context.length==0)
                         context=null;
                 }
-                //	¸ù¾İÓĞÎŞcontext½øĞĞ²»Í¬µÄ´¦Àí
+                //	æ ¹æ®æœ‰æ— contextè¿›è¡Œä¸åŒçš„å¤„ç†
                 if (context === null) {
                     nodes = Selector(selector);
                 } else {
-                    //	contextÎªÊı×é£¬ĞèÒªÔÚÃ¿¸öcontextÖĞÑ°ÕÒ
-                    //	TODO: ÕâÀïÊÇÓĞÎÊÌâµÄ£¬ÒòÎªÈç¹ûselector¾ÍÊÇ»ñÈ¡µÚÒ»¸ö£¬»òÕßÖ¸¶¨µÄÄ³¸ö
+                    //	contextä¸ºæ•°ç»„ï¼Œéœ€è¦åœ¨æ¯ä¸ªcontextä¸­å¯»æ‰¾
+                    //	TODO: è¿™é‡Œæ˜¯æœ‰é—®é¢˜çš„ï¼Œå› ä¸ºå¦‚æœselectorå°±æ˜¯è·å–ç¬¬ä¸€ä¸ªï¼Œæˆ–è€…æŒ‡å®šçš„æŸä¸ª
                     nodes = [];
                     for (var i = 0, il = context.length; i < il; i ++) {
                         nodes = nodes.concat(Selector(selector, context[i]));
@@ -52,10 +52,10 @@ function(C, O, Dispatcher, Selector){
                 this[i]=elements[i];
             this._elements = elements;
         },
-        /*-------------------------------------- dataÏà¹Ø --------------------------------------*/
+        /*-------------------------------------- dataç›¸å…³ --------------------------------------*/
         /**
-            µÃµ½µÚ0¸öÔªËØµÄdata[name]
-            »òÕßÉèÖÃËùÓĞÔªËØµÄdata[name]
+            å¾—åˆ°ç¬¬0ä¸ªå…ƒç´ çš„data[name]
+            æˆ–è€…è®¾ç½®æ‰€æœ‰å…ƒç´ çš„data[name]
         */
         data:function(name,data){
             if(O.isUndefined(data)){
@@ -77,7 +77,7 @@ function(C, O, Dispatcher, Selector){
             }
         },
         /**
-            ÒÆ³ıËùÓĞÔªËØµÄdata[name]
+            ç§»é™¤æ‰€æœ‰å…ƒç´ çš„data[name]
         */
         removeData:function(name){
             this._each(function(e){
@@ -88,7 +88,7 @@ function(C, O, Dispatcher, Selector){
             });
         },
         /**
-            ÒÆ³ıËùÓĞÔªËØµÄËùÓĞdata
+            ç§»é™¤æ‰€æœ‰å…ƒç´ çš„æ‰€æœ‰data
         */
         removeAllData:function(){
             this._each(function(e){
@@ -98,35 +98,35 @@ function(C, O, Dispatcher, Selector){
                 cache[index]=null;
             });
         },
-		/*-------------------------------------- Êı×éÏà¹Ø --------------------------------------*/
+		/*-------------------------------------- æ•°ç»„ç›¸å…³ --------------------------------------*/
 		elements: function(){
             return this._elements;
         },
         /**
-		 * µü´ú´¦ÀíÃ¿Ò»¸öÔªËØ
+		 * è¿­ä»£å¤„ç†æ¯ä¸€ä¸ªå…ƒç´ 
 		 */
 		each: function( fn ) {
-			//	Ê¹ÓÃµü´úÆ÷Ñ­»·Ã¿¸öÔªËØ
+			//	ä½¿ç”¨è¿­ä»£å™¨å¾ªç¯æ¯ä¸ªå…ƒç´ 
 			for ( var i = 0, il = this.length; i < il; i++ ) {
 				fn.call( this.constructor( this[i] ), i );
 			}
 			return this;
 		},
-        /*-------------------------------------- KolaElementÄÚ²¿º¯Êı --------------------------------------*/
+        /*-------------------------------------- KolaElementå†…éƒ¨å‡½æ•° --------------------------------------*/
         /**
-        ¼òµ¥each
+        ç®€å•each
         */
         _each:function(callBack){
             for(var i=0,il=this.length;i<il;i++)
                 callBack.call(this,this[i]);
         },
-        //Ê¹µÃä¯ÀÀÆ÷ÈÏÎªÊµÀıÊÇÒ»¸öÊı×é£¬·½±ãµ÷ÊÔ
+        //ä½¿å¾—æµè§ˆå™¨è®¤ä¸ºå®ä¾‹æ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œæ–¹ä¾¿è°ƒè¯•
         length:0,
         splice:[].splice
     });
     
     /**
-	* ½«ÍÕ·åÊ½×ª»»ÎªcssĞ´·¨
+	* å°†é©¼å³°å¼è½¬æ¢ä¸ºcsså†™æ³•
 	*/
 	function hyphenate(name) {
 		return name.replace(/[A-Z]/g, function(match) {
@@ -136,7 +136,7 @@ function(C, O, Dispatcher, Selector){
     ElementCore.expando=cache_attr_name;
     ElementCore.util={
         /**
-         * »ñÈ¡ÑùÊ½ÊôĞÔ
+         * è·å–æ ·å¼å±æ€§
          * @param element
          * @param name
          */
@@ -155,18 +155,18 @@ function(C, O, Dispatcher, Selector){
             return element.style[name];
         },
         /**
-        µÃµ½ÔªËØÊı×é
-            Array[element] :²»±ä
-            element£º[element]
-            kolaElement:kolaElementµÄ_elements
-            String(html):×ª»»³Éelement
+        å¾—åˆ°å…ƒç´ æ•°ç»„
+            Array[element] :ä¸å˜
+            elementï¼š[element]
+            kolaElement:kolaElementçš„_elements
+            String(html):è½¬æ¢æˆelement
         */
         toElements : function(selector){
             if(O.isArray(selector)){
                 return selector;
             }
             if(O.isString(selector)){
-                //	Èç¹ûÎªhtml
+                //	å¦‚æœä¸ºhtml
                 var ctr = document.createElement('div');
                 ctr.innerHTML = selector;
                 var arr=[];
@@ -176,10 +176,10 @@ function(C, O, Dispatcher, Selector){
                 ElementCore.fire({type:"ElementCreate",data:arr});
                 return arr;
             }
-            //	Èç¹ûÎªkola.html.Element
+            //	å¦‚æœä¸ºkola.html.Element
             if ( selector instanceof ElementCore )
                 return selector.elements();
-            //	Èç¹ûÎªDOMLElement
+            //	å¦‚æœä¸ºDOMLElement
             if (selector.nodeType === 1) 
                 return [selector];
             if(selector.nodeType === 9){
