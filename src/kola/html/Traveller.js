@@ -4,28 +4,55 @@ function(O,KElement,A,Selector){
     var Traveller={
         /*
             TODO:
-                add()
+                
                 remove()
                 first()
                 last()
                 index()
         */
-        filter:function(selector){
-            return new KElement(Selector(selector,this._elements));
+        /**
+            ç»™elementå¢åŠ ä¸€äº›å…ƒç´ 
+            @param content string,element,kolaElement
+        */
+        add:function(content){
+            var elements=KElement.util.toElements(content);
+            for(var i=0,il=elements.length;i<il;i++){
+                for(var j=0,jl=this.length;j<jl;j++){
+                    if(this[j]==elements[i])
+                        break;
+                }
+                if(j==jl){
+                    this[length]=elements[i];
+                    this._elements[length]=elements[i];
+                    this.length++;
+                }
+            }
         },
-        is:function(){
-            return new Selector(selector,[this[0]]).length!=0;
+        index:function(selector){
+            var elem=this[0];
+            if(!elem)
+                return -1;
+            if(selector)
+                return A.indexOf(KElement(elem.parentNode).children(selector),elem);
+            else
+                return A.indexOf(elem.parentNode.children,elem);
+        },
+        filter:function(selector){
+            return new KElement(Selector.filter(selector,this._elements));
+        },
+        is:function(selector){
+            return Selector.filter( selector, [this[0]] ).length > 0;
         }
     };
     var SingleTraveller={
         /**
-            µÃµ½¸¸ÔªËØ
+            å¾—åˆ°çˆ¶å…ƒç´ 
         */
         parent:function(element){
             return element.parentNode;
         },
         /**
-            µÃµ½·ûºÏÌõ¼şµÄ×æÏÈÔªËØ
+            å¾—åˆ°ç¬¦åˆæ¡ä»¶çš„ç¥–å…ˆå…ƒç´ 
         */
         parents:function(element,selector){
             var nodes=[];
@@ -35,54 +62,65 @@ function(O,KElement,A,Selector){
             return Selector(selector,nodes);
         },
         /**
-            ÔªËØ¼°Æä×æÏÈÔªËØÖĞ×î¿¿½üµ±Ç°ÔªËØµÄ·ûºÏÌõ¼şµÄÔªËØ
+            å…ƒç´ åŠå…¶ç¥–å…ˆå…ƒç´ ä¸­æœ€é è¿‘å½“å‰å…ƒç´ çš„ç¬¦åˆæ¡ä»¶çš„å…ƒç´ 
         */
         closest:function(element,selector){
-            while (element.nodeType == 1) {
-                if(Selector.matchesSelector(element,selector))
-                    return element;
-                element = element.parentNode
+            //å¦‚æœæ˜¯é€‰æ‹©å™¨ï¼Œåˆ™æ‰¾åˆ°ç¬¦åˆé€‰æ‹©å™¨çš„å…ƒç´ 
+            if(O.isString(selector)){
+                while (element.nodeType == 1) {
+                    if(Selector.matchesSelector(element,selector))
+                        return element;
+                    element = element.parentNode
+                }
+            }else{//å¦‚æœæ˜¯æ•°ç»„ï¼Œåˆ™ä»æ•°ç»„ä¸­æ‰¾
+                while (element.nodeType == 1) {
+                    if(A.indexOf(selector,element)!=-1)
+                        return element;
+                    element = element.parentNode
+                }
             }
         },
         /**
-            µÃµ½·ûºÏselectorµÄ×ÓÔªËØ
+            å¾—åˆ°ç¬¦åˆselectorçš„å­å…ƒç´ 
         */
-        children:function(element,selector){
-            return Selector(selector,element.children)
+        children:function(element, selector){
+            return Selector.filter(selector,element.children)
         },
         /**
-            µÃµ½×ÓÊ÷ÉÏ·ûºÏselectorµÄÔªËØ
+            å¾—åˆ°å­æ ‘ä¸Šç¬¦åˆselectorçš„å…ƒç´ 
         */
-        find:function(element,selector){
+        find:function(element, selector){
             return Selector(selector,element).concat(Selector(selector,[element]));
         },
         /**
-		 * ÄÃµ½Ã¿Ò»¸öÔªËØµÄÇ°Ò»¸öĞÖµÜ½Úµã
-		 * @return °üº¬ÁËËùÓĞ½ÚµãµÄElement¶ÔÏó
+		 * æ‹¿åˆ°æ¯ä¸€ä¸ªå…ƒç´ çš„å‰ä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
+		 * @return åŒ…å«äº†æ‰€æœ‰èŠ‚ç‚¹çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
-        prev:function(element){
+        prev:function(element, selector){
             while ( element = element.previousSibling ) {
                 if ( element.nodeType == 1 ) {
-                    return element;
+                    if(!selector || Selector.matchesSelector(element,selector))
+                        return element;
                 }
             }
         },
         /**
-		 * ÄÃµ½Ã¿Ò»¸öÔªËØµÄºóÒ»¸öĞÖµÜ½Úµã
-		 * @return °üº¬ÁËËùÓĞ½ÚµãµÄElement¶ÔÏó
+		 * æ‹¿åˆ°æ¯ä¸€ä¸ªå…ƒç´ çš„åä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
+		 * @return åŒ…å«äº†æ‰€æœ‰èŠ‚ç‚¹çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
-        next:function(element){
+        next:function(element, selector){
             while ( element = element.nextSibling ) {
                 if ( element.nodeType == 1 ) {
-                    return element;
+                    if(!selector || Selector.matchesSelector(element,selector))
+                        return element;
                 }
             }
         },
         /**
-		 * ÄÃµ½Ã¿Ò»¸öÔªËØµÄµÚÒ»¸ö×Ó½Úµã
-		 * @return °üº¬ÁËËùÓĞ½ÚµãµÄElement¶ÔÏó
+		 * æ‹¿åˆ°æ¯ä¸€ä¸ªå…ƒç´ çš„ç¬¬ä¸€ä¸ªå­èŠ‚ç‚¹
+		 * @return åŒ…å«äº†æ‰€æœ‰èŠ‚ç‚¹çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		firstChild: function(element){
@@ -95,8 +133,8 @@ function(O,KElement,A,Selector){
             }
 		},
 		/**
-		 * ÄÃµ½Ã¿Ò»¸öÔªËØµÄ×îºóÒ»¸ö×Ó½Úµã
-		 * @return °üº¬ÁËËùÓĞ½ÚµãµÄElement¶ÔÏó
+		 * æ‹¿åˆ°æ¯ä¸€ä¸ªå…ƒç´ çš„æœ€åä¸€ä¸ªå­èŠ‚ç‚¹
+		 * @return åŒ…å«äº†æ‰€æœ‰èŠ‚ç‚¹çš„Elementå¯¹è±¡
 		 * @type kola.html.Element
 		 */
 		lastChild: function(element) {
@@ -122,12 +160,11 @@ function(O,KElement,A,Selector){
                 }
 			});
             nodes=unique(nodes);
-            if(nodes.length>0)
-                return new KElement(nodes);
+            return new KElement(nodes);
         }
     });
     /**
-    Êı×éÅÅ³ıÖØ¸´ÔªËØ
+    æ•°ç»„æ’é™¤é‡å¤å…ƒç´ 
     */
 	var unique=function(array){
         var flag=false;

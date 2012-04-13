@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.html.ElementCore domԪ�صķ�װ
+ * @fileOverview kola.html.ElementCore dom元素的封装 
  * @author Jady Yang Yuxin Guan
  * @version 2.0.0
  */
@@ -7,7 +7,7 @@ kola('kola.html.ElementCore',
 	['kola.lang.Class','kola.lang.Object','kola.event.Dispatcher','kola.css.Selector'],
 function(C, O, Dispatcher, Selector){
     /**
-        ����element.data�Ĵ洢
+        用于element.data的存储
     */
     var cache={};
     var cache_attr_name="kola" + new Date().getTime();
@@ -16,10 +16,10 @@ function(C, O, Dispatcher, Selector){
     var ElementCore=C.create(Dispatcher,{
         __ME:function(selector, context){
             if(O.isString(selector) && selector.charAt(0)!='<'){
-                //	���Ϊcss selector
+                //	如果为css selector
                 var nodes;
 
-                //	ȷ���Ƿ����context
+                //	确认是否存在context
                 if(O.isUndefined(context)){
                     context=null;
                 }else{
@@ -27,12 +27,12 @@ function(C, O, Dispatcher, Selector){
                     if(context.length==0)
                         context=null;
                 }
-                //	�������context���в�ͬ�Ĵ���
+                //	根据有无context进行不同的处理
                 if (context === null) {
                     nodes = Selector(selector);
                 } else {
-                    //	contextΪ���飬��Ҫ��ÿ��context��Ѱ��
-                    //	TODO: ������������ģ���Ϊ���selector���ǻ�ȡ��һ��������ָ����ĳ��
+                    //	context为数组，需要在每个context中寻找
+                    //	TODO: 这里是有问题的，因为如果selector就是获取第一个，或者指定的某个
                     nodes = [];
                     for (var i = 0, il = context.length; i < il; i ++) {
                         nodes = nodes.concat(Selector(selector, context[i]));
@@ -52,10 +52,10 @@ function(C, O, Dispatcher, Selector){
                 this[i]=elements[i];
             this._elements = elements;
         },
-        /*-------------------------------------- data��� --------------------------------------*/
+        /*-------------------------------------- data相关 --------------------------------------*/
         /**
-            �õ���0��Ԫ�ص�data[name]
-            ������������Ԫ�ص�data[name]
+            得到第0个元素的data[name]
+            或者设置所有元素的data[name]
         */
         data:function(name,data){
             if(O.isUndefined(data)){
@@ -77,7 +77,7 @@ function(C, O, Dispatcher, Selector){
             }
         },
         /**
-            �Ƴ�����Ԫ�ص�data[name]
+            移除所有元素的data[name]
         */
         removeData:function(name){
             this._each(function(e){
@@ -88,7 +88,7 @@ function(C, O, Dispatcher, Selector){
             });
         },
         /**
-            �Ƴ�����Ԫ�ص�����data
+            移除所有元素的所有data
         */
         removeAllData:function(){
             this._each(function(e){
@@ -98,35 +98,35 @@ function(C, O, Dispatcher, Selector){
                 cache[index]=null;
             });
         },
-		/*-------------------------------------- ������� --------------------------------------*/
+		/*-------------------------------------- 数组相关 --------------------------------------*/
 		elements: function(){
             return this._elements;
         },
         /**
-		 * �����ÿһ��Ԫ��
+		 * 迭代处理每一个元素
 		 */
 		each: function( fn ) {
-			//	ʹ�õ����ѭ��ÿ��Ԫ��
+			//	使用迭代器循环每个元素
 			for ( var i = 0, il = this.length; i < il; i++ ) {
 				fn.call( this, this.constructor( this[i] ), i );
 			}
 			return this;
 		},
-        /*-------------------------------------- KolaElement�ڲ����� --------------------------------------*/
+        /*-------------------------------------- KolaElement内部函数 --------------------------------------*/
         /**
-        ��each
+        简单each
         */
         _each:function(callBack){
             for(var i=0,il=this.length;i<il;i++)
                 callBack.call(this,this[i]);
         },
-        //ʹ���������Ϊʵ����һ�����飬�������
+        //使得浏览器认为实例是一个数组，方便调试
         length:0,
         splice:[].splice
     });
     
     /**
-	* ���շ�ʽת��Ϊcssд��
+	* 将驼峰式转换为css写法
 	*/
 	function hyphenate(name) {
 		return name.replace(/[A-Z]/g, function(match) {
@@ -136,7 +136,7 @@ function(C, O, Dispatcher, Selector){
     ElementCore.expando=cache_attr_name;
     ElementCore.util={
         /**
-         * ��ȡ��ʽ����
+         * 获取样式属性
          * @param element
          * @param name
          */
@@ -155,18 +155,18 @@ function(C, O, Dispatcher, Selector){
             return element.style[name];
         },
         /**
-        �õ�Ԫ������
-            Array[element] :����
-            element��[element]
-            kolaElement:kolaElement��_elements
-            String(html):ת����element
+        得到元素数组
+            Array[element] :不变
+            element：[element]
+            kolaElement:kolaElement的_elements
+            String(html):转换成element
         */
         toElements : function(selector){
             if(O.isArray(selector)){
                 return selector;
             }
             if(O.isString(selector)){
-                //	���Ϊhtml
+                //	如果为html
                 var ctr = document.createElement('div');
                 ctr.innerHTML = selector;
                 var arr=[];
@@ -176,10 +176,10 @@ function(C, O, Dispatcher, Selector){
                 ElementCore.fire({type:"ElementCreate",data:arr});
                 return arr;
             }
-            //	���Ϊkola.html.Element
+            //	如果为kola.html.Element
             if ( selector instanceof ElementCore )
                 return selector.elements();
-            //	���ΪDOMLElement
+            //	如果为DOMLElement
             if (selector.nodeType === 1) 
                 return [selector];
             if(selector.nodeType === 9){

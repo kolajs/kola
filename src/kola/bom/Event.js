@@ -11,8 +11,9 @@ kola('kola.bom.Event', [
     'kola.lang.Function',
     'kola.lang.Array',
     'kola.bom.Browser',
-    'kola.lang.Class'
-],function(KolaObject, KolaFunction, KolaArray ,B, C) {
+    'kola.lang.Class',
+    'kola.css.Selector'
+],function(KolaObject, KolaFunction, KolaArray , B, C, Selector) {
 	
 	/********************************************** 类定义 **********************************************/
     /**
@@ -77,9 +78,38 @@ kola('kola.bom.Event', [
 		}else{
             e= new DomEvent(e);
         }
-        e.currentTarget = this;
+        if(option.out){
+            var elem=e.target;
+            var match=false;
+            while(elem.nodeType==1 && elem!=this){
+                elem = elem.parentNode;
+            }
+            e.currentTarget = this;
+            if(elem!=this)
+                listenerfn.call( option.scope||this, e );
+            return;
+        }
+        //当前事件是代理
+        if(option.delegate){
+            var elem=e.target;
+            var match=false;
+            while(elem.nodeType==1 && elem!=this){
+                if(Selector.matchesSelector(elem,option.delegate)){
+                    match=elem;
+                    break;
+                }
+                elem = elem.parentNode;
+            }
+            //若target不是delegate的一部分，则放弃事件
+            if(!match)
+                return;
+            e.currentTarget = elem;
+        }else{
+            e.currentTarget = this;
+        }
         if(!KolaObject.isUndefined(option.data))
             e.data=option.data;
+        
 		listenerfn.call( option.scope||this, e );
 	};
     //light bind
@@ -94,13 +124,19 @@ kola('kola.bom.Event', [
 	var remove = function( element, name, listenerfn, obj ) {
 		//	删除listener
 		if ( element.removeEventListener ) {
-			element.removeEventListener( name, listenerfn, false );
+            if(obj.o.out)
+                document.removeEventListener( name, listenerfn, false );
+            else
+                element.removeEventListener( name, listenerfn, false );
 		} else {
 			//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 			if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
 				CheckboxChange.off( element, obj );
 			} else {
-				element.detachEvent( 'on' + name, listenerfn );
+                if(obj.o.out)
+                    document.detachEvent( name, listenerfn );
+                else
+                    element.detachEvent( name, listenerfn );
 			}
 		}
 	};
@@ -125,7 +161,7 @@ kola('kola.bom.Event', [
 		 */
 		on: function(element, name, listenerfn, option) {
 			if ( !element || !name || !listenerfn ) return this;
-			
+			option=option||{};
 			//	如果是IE7下触发unload事件，那就直接设置方法
 			if ( name == 'unload' && element == window && willLeak ) {
 				element.onunload = listenerfn;
@@ -145,7 +181,7 @@ kola('kola.bom.Event', [
 			}
 
 			var obj;
-
+/*
 			//	如果是采用attachEvent方法监听事件，那就进行一些特殊处理
 			if ( B.isIEStyle ) {
 				//	某一个方法只能监听某一个对象的某一个事件一次。主要是解决ie9之前的ie，同一方法可以监听同一对象的同一事件，多次的问题
@@ -155,11 +191,12 @@ kola('kola.bom.Event', [
 					}
 				}
             }
-            
+*/
             //	建立替代方法，主要是设定作用域
             obj = {
                 l: listenerfn,
-                h: eventBind(eventAgent, element, listenerfn, option||{})
+                h: eventBind(eventAgent, element, listenerfn, option),
+                o: option
             };
 
 			//	缓存事件处理方法
@@ -167,13 +204,19 @@ kola('kola.bom.Event', [
 					
 			//	绑定事件
 			if ( !B.isIEStyle ) {
-				element.addEventListener( name, obj.h, false );
+                if(option.out)
+                    document.addEventListener( name, obj.h, false );
+                else
+                    element.addEventListener( name, obj.h, false );
 			} else {
 				//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 				if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
 					CheckboxChange.on( element, obj.h, obj );
 				} else {
-					element.attachEvent( 'on' + name, obj.h );
+                    if(option.out)
+                        document.attachEvent( 'on' + name, obj.h );
+                    else
+                        element.attachEvent( 'on' + name, obj.h );
 				}
 			}
 					
@@ -229,10 +272,9 @@ kola('kola.bom.Event', [
 					//	这是要取消指定的监听方法
 	
 					//	循环所有存储的事件处理方法，如果相同，那就删除之
-					var funcName = element.addEventListener ? 'h' : 'l';
 					for( var i = listeners.length - 1; i >= 0; i-- ) {
 						var eventObj = listeners[i];
-						if ( eventObj[funcName] == listenerfn ) {
+						if ( eventObj.l == listenerfn ) {
 							remove( element, name, eventObj.h, eventObj );
 							listeners.splice( i, 1 );
 							break;
@@ -251,62 +293,6 @@ kola('kola.bom.Event', [
 				return this;
 			}
 		},
-		
-		/**
-		 * 监听发生在外部的某个事件
-		 */
-		onout: function(element, name, listenerfn) {
-			var f = KEvent._listener.out(element, name, listenerfn),
-				kolaEvent = element.__events;
-			if ( !kolaEvent ) {
-				kolaEvent = element.__events = {
-					out: []
-				};
-			} else if ( !kolaEvent.out ) {
-				kolaEvent.out = [];
-			}
-			
-			kolaEvent.out.push({n: name, l: listenerfn, f: f});
-			KEvent.on(document.body, name, f);
-			
-			return this;
-		},
-		
-		/**
-		 * 取消对外部某个事件的监听
-		 */
-		unout: function(element, name, listenerfn) {
-			var events;
-			if ((events = element.__events) && (events = events.out) && (events.length > 0)) {
-				
-				if ( listenerfn ) {
-					for (var i = 0, il = events.length; i < il; i++) {
-						var event = events[i];
-						if (event.n === name && event.l === listenerfn) {
-							KEvent.off(document.body, name, event.f);
-							events.splice(i, 1);
-							break;
-						}
-					}
-				} else {
-					
-					if ( !name ) {
-						//	删除所有监听事件
-						
-						for( var i = 0, il = events.length; i < il; i++ ) {
-							var event = events[i];
-							KEvent.off(document.body, event.n, event.f);
-						}
-		
-						//	删除缓存
-						element.__events.out = null;
-					}
-				}
-			}
-			
-			return this;
-		},
-
 		/**
 		 * 派发事件
 		 * @param element
