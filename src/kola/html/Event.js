@@ -23,23 +23,6 @@ kola('kola.html.Event', [
             }
 			return this;
 		},
-		onout: function(name, listenerfn, option) {
-            var _this=this;
-            var f=function(e){
-                if(K(e.target).closest(_this._elements).length==0)
-                    listenerfn.call(this, e, option);
-            }
-            //E.on(document, name, ,option);
-			return this;
-		},
-        offout: function(name, listenerfn, option) {
-            var _this=this;
-            E.off(document, name, function(e){
-                if(K(e.target).closest(_this._elements).length==0)
-                    listenerfn.call(this, e, option);
-            },option);
-			return this;
-		},
 		/**
 		 * 取消对事件的监听
 		 * @param {String} name 监听的事件名称

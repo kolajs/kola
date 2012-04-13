@@ -78,6 +78,17 @@ kola('kola.bom.Event', [
 		}else{
             e= new DomEvent(e);
         }
+        if(option.out){
+            var elem=e.target;
+            var match=false;
+            while(elem.nodeType==1 && elem!=this){
+                elem = elem.parentNode;
+            }
+            e.currentTarget = this;
+            if(elem!=this)
+                listenerfn.call( option.scope||this, e );
+            return;
+        }
         //当前事件是代理
         if(option.delegate){
             var elem=e.target;
@@ -113,13 +124,19 @@ kola('kola.bom.Event', [
 	var remove = function( element, name, listenerfn, obj ) {
 		//	删除listener
 		if ( element.removeEventListener ) {
-			element.removeEventListener( name, listenerfn, false );
+            if(obj.o.out)
+                document.removeEventListener( name, listenerfn, false );
+            else
+                element.removeEventListener( name, listenerfn, false );
 		} else {
 			//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 			if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
 				CheckboxChange.off( element, obj );
 			} else {
-				element.detachEvent( 'on' + name, listenerfn );
+                if(obj.o.out)
+                    document.detachEvent( name, listenerfn );
+                else
+                    element.detachEvent( name, listenerfn );
 			}
 		}
 	};
@@ -144,7 +161,7 @@ kola('kola.bom.Event', [
 		 */
 		on: function(element, name, listenerfn, option) {
 			if ( !element || !name || !listenerfn ) return this;
-			
+			option=option||{};
 			//	如果是IE7下触发unload事件，那就直接设置方法
 			if ( name == 'unload' && element == window && willLeak ) {
 				element.onunload = listenerfn;
@@ -178,7 +195,8 @@ kola('kola.bom.Event', [
             //	建立替代方法，主要是设定作用域
             obj = {
                 l: listenerfn,
-                h: eventBind(eventAgent, element, listenerfn, option||{})
+                h: eventBind(eventAgent, element, listenerfn, option),
+                o: option
             };
 
 			//	缓存事件处理方法
@@ -186,13 +204,19 @@ kola('kola.bom.Event', [
 					
 			//	绑定事件
 			if ( !B.isIEStyle ) {
-				element.addEventListener( name, obj.h, false );
+                if(option.out)
+                    document.addEventListener( name, obj.h, false );
+                else
+                    element.addEventListener( name, obj.h, false );
 			} else {
 				//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 				if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {
 					CheckboxChange.on( element, obj.h, obj );
 				} else {
-					element.attachEvent( 'on' + name, obj.h );
+                    if(option.out)
+                        document.attachEvent( 'on' + name, obj.h );
+                    else
+                        element.attachEvent( 'on' + name, obj.h );
 				}
 			}
 					
@@ -248,10 +272,9 @@ kola('kola.bom.Event', [
 					//	这是要取消指定的监听方法
 	
 					//	循环所有存储的事件处理方法，如果相同，那就删除之
-					var funcName = element.addEventListener ? 'h' : 'l';
 					for( var i = listeners.length - 1; i >= 0; i-- ) {
 						var eventObj = listeners[i];
-						if ( eventObj[funcName] == listenerfn ) {
+						if ( eventObj.l == listenerfn ) {
 							remove( element, name, eventObj.h, eventObj );
 							listeners.splice( i, 1 );
 							break;
