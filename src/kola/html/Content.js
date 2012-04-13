@@ -42,6 +42,30 @@ function(KElement,A,F,Browser,KEvent){
 		},
 		
 		/**
+		 * 获取节点中的outerHTML
+		 * @return html字符串
+		 * @type String
+		 */
+		/**
+		 * 设置节点中的outerHTML
+		 * @param {String} value 要设置的html字符串
+		 * @return 当前的Element对象
+		 * @type kola.html.Element
+		 */
+		outer: function(value) {
+			//	TODO: 这部分的代码需要重写
+			var el = this[0];
+
+			//	如果是获取值，那就直接调用方法
+			if ( typeof value == 'undefined' ) {
+				return el.outerHTML;
+			} else {
+				el.outerHTML = value;
+				return this;
+			}
+		},
+		
+		/**
 		 * 获取节点的text内容
 		 * @return text内容
 		 * @type String

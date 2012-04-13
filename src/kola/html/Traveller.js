@@ -4,12 +4,39 @@ function(O,KElement,A,Selector){
     var Traveller={
         /*
             TODO:
-                add()
+                
                 remove()
                 first()
                 last()
                 index()
         */
+        /**
+            给element增加一些元素
+            @param content string,element,kolaElement
+        */
+        add:function(content){
+            var elements=KElement.util.toElements(content);
+            for(var i=0,il=elements.length;i<il;i++){
+                for(var j=0,jl=this.length;j<jl;j++){
+                    if(this[j]==elements[i])
+                        break;
+                }
+                if(j==jl){
+                    this[length]=elements[i];
+                    this._elements[length]=elements[i];
+                    this.length++;
+                }
+            }
+        },
+        index:function(selector){
+            var elem=this[0];
+            if(!elem)
+                return -1;
+            if(selector)
+                return A.indexOf(KElement(elem.parentNode).children(selector),elem);
+            else
+                return A.indexOf(elem.parentNode.children,elem);
+        },
         filter:function(selector){
             return new KElement(Selector.filter(selector,this._elements));
         },
@@ -39,7 +66,7 @@ function(O,KElement,A,Selector){
         */
         closest:function(element,selector){
             //如果是选择器，则找到符合选择器的元素
-            if(O.isString()){
+            if(O.isString(selector)){
                 while (element.nodeType == 1) {
                     if(Selector.matchesSelector(element,selector))
                         return element;
@@ -47,7 +74,7 @@ function(O,KElement,A,Selector){
                 }
             }else{//如果是数组，则从数组中找
                 while (element.nodeType == 1) {
-                    if(A.indexOf(selector,element))
+                    if(A.indexOf(selector,element)!=-1)
                         return element;
                     element = element.parentNode
                 }
@@ -56,13 +83,13 @@ function(O,KElement,A,Selector){
         /**
             得到符合selector的子元素
         */
-        children:function(element,selector){
-            return Selector(selector,element.children)
+        children:function(element, selector){
+            return Selector.filter(selector,element.children)
         },
         /**
             得到子树上符合selector的元素
         */
-        find:function(element,selector){
+        find:function(element, selector){
             return Selector(selector,element).concat(Selector(selector,[element]));
         },
         /**
@@ -70,10 +97,11 @@ function(O,KElement,A,Selector){
 		 * @return 包含了所有节点的Element对象
 		 * @type kola.html.Element
 		 */
-        prev:function(element){
+        prev:function(element, selector){
             while ( element = element.previousSibling ) {
                 if ( element.nodeType == 1 ) {
-                    return element;
+                    if(!selector || Selector.matchesSelector(element,selector))
+                        return element;
                 }
             }
         },
@@ -82,10 +110,11 @@ function(O,KElement,A,Selector){
 		 * @return 包含了所有节点的Element对象
 		 * @type kola.html.Element
 		 */
-        next:function(element){
+        next:function(element, selector){
             while ( element = element.nextSibling ) {
                 if ( element.nodeType == 1 ) {
-                    return element;
+                    if(!selector || Selector.matchesSelector(element,selector))
+                        return element;
                 }
             }
         },

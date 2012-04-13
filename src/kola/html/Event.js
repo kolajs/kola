@@ -4,6 +4,7 @@ kola('kola.html.Event', [
     'kola.event.Dispatcher'
 ],function(E,A,Dispatcher){
     var domEventType='click,mouseover,mouseout,mouseenter,mouseleave,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit'
+    var out_cache=[];
     var DomEvent={
         /**
 		 * 监听事件
@@ -23,10 +24,19 @@ kola('kola.html.Event', [
 			return this;
 		},
 		onout: function(name, listenerfn, option) {
-            E.on(document, name, function(e){
-                if(e.target.closest(this._elements()))
-                    return
-                listenerfn.call(this, e, option);
+            var _this=this;
+            var f=function(e){
+                if(K(e.target).closest(_this._elements).length==0)
+                    listenerfn.call(this, e, option);
+            }
+            E.on(document, name, ,option);
+			return this;
+		},
+        offout: function(name, listenerfn, option) {
+            var _this=this;
+            E.off(document, name, function(e){
+                if(K(e.target).closest(_this._elements).length==0)
+                    listenerfn.call(this, e, option);
             },option);
 			return this;
 		},

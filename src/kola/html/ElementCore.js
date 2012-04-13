@@ -1,5 +1,5 @@
 /**
- * @fileOverview kola.html.ElementCore dom元素的封装
+ * @fileOverview kola.html.ElementCore dom元素的封装 
  * @author Jady Yang Yuxin Guan
  * @version 2.0.0
  */
@@ -38,12 +38,12 @@ function(C, O, Dispatcher, Selector){
                         nodes = nodes.concat(Selector(selector, context[i]));
                     }
                 }
-                return new ElementCore(nodes);
+                return new this(nodes);
             }else{
                 var nodes=ElementCore.util.toElements(selector);
             }
             if(nodes)
-                return new ElementCore(nodes);
+                return new this(nodes);
             return null;
         },
         _init:function(elements){
@@ -108,7 +108,7 @@ function(C, O, Dispatcher, Selector){
 		each: function( fn ) {
 			//	使用迭代器循环每个元素
 			for ( var i = 0, il = this.length; i < il; i++ ) {
-				fn.call( this.constructor( this[i] ), i );
+				fn.call( this, this.constructor( this[i] ), i );
 			}
 			return this;
 		},
