@@ -29,7 +29,7 @@ kola('kola.html.Event', [
                 if(K(e.target).closest(_this._elements).length==0)
                     listenerfn.call(this, e, option);
             }
-            E.on(document, name, ,option);
+            //E.on(document, name, ,option);
 			return this;
 		},
         offout: function(name, listenerfn, option) {
