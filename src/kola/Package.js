@@ -649,29 +649,34 @@
 		 * @return 文件url地址
 		 */
 		_path: function(name) {
-			//	获取路径配置信息
+			//	获取、路径配置信息
+			//	没有配置信息，就创建一个空的
 			var config = this._config;
-			if ( !config ) {
+			if (!config) {
+				config = this._config = {
+					paths: {}
+				};
+			}
+			if (!config.paths._default) {
 				//	不存在路径配置，那就从当前url中获取配置
-
+				
+				var _default = '';
+				
 				//	循环每一个script，如果其src属性中存在/kola/Package.js，那就认为上层路径就是其默认地址
 				var els = document.getElementsByTagName( 'script' ),
-					kolaFile = '/kola/Package.js',
+					kolaFile = 'kola/Package.js',
 					length = kolaFile.length;
 				for ( var i = 0, il = els.length; i < il; i++ ) {
 					var src, index;
 					if ( typeof ( src = els[i].src ) == 'string' &&
-							( index = src.indexOf( kolaFile ) ) != -1 ) {
-						this.config({
-							paths: {
-								_default: src.substr( 0, index ) + '/'
-							}
-						});
-						config = this._config;
-						break;
+						( index = src.indexOf( kolaFile ) ) != -1 
+					) {
+						_default = src.substr( 0, index );
 					}
 				}
-				if ( !config ) return '';
+				
+				//	保存默认信息
+				config.paths._default = _default;
 			}
 
 			var packs = name.split('.'),
