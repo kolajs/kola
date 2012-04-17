@@ -187,6 +187,9 @@ function(C, O, Dispatcher, Selector){
                     selector=selector.documentElement;
                 return [selector];
             }
+            // 如果是window
+            if(selector==window)
+                return [selector];
         }
     };
     return ElementCore;

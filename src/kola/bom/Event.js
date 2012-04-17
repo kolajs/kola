@@ -29,10 +29,11 @@ kola('kola.bom.Event', [
         
         stop
     */
-    var copyParams=["keyCode","ctrlKey"];
+    //FIXME:给window绑定onscroll事件没有位置信息
+    var copyParams=["keyCode","ctrlKey","clientX","clientY","screenX","screenY"];
     function DomEvent(e){
         this.event=e;
-        if(B.isIEStyle){
+        if(B.IEStyle){
             this.target=e.srcElement;
             this.relatedTarget = ( e.fromElement == e.srcElement ? e.toElement : e.fromElement );
             if(e.button==1)
@@ -46,12 +47,12 @@ kola('kola.bom.Event', [
             this.button=e.button;
             this.relatedTarget = e.relatedTarget;
         }
-        for(var i=0,il=copyParams;i<il;i++){
+        for(var i=0,il=copyParams.length;i<il;i++){
             this[copyParams[i]]=e[copyParams[i]];
         }
         //TODO copy params
      }
-     if(B.isIEStyle){
+     if(B.IEStyle){
          C.buildProto(DomEvent,{
              preventDefault:function(){this.event.returnValue=false;},
              stopPropagation:function(){this.event.cancelBubble=true;}
@@ -73,7 +74,7 @@ kola('kola.bom.Event', [
 	 * @param listenerfn
 	 */
 	var eventAgent = function( listenerfn, option, e ) {
-		if ( B.isIEStyle ) {
+		if ( B.IEStyle ) {
             e= new DomEvent(window.event);
 		}else{
             e= new DomEvent(e);
@@ -134,9 +135,9 @@ kola('kola.bom.Event', [
 				CheckboxChange.off( element, obj );
 			} else {
                 if(obj.o.out)
-                    document.detachEvent( name, listenerfn );
+                    document.detachEvent( "on"+name, listenerfn );
                 else
-                    element.detachEvent( name, listenerfn );
+                    element.detachEvent( "on"+name, listenerfn );
 			}
 		}
 	};
@@ -183,7 +184,7 @@ kola('kola.bom.Event', [
 			var obj;
 /*
 			//	如果是采用attachEvent方法监听事件，那就进行一些特殊处理
-			if ( B.isIEStyle ) {
+			if ( B.IEStyle ) {
 				//	某一个方法只能监听某一个对象的某一个事件一次。主要是解决ie9之前的ie，同一方法可以监听同一对象的同一事件，多次的问题
 				for ( var i = eventType.length - 1; i >= 0; i-- ) {
 					if ( eventType[ i ].l == listenerfn ) {
@@ -203,11 +204,12 @@ kola('kola.bom.Event', [
 			eventType.push( obj );
 					
 			//	绑定事件
-			if ( !B.isIEStyle ) {
-                if(option.out)
+			if ( !B.IEStyle ) {
+                if(option.out){
                     document.addEventListener( name, obj.h, false );
-                else
+                }else{
                     element.addEventListener( name, obj.h, false );
+                }
 			} else {
 				//	如果是监听checkbox input的onchange事件，那就需要监听替代的事件。这样做主要是解决，ie9之前，点击checkbox input时，并不会马上出发onchange事件，而是在失焦后出发onchange事件的问题
 				if ( name == 'change' && element.tagName && element.tagName.toLowerCase() == 'input' && element.type == 'checkbox' ) {

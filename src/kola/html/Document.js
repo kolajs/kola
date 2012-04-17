@@ -34,6 +34,10 @@ kola("kola.html.Document",[
                 h:高度
         */
         clientSize:function(){
+            return {
+                h:document.documentElement.clientHeight,
+                w:document.documentElement.clientWidth
+            };
         },
         /**
             视图大小
@@ -42,13 +46,15 @@ kola("kola.html.Document",[
                 h:高度
         */
         scroll:function(){
-            if(Browser.IE){
+            if(Browser.IE || Browser.Gecko){
                 return{
+                    element:document.documentElement,
                     top:document.documentElement.scrollTop,
                     left:document.documentElement.scrollLeft
                 } 
             }else{
                 return{
+                    element:document.body,
                     top:document.body.scrollTop,
                     left:document.body.scrollLeft
                 } 

@@ -7,30 +7,12 @@ function(KElement){
 		 * @return 位置
 		 * @type Object
 		 */
-		/**
-		 * 设置对象的位置，相对于其定位对象的位置
-		 * @param {Object} position 新位置
-		 * @return 当前的Element对象
-		 * @type kola.html.Element
-		 */
-		pos: function(position) {
-			if (typeof(position) == 'undefined') {
-				//	获取位置值
-				
+		pos: function() {
 				var element = this[0];
 				return {
 					left: element.offsetLeft,
 					top: element.offsetTop
 				};
-			} else {
-				//	设置位置值
-				
-				this._each( function(element) {
-					if ( !isNaN( position.left ) ) element.style.left = position.left + 'px';
-					if ( !isNaN( position.top ) ) element.style.top = position.top + 'px';
-				});
-				return this;
-			}
 		},
 		
 		/**
@@ -44,27 +26,14 @@ function(KElement){
 		 * @return 当前的Element对象
 		 * @type kola.html.Element
 		 */
-		clientPos: function(position) {
-			if (typeof(position) == 'undefined') {
-				//	获取位置值
-				
-				var pos = pagePos(this[0]),
-					db = document.body,
-					de = document.documentElement;
-				return {
-					left: pos.left - Math.max(db.scrollLeft, de.scrollLeft),
-					top: pos.top - Math.max(db.scrollTop, de.scrollTop)
-				};
-			} else {
-				//	设置位置值
-				
-				//	FIXME: 这里应该是设置相对于浏览器窗口区域的，而不是现在的left和top值
-				this._each( function(element) {
-					element.style.left = position.left + 'px';
-					element.style.top = position.top + 'px';
-				});
-				return this;
-			}
+		clientPos: function() {
+            var pos = pagePos(this[0]),
+                db = document.body,
+                de = document.documentElement;
+            return {
+                left: pos.left - Math.max(db.scrollLeft, de.scrollLeft),
+                top: pos.top - Math.max(db.scrollTop, de.scrollTop)
+            };
 		},
 		
 		/**
@@ -208,6 +177,45 @@ function(KElement){
 			//	获取宽度
 			return this[0].scrollHeight;
 		}
-    }
+    };
+    var pagePos = function(element) {
+		var left = 0,
+			top = 0,
+			doc = document,
+			de = doc.documentElement,
+			db = doc.body,
+			add = function(l, t) {
+				left += l || 0;
+				top += t || 0;
+			};
+		
+		if (element.getBoundingClientRect) {
+			//	存在方法直接获取位置，那就直接获取之
+			
+			var box = element.getBoundingClientRect();
+			add(box.left + Math.max(de.scrollLeft, db.scrollLeft) - de.clientLeft,
+					box.top + Math.max(de.scrollTop, db.scrollTop) - de.clientTop);
+		} else {
+			//	只能进行位置累加获取
+			
+			var op = element.offsetParent,
+				parent = element.parentNode;
+				
+			add(element.offsetLeft, element.offsetTop);
+			
+			//	逐个累加每个offsetParent的位置
+			while (op) {
+				add(op.offsetLeft, op.offsetTop);
+				op = op.offsetParent;
+			}
+
+			//	循环所有parentNode
+			while (parent && parent.tagName && !isBody.test(parent.tagName) ) {
+				add(-parent.scrollLeft, -parent.scrollTop);
+				parent = parent.parentNode;
+			}
+		}
+		return {left: left, top: top, x: left, y: top};
+	};
     return Display;
 });

@@ -12,10 +12,10 @@ function(O,KElement,A,Selector){
         */
         /**
             给element增加一些元素
-            @param content string,element,kolaElement
+            @param sets string,element,kolaElement
         */
-        add:function(content){
-            var elements=KElement.util.toElements(content);
+        add:function(sets){
+            var elements=KElement.util.toElements(sets);
             for(var i=0,il=elements.length;i<il;i++){
                 for(var j=0,jl=this.length;j<jl;j++){
                     if(this[j]==elements[i])
@@ -25,6 +25,21 @@ function(O,KElement,A,Selector){
                     this[length]=elements[i];
                     this._elements[length]=elements[i];
                     this.length++;
+                }
+            }
+        },
+        /**
+            给element排除一些元素
+            @param sets element,kolaElement
+        */
+        not:function(sets){
+            var elements=KElement.util.toElements(sets);
+            for(var i=0,il=elements.length;i<il;i++){
+                for(var j=0,jl=this.length;j<jl;j++){
+                    if(this[j]==elements[i]){
+                        this.splice(j,1);
+                        this._elements.splice(j,1);
+                    }
                 }
             }
         },
@@ -84,7 +99,10 @@ function(O,KElement,A,Selector){
             得到符合selector的子元素
         */
         children:function(element, selector){
-            return Selector.filter(selector,element.children)
+            var c=[];
+            for(var i=0;i<element.children.length;i++)
+                c[i]=element.children[i];
+            return Selector.filter(selector,c);
         },
         /**
             得到子树上符合selector的元素
@@ -145,7 +163,7 @@ function(O,KElement,A,Selector){
                     return child;
                 }
             }
-		},
+		}
     }
     O.each(SingleTraveller,function(name,func){
         Traveller[name]=function(selector){

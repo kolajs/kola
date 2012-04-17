@@ -79,9 +79,10 @@ kola('kola.event.Dispatcher',[
 	Dispatcher.fire=function(e){
         var instanceObserver=this._obverver[e.type];
         if(instanceObserver){
-            for(var i=0,il=instanceObserver.length;i<il;i++)
+            for(var i=0,il=instanceObserver.length;i<il;i++){
                 var ob=instanceObserver[i];
                 ob.listener.call(ob.option.scope||this,e);
+            }
         }
     }
     Dispatcher.on=function(name,listener,option){
@@ -90,7 +91,17 @@ kola('kola.event.Dispatcher',[
         this._obverver[name].push({listener:listener,option:option||{}});
     }
     Dispatcher.off=function(name,listener){
-        this._obverver[name].push({listener:listener,option:option||{}});
+        if(!this._obverver || !this._obverver[name])    return;
+        if(!listener)
+            this._obverver[name]=[];
+        else{
+            for(var i=0;i<this._obverver[name].length;i++){
+                if(this._obverver[name][i].listener==listener)
+                    break;
+            }
+            if(i!=this._obverver[name].length)
+                this._obverver[name].splice(i,1);
+        }
     }
     Dispatcher.__GENE=["_obverver","on","off","fire"];
     return Dispatcher
