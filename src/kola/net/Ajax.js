@@ -50,7 +50,7 @@ kola('kola.net.Ajax',
 			}
 
 			//	如果method只能通过url传递参数，那就放到url上
-			if ( ( method == 'get' || method == 'delete' ) && typeof(data) == 'string' ) {
+			if ( ( method == 'get' || method == 'delete' || method == 'put') && typeof(data) == 'string' ) {
                 url += (url.indexOf('?') == -1 ? '?' : '&') + data;
                 data = null;
             }
@@ -65,8 +65,8 @@ kola('kola.net.Ajax',
 			//	打开Ajax
             trans.open(method, url, opt.async);
 
-			//	如果是post或者put，那就设置内容编码类型
-            if ( method == 'post' || method == 'put' ) {
+			//	如果是post，那就设置内容编码类型
+            if ( method == 'post') {
                 trans.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
             }
 
