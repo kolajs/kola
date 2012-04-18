@@ -6,10 +6,10 @@
  */
 
 
-kola('kola.html.Form',
-[ 'kola.lang.Array', 'kola.bom.Event' ],
-function( KolaArray, Event ) {
-		
+kola('kola.html.Form',[
+    'kola.lang.Array'
+],function( KolaArray ) {
+
 	return {
 
 		/**
@@ -91,17 +91,6 @@ function( KolaArray, Event ) {
 			});
 
 			return hadData ? data : null;
-		},
-
-		/**
-		 * 监听提交事件
-		 * @param listenerfn
-		 */
-		submit: function( listenerfn ) {
-			KolaArray.forEach(this._elements, function(element) {
-				Event.on(element, 'submit', listenerfn);
-			});
-			return this;
 		}
 	};
 	

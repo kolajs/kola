@@ -3,7 +3,7 @@ kola('kola.html.Event', [
     'kola.lang.Array',
     'kola.event.Dispatcher'
 ],function(E,A,Dispatcher){
-    var domEventType='click,mouseover,mouseout,mouseenter,mouseleave,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,scroll'
+    var domEventType='click,mouseover,mouseout,mouseenter,mouseleave,mouseup,mousedown,mousemove,keyup,keydown,keypress,change,focus,blur,submit,scroll'
     var out_cache=[];
     var DomEvent={
         /**
@@ -85,7 +85,7 @@ kola('kola.html.Event', [
             fire
         */
     };
-    A.forEach('click,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur'.split(','),function(name){
+    A.forEach('click,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,change'.split(','),function(name){
         DomEvent[name]=function(listenerfn,option){
             this._each( function(element) {
 				E.on(element,name, listenerfn,option);

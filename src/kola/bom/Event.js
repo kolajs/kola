@@ -302,6 +302,14 @@ kola('kola.bom.Event', [
 		 * @param event
 		 */
 		fire: function( element, name, event ) {
+            if(B.IEStyle) {  
+                element.fireEvent(name);  
+            }else{  
+                var evt = document.createEvent('HTMLEvents');  
+                evt.initEvent(name,true,true);  
+                element.dispatchEvent(evt);  
+            }
+            /*
 			//	TODO: 暂时没有内浏览器内置事件增加良好支持
 
 			//	如果没有监听器，那就不做处理
@@ -315,7 +323,7 @@ kola('kola.bom.Event', [
 			//	循环每个监听器，依次执行之
 			for ( var i = 0, il = listeners.length; i < il; i++ ) {
 				listeners[ i ].h.call( element, event );
-			}
+			}*/
 		},
 		
 		/**

@@ -60,45 +60,6 @@ function( kolaArray, Event ) {
 			} else {
 				return element.checked;
 			}
-		},
-
-		/*-------------------------------------- 事件相关 --------------------------------------*/
-
-		/**
-		 * 监听单击事件
-		 * @param listenerfn
-		 */
-		change: function( listenerfn ) {
-			kolaArray.forEach(this._elements, function(element) {
-				Event.on(element, 'change', listenerfn);
-			});
-			return this;
-		},
-
-		/**
-		 * 监听focus事件
-		 * @param listenerfn
-		 */
-		focus: function( listenerfn ) {
-			if ( arguments.length == 0 ) {
-				this._elements[0].focus();
-			} else {
-				kolaArray.forEach(this._elements, function(element) {
-					Event.on(element, 'focus', listenerfn);
-				});
-			}
-			return this;
-		},
-
-		/**
-		 * 监听blur事件
-		 * @param listenerfn
-		 */
-		blur: function( listenerfn ) {
-			kolaArray.forEach(this._elements, function(element) {
-				Event.on(element, 'blur', listenerfn);
-			});
-			return this;
 		}
 	};
 	

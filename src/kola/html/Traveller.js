@@ -56,6 +56,8 @@ function(O,KElement,A,Selector){
             return new KElement(Selector.filter(selector,this._elements));
         },
         is:function(selector){
+            if(this.length==0)
+                return false;
             return Selector.filter( selector, [this[0]] ).length > 0;
         }
     };
@@ -105,10 +107,16 @@ function(O,KElement,A,Selector){
             return Selector.filter(selector,c);
         },
         /**
-            得到子树上符合selector的元素
+            得到改dom上符合selector的元素
         */
         find:function(element, selector){
-            return Selector(selector,element).concat(Selector(selector,[element]));
+            return Selector(selector,element).concat(Selector.filter(selector,[element]));
+        },
+        /**
+            得到子树上符合selector的元素
+        */
+        decendent:function(element, selector){
+            return Selector(selector,element);
         },
         /**
 		 * 拿到每一个元素的前一个兄弟节点
