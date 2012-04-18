@@ -88,7 +88,14 @@ kola('kola.html.Event', [
     A.forEach('click,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,change'.split(','),function(name){
         DomEvent[name]=function(listenerfn,option){
             this._each( function(element) {
-				E.on(element,name, listenerfn,option);
+                if(!listenerfn){
+                    if(name=="submit")
+                        element.submit();
+                    else
+                        E.fire(element, name);
+                }else{
+                    E.on(element, name, listenerfn, option);
+                }
 			});
         }
     });

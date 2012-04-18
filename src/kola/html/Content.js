@@ -14,6 +14,8 @@ function(KElement,A,F,Browser,KEvent){
 		 * @type kola.html.Element
 		 */
 		html: function(value) {
+            if(this.length==0)
+                return "";
 			var el = this[0],
 				ret;
 
@@ -55,7 +57,8 @@ function(KElement,A,F,Browser,KEvent){
 		outer: function(value) {
 			//	TODO: 这部分的代码需要重写
 			var el = this[0];
-
+            if(this.length==0)
+                return "";
 			//	如果是获取值，那就直接调用方法
 			if ( typeof value == 'undefined' ) {
 				return el.outerHTML;
