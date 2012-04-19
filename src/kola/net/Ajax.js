@@ -48,7 +48,21 @@ kola('kola.net.Ajax',
             if ( !method ) {
 				method = opt.method = 'get';
 			}
-
+            method=method.toLowerCase();
+            
+            if(typeof(data) != 'string' && typeof(data) != 'undefined'){
+                var str="";
+                var fist=true;
+                for(key in data){
+                    if(fist){
+                        fist=false;
+                        str+=key+"="+data[key];
+                    }else{
+                        str+="&"+key+"="+data[key];
+                    }
+                }
+                data=str;
+            }
 			//	如果method只能通过url传递参数，那就放到url上
 			if ( ( method == 'get' || method == 'delete' || method == 'put') && typeof(data) == 'string' ) {
                 url += (url.indexOf('?') == -1 ? '?' : '&') + data;

@@ -65,7 +65,7 @@ kola('kola.event.Dispatcher',[
             if(this._obverver){
                 var instanceObserver=this._obverver[e.type];
                 if(instanceObserver){
-                    for(var i=0,il=instanceObserver.length;i<il;i++){
+                    for(var i=0;i<instanceObserver.length;i++){
                         var ob=instanceObserver[i];
                         ob.listener.call(ob.option.scope||this,e);
                     }

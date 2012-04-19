@@ -173,7 +173,7 @@ function(C, O, Dispatcher, Selector){
                 for(var i=ctr.children.length-1;i>=0;i--){
                     arr[i]=ctr.children[i];
                 }
-                ElementCore.fire({type:"ElementCreate",data:arr});
+                ElementCore.fire({type:"DOMNodeInserted",data:arr});
                 return arr;
             }
             //	如果为kola.html.Element
