@@ -139,12 +139,23 @@ kola('kola.net.Ajax',
                             status: trans.status,
                             statusText: trans.statusText,
 							data:trans.responseText
-                        }
+                        };
+                        
                         //	判断是否是网络断线或者根本就请求不到服务器
                         if (trans.readyState == 4 && (trans.status == 0 || trans.status == 12030)) {
                             //	是
                             error.status = -1;
                         }
+	                    if (typeof(options.format) == 'string') {
+	                        switch(options.format) {
+	                            case 'json':
+	                                error.data = eval('(' + trans.responseText + ')');
+	                                break;
+	                            case 'xml':
+	                                error.data = trans.responseXML;
+	                                break;
+	                        }
+	                    }
                         options.fail(error);
                     }
                 }
