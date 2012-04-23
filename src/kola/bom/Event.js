@@ -303,7 +303,7 @@ kola('kola.bom.Event', [
 		 */
 		fire: function( element, name, event ) {
             if(B.IEStyle) {  
-                element.fireEvent(name);  
+                element.fireEvent("on"+name);  
             }else{  
                 var evt = document.createEvent('HTMLEvents');  
                 evt.initEvent(name,true,true);  

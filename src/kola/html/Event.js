@@ -3,7 +3,7 @@ kola('kola.html.Event', [
     'kola.lang.Array',
     'kola.event.Dispatcher'
 ],function(E,A,Dispatcher){
-    var domEventType='click,mouseover,mouseout,mouseenter,mouseleave,mouseup,mousedown,mousemove,keyup,keydown,keypress,change,focus,blur,submit,scroll'
+    var domEventType='resize,click,mouseover,mouseout,mouseenter,mouseleave,mouseup,mousedown,mousemove,keyup,keydown,keypress,change,focus,blur,submit,scroll'
     var out_cache=[];
     var DomEvent={
         /**

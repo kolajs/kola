@@ -40,7 +40,7 @@ function(KElement,A,F,Browser,KEvent){
 
 			
 			//	TODO: 这里是需要经过包装的，而且还需要考虑单个节点还是多个节点
-			return ret;
+			return this;
 		},
 		
 		/**
