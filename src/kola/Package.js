@@ -653,11 +653,13 @@
 			//	没有配置信息，就创建一个空的
 			var config = this._config;
 			if (!config) {
-				config = this._config = {
-					paths: {}
-				};
+				config = this._config = {};
 			}
-			if (!config.paths._default) {
+			var paths = config.paths;
+			if (!paths) {
+				paths = config.paths = {};
+			}
+			if (!paths._default) {
 				//	不存在路径配置，那就从当前url中获取配置
 				
 				var _default = '';
@@ -904,6 +906,9 @@
 				//	先设置包的状态
 				this._pathStatus[path] = Status.loading;
 				this._status(name, Status.loading);
+				
+				//	如果有设置不请求，那就不发送之，这样做一般是因为所有文件会直接注入
+				if (this._config && this.config.notRequest) return;
 
 				//	创建script节点，并设置相关属性
 				var script = document.createElement('script');
