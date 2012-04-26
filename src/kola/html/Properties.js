@@ -1,6 +1,8 @@
-kola('kola.html.Properties', 
-	['kola.html.ElementCore','kola.bom.Browser'],
-function(KElement,Browser){
+kola('kola.html.Properties',[
+    'kola.html.ElementCore',
+    'kola.bom.Browser',
+    'kola.lang.String'
+],function(KElement,Browser,KolaString){
     var Properties={
         /**
 		 * 获取某个属性值
@@ -151,7 +153,7 @@ function(KElement,Browser){
 			this._each( function(element) {
 				var str = element.className,index;
 				if (str.length > 0 && (index = (str = (' ' + str + ' ')).indexOf(name)) != -1) {
-					element.className = str.split(name).join(' ').replace(/[ ]{2,}/g,' ');
+					element.className = KolaString.trim(str.split(name).join(' ').replace(/[ ]{2,}/g,' '));
 				}
 			});
 			return this;
@@ -197,7 +199,7 @@ function(KElement,Browser){
 						}
 					} else {
                         //如果是数字，自动加px
-                        var newValue=parseInt(value);
+                        var newValue=parseFloat(value);
                         if(newValue==value && !noPx[name])
                             value=value+"px";
                         st[name] = value;

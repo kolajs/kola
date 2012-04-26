@@ -27,6 +27,7 @@ function(O,KElement,A,Selector){
                     this.length++;
                 }
             }
+            return this;
         },
         /**
             给element排除一些元素
@@ -42,6 +43,7 @@ function(O,KElement,A,Selector){
                     }
                 }
             }
+            return this;
         },
         index:function(selector){
             var elem=this[0];

@@ -97,6 +97,7 @@ kola('kola.html.Event', [
                     E.on(element, name, listenerfn, option);
                 }
 			});
+            return this;
         }
     });
     return DomEvent;
