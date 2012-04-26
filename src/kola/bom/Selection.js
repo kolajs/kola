@@ -1,7 +1,7 @@
 /**
  * @author guanyuxin
  * @date 2011.10.26
- * @desc 封装浏览器的selection和range
+ * @desc 灏佽娴忚鍣ㄧ殑selection鍜宺ange
 */
 kola("kola.bom.Selection",[
     "kola.html.Element",
@@ -13,7 +13,7 @@ kola("kola.bom.Selection",[
     }
     if(!Browser.IEStyle){
         var Selection={
-            clearSelection:function(){//清空window的选择
+            clearSelection:function(){//娓呯┖window鐨勯�夋嫨
                 if(window.getSelection().anchorNode)
                     window.getSelection().collapseToStart();
             },
@@ -51,7 +51,7 @@ kola("kola.bom.Selection",[
         }
     }else{
         var Selection={
-            clearSelection:function(){//清空window的选择
+            clearSelection:function(){//娓呯┖window鐨勯�夋嫨
                 var r = document.selection.createRange();
                 r.collapse(true);
                 r.select();

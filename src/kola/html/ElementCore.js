@@ -179,6 +179,14 @@ function(C, O, Dispatcher, Selector){
             //	如果为kola.html.Element
             if ( selector instanceof ElementCore )
                 return selector.elements();
+            //	如果为HTMLCollection的话，那就返回之
+            if (window.HTMLCollection && selector instanceof HTMLCollection) {
+            	var array = [];
+            	for (var i = 0, il = selector.length; i < il; i++) {
+            		array.push(selector[i]);
+            	}
+            	return array;
+            }
             //	如果为DOMLElement
             if (selector.nodeType === 1) 
                 return [selector];
