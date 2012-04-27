@@ -42,9 +42,7 @@ function(C, O, Dispatcher, Selector){
             }else{
                 var nodes=ElementCore.util.toElements(selector);
             }
-            if(nodes)
-                return new this(nodes);
-            return null;
+            return new this(nodes);
         },
         _init:function(elements){
             this.length=elements.length;
@@ -176,14 +174,18 @@ function(C, O, Dispatcher, Selector){
                 ElementCore.fire({type:"DOMNodeInserted",data:arr});
                 return arr;
             }
+            // 如果是window
+            if(selector==window)
+                return [selector];
             //	如果为kola.html.Element
             if ( selector instanceof ElementCore )
                 return selector.elements();
             //	如果为HTMLCollection的话，那就返回之
-            if (window.HTMLCollection && selector instanceof HTMLCollection) {
+            if (!O.isUndefined(selector.length)) {
             	var array = [];
             	for (var i = 0, il = selector.length; i < il; i++) {
-            		array.push(selector[i]);
+                    if(selector[i].nodeType === 1)
+                        array.push(selector[i]);
             	}
             	return array;
             }
@@ -195,9 +197,7 @@ function(C, O, Dispatcher, Selector){
                     selector=selector.documentElement;
                 return [selector];
             }
-            // 如果是window
-            if(selector==window)
-                return [selector];
+
         }
     };
     return ElementCore;

@@ -37,7 +37,7 @@ function(KElement,A,F,Browser,KEvent){
 					ret = innerHtml(el, value);
 				}
 			}
-            KElement.fire({type:"DOMNodeInserted",data:[this[0]]});
+            KElement.fire({type:"DOMNodeInserted",data:this[0].childNodes});
 			
 			//	TODO: 这里是需要经过包装的，而且还需要考虑单个节点还是多个节点
 			return this;
