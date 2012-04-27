@@ -22,8 +22,8 @@ function(O,KElement,A,Selector){
                         break;
                 }
                 if(j==jl){
-                    this[length]=elements[i];
-                    this._elements[length]=elements[i];
+                    this[this.length]=elements[i];
+                    this._elements[this.length]=elements[i];
                     this.length++;
                 }
             }
