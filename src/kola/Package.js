@@ -908,7 +908,7 @@
 				this._status(name, Status.loading);
 				
 				//	如果有设置不请求，那就不发送之，这样做一般是因为所有文件会直接注入
-				if (this._config && this.config.notRequest) return;
+				if (this._config && this._config.notRequest) return;
 
 				//	创建script节点，并设置相关属性
 				var script = document.createElement('script');
