@@ -61,6 +61,13 @@ function(O,KElement,A,Selector){
             if(this.length==0)
                 return false;
             return Selector.filter( selector, [this[0]] ).length > 0;
+        },
+        clone:function(){
+            var newNodes=[]
+            for(var i=0,il=this.length;i<il;i++)
+                newNodes.push(this[i].cloneNode(true));
+            KElement.fire({type:"DOMNodeInserted",data:newNodes});
+            return new KElement(newNodes);
         }
     };
     var SingleTraveller={
