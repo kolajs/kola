@@ -59,8 +59,12 @@ kola('kola.bom.Event', [
          });
      }else{
          C.buildProto(DomEvent,{
-             preventDefault:function(){this.event.preventDefault()},
-             stopPropagation:function(){this.event.stopPropagation()}
+            preventDefault:function(){
+                this.event.preventDefault()
+            },
+            stopPropagation:function(){
+                this.event.stopPropagation()
+            }
          });
      }
      DomEvent.prototype.stop=function(){
