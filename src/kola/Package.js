@@ -924,7 +924,12 @@
 				//	设置加载错误后的处理方法	
 				script.onerror = function() {
 					//	throw new Error("JS文件加载失败：" + path);
-					alert("can't load js file：" + path);
+					var message = "can't load js file：" + path;
+					if (window.Error) {
+						throw new Error(message);
+					} else {
+						alert(message);
+					}
 					script.onerror = null;
 				};
 
