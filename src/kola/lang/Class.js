@@ -115,7 +115,12 @@ kola('kola.lang.Class',
 
 			//	如果不存在要检测的实例，需要报错
 			if ( !object ) {
-				throw new Error( '要检测的实例不存在' );
+				if (window.Error) {
+					throw new Error( '要检测的实例不存在' );
+				} else {
+					alert('要检测的实例不存在');
+				}
+				
 				return;
 			}
 
