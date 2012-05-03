@@ -323,7 +323,7 @@ kola("kola.data.Json",[
         };
         return JSON;
     }else{
-        return JSON;
+        return window.JSON;
     }
 });
 

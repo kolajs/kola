@@ -181,7 +181,7 @@ function(C, O, Dispatcher, Selector){
             if ( selector instanceof ElementCore )
                 return selector.elements();
             //	如果为HTMLCollection的话，那就返回之
-            if (!O.isUndefined(selector.length)) {
+            if (selector instanceof NodeList || selector instanceof HTMLCollection) {
             	var array = [];
             	for (var i = 0, il = selector.length; i < il; i++) {
                     if(selector[i].nodeType === 1)
