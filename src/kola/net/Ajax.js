@@ -7,7 +7,7 @@
 
 kola('kola.net.Ajax',
 	['kola.lang.Function'],
-	function(Function) {
+	function(KolaFunction) {
 	/********************************************** 类定义 **********************************************/
 
 	/**

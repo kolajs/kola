@@ -14,13 +14,13 @@ kola('kola.html.Event', [
 		 * @type kola.html.Element
 		 */
 		on: function(name, listenerfn, option) {
-            if(domEventType.indexOf(name)!=-1){
+            //if(domEventType.indexOf(name)!=-1){
                 this._each( function(element) {
                     E.on(element, name, listenerfn,option);
                 });
-            }else{
-                Dispatcher.prototype.on.call(name, listenerfn, option)
-            }
+            //}else{
+            //    Dispatcher.prototype.on.call(name, listenerfn, option)
+            //}
 			return this;
 		},
 		/**
@@ -31,23 +31,23 @@ kola('kola.html.Event', [
 		 * @type kola.html.Element
 		 */
 		off: function(name, listenerfn) {
-            if(domEventType.indexOf(name)!=-1){
+            //if(domEventType.indexOf(name)!=-1){
                 this._each( function(element) {
                     E.off(element, name, listenerfn);
                 });
-            }else{
-                Dispatcher.prototype.off.call(name, listenerfn);
-            }
+            //}else{
+            //    Dispatcher.prototype.off.call(name, listenerfn);
+            //}
 			return this;
 		},
         fire:function(name){
-            if(domEventType.indexOf(name)!=-1){
+            //if(domEventType.indexOf(name)!=-1){
                 this._each( function(element) {
                     E.fire(element, name);
                 });
-            }else{
-                Dispatcher.prototype.fire.call(name);
-            }
+            //}else{
+            //    Dispatcher.prototype.fire.call(name);
+            //}
         },
         mouseenter:function(listenerfn, option){
             this._each( function(element) {

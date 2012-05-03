@@ -96,6 +96,7 @@ function(KElement,A,F,Browser,KEvent){
             for(var i=0,il=elements.length;i<il;i++){
                 appendChild(el, elements[i]);
             }
+            return this;
             //给数组中的每一项都添加内容，暂时用不到
             /*
             for(var i=1;il<this.length;i++){
@@ -112,44 +113,14 @@ function(KElement,A,F,Browser,KEvent){
 		 * @return 被添加的节点
 		 * @type kola.html.Element
 		 */
-		prepend: function() {
-			var nodes = [],
-				parent = this[0],
-				offset = parent.firstChild || null;
-			A.forEach(arguments, F.bind((function(parent, offset, nodes, elementN) {
-				var node;
-				if (typeof(elementN) == 'string') {
-					var ctr = document.createElement('div');
-					ctr.innerHTML = elementN;
-					while (ctr.firstChild) {
-						node = insertBefore(parent, ctr.firstChild, offset);
-						if (!offset) offset = node;
-						if (node.nodeType == 1) {
-							nodes.push(node);
-						}
-					}
-				} else {
-					if (elementN.nodeType) {
-						elementN = [elementN];
-					}
-					for (var i = 0, il = elementN.length; i < il; i ++) {
-						node = insertBefore(parent, elementN[i], offset);
-						if (!offset) offset = node;
-						if (node.nodeType == 1) {
-							nodes.push(node);
-						}
-					}
-				}
-			}), this, parent, offset, nodes));
-
-			if ( nodes.length > 0 ) {
-				//	派发dominsert事件
-				fireDomInsert( nodes[ 0 ] );
-
-				return new this.constructor(nodes);
-			} else {
-				return null;
-			}
+		prepend: function(target) {
+            var elements=KElement.util.toElements(target);
+            var el=this[0];
+            var offset = el.firstChild || null;
+            for(var i=elements.length-1;i>=0;i--){
+                insertBefore(el, elements[i],offset);
+            }
+            return this;
 		},
 		
 		/**
