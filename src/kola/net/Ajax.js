@@ -50,19 +50,26 @@ kola('kola.net.Ajax',
 			}
             method=method.toLowerCase();
             
-            if(typeof(data) != 'string' && typeof(data) != 'undefined'){
-                var str="";
-                var fist=true;
-                for(key in data){
-                    if(fist){
-                        fist=false;
-                        str+=key+"="+data[key];
-                    }else{
-                        str+="&"+key+"="+data[key];
-                    }
-                }
-                data=str;
+            //	解析data，并进行相应的处理
+            var addDefaultHeader = true;
+            if (typeof data == 'object' && data !== null) {
+            	if (window.FormData && data instanceof window.FormData) {
+            		addDefaultHeader = false;
+            	} else {
+	                var str = "";
+	                var first = true;
+	                for(key in data){
+	                    if(first){
+	                        first=false;
+	                        str+=key+"="+data[key];
+	                    }else{
+	                        str+="&"+key+"="+data[key];
+	                    }
+	                }
+	                data = str;
+            	}
             }
+            
 			//	如果method只能通过url传递参数，那就放到url上
 			if ( ( method == 'get' || method == 'delete' || method == 'put') && typeof(data) == 'string' ) {
                 url += (url.indexOf('?') == -1 ? '?' : '&') + data;
@@ -74,21 +81,27 @@ kola('kola.net.Ajax',
 			}
 
 			//	获取原生Ajax
-			var trans = getTransport();
+			var trans = getTransport(url);
 
 			//	打开Ajax
             trans.open(method, url, opt.async);
 
-			//	如果是post，那就设置内容编码类型
-            if ( method == 'post') {
-                trans.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
-            }
+			//	设置headers
+			var headers = opt.headers || {};
+			if (addDefaultHeader && method == 'post' && !headers['Content-Type']) {
+				headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+			}
+			for (var name in headers) {
+				var value = headers[name];
+				if (typeof value != 'string') continue;
+				trans.setRequestHeader(name, value);
+			}
 
 			//	设置ajax的跟踪事件
-            trans.onreadystatechange = Function.bind(this._onStateChange, this, trans, url, opt);
+            trans.onreadystatechange = KolaFunction.bind(this._onStateChange, this, trans, url, opt);
 
 			//	发送数据
-            trans.send(data || null);
+			trans.send(data || null);
 
             return trans;
         },
