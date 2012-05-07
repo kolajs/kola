@@ -111,7 +111,15 @@ function(KElement){
 				return this;
 			}
 		},
-		
+		outerWidth:function(){
+            return this[0].offsetWidth+
+                    parseInt(this.style("padding-left")||"0")+
+                    parseInt(this.style("padding-right")||"0")+
+                    parseInt(this.style("border-left")||"0")+
+                    parseInt(this.style("border-right")||"0")+
+                    parseInt(this.style("margin-left")||"0")+
+                    parseInt(this.style("margin-left")||"0");
+        },
 		/**
 		 * 获取第一个对象的高度
 		 * @return 高度

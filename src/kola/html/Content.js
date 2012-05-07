@@ -157,7 +157,7 @@ function(KElement,A,F,Browser,KEvent){
 					}
 				}
 			}), this, parent, offset, nodes));
-
+            KElement.fire({type:"DOMNodeInserted",data:nodes});
 			return new this.constructor(nodes);
 		},
 		
@@ -195,7 +195,7 @@ function(KElement,A,F,Browser,KEvent){
 					}
 				}
 			}), this, parent, offset, func, nodes));
-
+            KElement.fire({type:"DOMNodeInserted",data:nodes});
 			return new this.constructor(nodes);
 		},
 	
