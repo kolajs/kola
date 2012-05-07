@@ -120,7 +120,26 @@ kola('kola.net.Ajax',
             options.format = 'xml';
             return this.request(url, options);
         },
+        
+        get: function(url, options) {
+            options.method = 'get';
+            return this.request(url, options);
+        },
 
+        post: function(url, options) {
+            options.method = 'post';
+            return this.request(url, options);
+        },
+
+        put: function(url, options) {
+            options.method = 'put';
+            return this.request(url, options);
+        },
+        
+        delete: function(url, options) {
+            options.method = 'delete';
+            return this.request(url, options);
+        },
         _onStateChange: function(trans, url, options) {
             if (trans.readyState == 4) {
                 trans.onreadystatechange = function() {};

@@ -2,7 +2,7 @@
  * @author guanyuxin
  * @date 2011.10.26
  * @desc 封装浏览器的selection和range
-*/
+ */
 kola("kola.bom.Selection",[
     "kola.html.Element",
     "kola.bom.Browser"

@@ -16,21 +16,19 @@ kola('kola.bom.Event', [
 ],function(KolaObject, KolaFunction, KolaArray , B, C, Selector) {
 	
 	/********************************************** 类定义 **********************************************/
-    /**
-        kola事件对象
-        
-        target
-        relatedTarget
-        currentTarget
-        preventDefault
-        stopPropagation
-        
-        keyCode
-        
-        stop
-    */
+
     //FIXME:给window绑定onscroll事件没有位置信息
     var copyParams=["keyCode","ctrlKey","clientX","clientY","screenX","screenY"];
+    /**
+	 * kola事件对象
+	 * @prop currentTarget 绑定时没有设置option.delegate时，currentTarget为绑定该事件的元素，设置option.delegate时，currentTarget为被代理的元素
+     * @prop data: 绑定事件时传入的数据
+     * @prop event: 浏览器内置事件对象
+     * @prop button: w3c兼容
+     * @method preventDefault: w3c兼容
+     * @method stopPropagation: w3c兼容
+     * @method stop: preventDefault & stopPropagation
+	 */
     function DomEvent(e){
         this.event=e;
         if(B.IEStyle){
@@ -50,7 +48,6 @@ kola('kola.bom.Event', [
         for(var i=0,il=copyParams.length;i<il;i++){
             this[copyParams[i]]=e[copyParams[i]];
         }
-        //TODO copy params
      }
      if(B.IEStyle){
          C.buildProto(DomEvent,{
@@ -71,12 +68,7 @@ kola('kola.bom.Event', [
         this.preventDefault();
         this.stopPropagation();
      }
-	/**
-	 *
-	 * @param element
-	 * @param name
-	 * @param listenerfn
-	 */
+	
 	var eventAgent = function( listenerfn, option, e ) {
 		if ( B.IEStyle ) {
             e= new DomEvent(window.event);
@@ -123,9 +115,7 @@ kola('kola.bom.Event', [
             return callbackfn.call(scope,listenerfn,option,e);
         };
     }
-	/**
-	 * 删除指定的事件
-	 */
+	//删除指定的事件
 	var remove = function( element, name, listenerfn, obj ) {
 		//	删除listener
 		if ( element.removeEventListener ) {
@@ -145,30 +135,30 @@ kola('kola.bom.Event', [
 			}
 		}
 	};
-	
-	/**
-	 * 是否会引起内存泄露，主要是针对小于IE8的IE版本
-	 */
-	var willLeak = window.ActiveXObject && !window.XDomainRequest;
-	
-	/**
-	 * 常见的inline事件
-	 */
+
+	//常见的inline事件
 	var inlineEvents = [
 		'onclick', 'ondblclick', 'onmouseover', 'onmouseout', 'onmouseup', 'onmousedown',
 		'onblur', 'onfocus', 'onchange', 'onsubmit'
 	];
 
 	var KEvent = {
-        
 		/**
 		 * 监听一个事件
+         * @param {kolaElement} element 要绑定事件的元素
+         * @param {String} name 事件名称
+         * @param {function} listenerfn 事件的处理函数
+         * @param {object} option 配置参数
+                @option {object} scope 指定处理函数的this，如果没有，则默认为element
+                @option {ANY} data 绑定事件时附带的参数，事件处理时会附加在event.data中
+                @option {selector} delegate 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
+                @option {Boolean} out 指定事件在当前元素之外触发
 		 */
 		on: function(element, name, listenerfn, option) {
 			if ( !element || !name || !listenerfn ) return this;
 			option=option||{};
 			//	如果是IE7下触发unload事件，那就直接设置方法
-			if ( name == 'unload' && element == window && willLeak ) {
+			if ( name == 'unload' && element == window && B.IE67 ) {
 				element.onunload = listenerfn;
 				return this;
 			}
@@ -186,17 +176,7 @@ kola('kola.bom.Event', [
 			}
 
 			var obj;
-/*
-			//	如果是采用attachEvent方法监听事件，那就进行一些特殊处理
-			if ( B.IEStyle ) {
-				//	某一个方法只能监听某一个对象的某一个事件一次。主要是解决ie9之前的ie，同一方法可以监听同一对象的同一事件，多次的问题
-				for ( var i = eventType.length - 1; i >= 0; i-- ) {
-					if ( eventType[ i ].l == listenerfn ) {
-						return this;
-					}
-				}
-            }
-*/
+
             //	建立替代方法，主要是设定作用域
             obj = {
                 l: listenerfn,
@@ -230,7 +210,21 @@ kola('kola.bom.Event', [
 		},
 		
 		/**
-		 * 取消对事件的监听
+		 * 取消元素的所有事件绑定
+         * @param {kolaElement} element 要解除事件绑定的元素
+		 */
+        
+        /**
+		 * 取消元素的某个类型事件绑定
+         * @param {kolaElement} element 要解除事件绑定的元素
+         * @param {String} name 要解除事件绑定的类型
+		 */
+        
+        /**
+		 * 取消元素的指定事件处理
+         * @param {kolaElement} element 要解除事件绑定的元素
+         * @param {String} name 要解除事件绑定的类型
+         * @param {Function} listenerfn 要解除事件绑定的处理函数
 		 */
 		off: function( element, name, listenerfn ) {
 			if ( !element ) return this;
@@ -328,58 +322,8 @@ kola('kola.bom.Event', [
 			for ( var i = 0, il = listeners.length; i < il; i++ ) {
 				listeners[ i ].h.call( element, event );
 			}*/
-		},
-		
-		/**
-		 * 获取该事件发生时，其在页面上的位置
-		 * @param e
-		 */
-		pagePos: function(e) {
-			var x, y;
-			if ( typeof( e.x ) == 'number' ) {
-				var doc = document.documentElement, body = document.body;
-				x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-				y = e.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
-			} else {
-				x = e.pageX;
-				y = e.pageY;
-			}
-			return {
-				x: x,
-				y: y,
-				left: x,
-				top: y
-			};
-		},
-
-		/**
-		 * 存储所有特殊事件类型的监听器生成方法
-		 */
-		_listener: {
-			out: function(element, name, listenerfn) {
-				return function(e) {
-					if (!Event.contains(element,(Event.element(e)))) {
-						listenerfn.call(window, e);
-					}
-				};
-			}
-		},
-		/**
-		 * 判断是否包含指定的对象
-		 * @param {KolaElement} element 对象
-		 * @return true 或者 false
-		 * @type boolean
-		 */
-		contains: function(parent,child) {
-			if (!child) return false;
-			var element = child;
-			while (element = element.parentNode) {
-				if (element == parent) return true;
-			}
-			return false;
 		}
-
-	};
+    };
 
 	/* ---------------------------------- checkbox input change事件的特殊处理程序 ----------------------------------------*/
 
