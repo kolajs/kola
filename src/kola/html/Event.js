@@ -91,6 +91,8 @@ kola('kola.html.Event', [
                 if(!listenerfn){
                     if(name=="submit")
                         element.submit();
+                    if(name=="focus")
+                        element.focus();
                     else
                         E.fire(element, name);
                 }else{

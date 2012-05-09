@@ -180,15 +180,8 @@ function(C, O, Dispatcher, Selector){
             //	如果为kola.html.Element
             if ( selector instanceof ElementCore )
                 return selector.elements();
-            //	如果为HTMLCollection的话，那就返回之
-            if (selector instanceof NodeList || selector instanceof HTMLCollection) {
-            	var array = [];
-            	for (var i = 0, il = selector.length; i < il; i++) {
-                    if(selector[i].nodeType === 1)
-                        array.push(selector[i]);
-            	}
-            	return array;
-            }
+            
+            
             //	如果为DOMLElement
             if (selector.nodeType === 1) 
                 return [selector];
@@ -197,7 +190,15 @@ function(C, O, Dispatcher, Selector){
                     selector=selector.documentElement;
                 return [selector];
             }
-
+            //	如果为HTMLCollection的话，那就返回之
+            if (!O.isUndefined(selector.length)) {
+            	var array = [];
+            	for (var i = 0, il = selector.length; i < il; i++) {
+                    if(selector[i].nodeType === 1)
+                        array.push(selector[i]);
+            	}
+            	return array;
+            }
         }
     };
     return ElementCore;
