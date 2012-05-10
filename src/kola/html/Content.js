@@ -64,7 +64,7 @@ function(KElement,A,F,Browser,KEvent){
 				return el.outerHTML;
 			} else {
                 this.before(value);
-                this.html("");
+                this.remove();
 				return this;
 			}
 		},
