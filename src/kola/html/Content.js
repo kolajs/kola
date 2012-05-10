@@ -63,8 +63,8 @@ function(KElement,A,F,Browser,KEvent){
 			if ( typeof value == 'undefined' ) {
 				return el.outerHTML;
 			} else {
-				el.outerHTML = value;
-                console.log(el);
+                this.before(value);
+                this.html("");
 				return this;
 			}
 		},
