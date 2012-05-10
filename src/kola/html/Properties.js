@@ -94,8 +94,38 @@ kola('kola.html.Properties',[
          
 		prop: function(name, value) {
 			if (typeof(value) == 'undefined') {
+				var element = this[0],
+					valueString = element[name];
+				
+				//	如果存在有意义值的话，需要进行相应的判断
+				if (typeof valueString == 'string') {
+					var valueLength = valueString.length;
+					
+					//	修复IE下，获取A标签的host，会默认加上:80的问题
+					if (name == 'host'
+							&& valueLength > 3 
+							&& element.protocol.toLowerCase() == 'http:' 
+							&& valueString.substr(valueLength - 3) == ':80') {
+						
+						valueString = valueString.substr(0, valueLength - 3);
+					}
+					
+					//	修复IE下，获取A标签的pathname，没有最开始的/的问题
+					if (name == 'pathname') {
+						if (valueLength > 0) {
+							//	如果第一个不是/，那就增加之
+							if (valueString.charAt(0) != '/') {
+								valueString = '/' + valueString;
+							}
+						} else {
+							//	如果实在根目录，那就直接设置为/
+							valueString = '/';
+						}
+					}
+				}
+				
 				//	获取属性值
-				return this[0][name];
+				return valueString;
 			} else {
 				//	设置属性值
 				this._each( function(element) {
