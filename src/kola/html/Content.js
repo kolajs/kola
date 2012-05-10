@@ -64,6 +64,7 @@ function(KElement,A,F,Browser,KEvent){
 				return el.outerHTML;
 			} else {
 				el.outerHTML = value;
+                console.log(el);
 				return this;
 			}
 		},
@@ -219,7 +220,8 @@ function(KElement,A,F,Browser,KEvent){
 			if (!element || !(element = this.constructor(element))) return false;
 			element = element[0];
 			var el = this[0];
-			
+			if(el==element)
+                return true;
 			if (el.contains) {
 				return el.contains(element);
 			} else {

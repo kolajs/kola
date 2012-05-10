@@ -136,7 +136,7 @@ kola('kola.net.Ajax',
             return this.request(url, options);
         },
         
-        delete: function(url, options) {
+        'delete': function(url, options) {
             options.method = 'delete';
             return this.request(url, options);
         },
@@ -155,7 +155,8 @@ kola('kola.net.Ajax',
                                 ctt = trans.responseText;
                                 break;
                             case 'json':
-                                ctt = eval('(' + trans.responseText + ')');
+                                if(trans.responseText)
+                                    ctt = eval('(' + trans.responseText + ')');
                                 break;
                             case 'xml':
                                 ctt = trans.responseXML;
