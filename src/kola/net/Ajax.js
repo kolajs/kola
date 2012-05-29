@@ -70,7 +70,7 @@ kola('kola.net.Ajax',
             	}
             }
             if(url.indexOf("http")!=0){
-                url=var currentURL = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "")+url;
+                url=window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "")+url;
             }
 			//	如果method只能通过url传递参数，那就放到url上
 			if ( ( method == 'get' || method == 'delete' || method == 'put') && typeof(data) == 'string' ) {
