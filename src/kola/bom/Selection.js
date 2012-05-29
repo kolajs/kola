@@ -26,6 +26,15 @@ kola("kola.bom.Selection",[
             getRange:function(){
                 var selObj = window.getSelection();  
                 var range  = selObj.getRangeAt(0);
+                if(range.startContainer.nodeType!=3){
+                    var dom=range.startContainer.childNodes[range.startOffset];
+                    return {
+                        startContainer:dom,
+                        endContainer:dom,
+                        startOffset:dom.selectionStart,
+                        endOffset:dom.selectionEnd
+                    }
+                }
                 return range;
             },
             select:function(node,start,end){

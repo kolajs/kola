@@ -18,7 +18,7 @@ kola('kola.bom.Event', [
 	/********************************************** 类定义 **********************************************/
 
     //FIXME:给window绑定onscroll事件没有位置信息
-    var copyParams=["keyCode","ctrlKey","clientX","clientY","screenX","screenY"];
+    var copyParams=["keyCode","ctrlKey","shiftKey","clientX","clientY","screenX","screenY"];
     /**
 	 * kola事件对象
 	 * @prop currentTarget 绑定时没有设置option.delegate时，currentTarget为绑定该事件的元素，设置option.delegate时，currentTarget为被代理的元素
@@ -226,7 +226,7 @@ kola('kola.bom.Event', [
          * @param {String} name 要解除事件绑定的类型
          * @param {Function} listenerfn 要解除事件绑定的处理函数
 		 */
-		off: function( element, name, listenerfn ) {
+		off: function( element, name, listenerfn, out) {
 			if ( !element ) return this;
 
 			//	如果不存在事件缓存，那就不做处理
@@ -242,6 +242,10 @@ kola('kola.bom.Event', [
 						//	如果是out事件，那就删除所有out事件
 						KEvent.unout( element );
 					} else {
+                        if(out){
+                            this.off(document, name, listenerfn);
+                            return this;
+                        }
 						listeners = events[ key ];
 						if ( typeof listeners != 'object' || ( listeners == null ) || !listeners.length ) continue;
 						

@@ -1,0 +1,44 @@
+<html>
+<head>
+    <script>
+        (function() {
+            //  加载kola
+            var script = document.createElement('script');
+            script.src = 'http://localhost/kola/Package.js';
+            script.type = 'text/javascript';
+            script.charset='UTF8';
+            document.getElementsByTagName('head')[0].appendChild(script);
+            script = null;
+
+            //  声明一个kola替代变量
+            window.kola = function() {
+                var arr = [ this ];
+                for ( var i = 0, il = arguments.length; i < il; i++) {
+                    arr.push(arguments[i]);
+                }
+                kola._cache.push(arr);
+            };
+            kola._cache = [];
+        })();
+        kola("kola.testsuit.Engine",function(TestSuit){
+            var test=new TestSuit();
+            test.addCase({
+                name:"the basic test",
+                test:function(){
+                    var a=1;
+                    test.assert(a,2,"the value of a is wrong");
+                }
+            });
+            test.addCase({
+                name:"next test",
+                test:function(){
+                    var a=Math.random();
+                    test.assert(a>0.5,true,"bad Luck");
+                }
+            });
+            test.runAll();
+        });
+    </script>
+</head>
+<body></body>
+</html>
