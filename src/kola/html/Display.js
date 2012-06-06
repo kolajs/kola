@@ -192,6 +192,30 @@ function(KElement){
 		scrollHeight: function() {
 			//	获取宽度
 			return this[0].scrollHeight;
+		},
+		
+		/**
+		 * 获取在页面中的绝对位置和大小信息
+		 */
+		bound: function() {
+			var element = this[0],
+				box = {};
+			if (element.getBoundingClientRect) {
+				boxRect = element.getBoundingClientRect();
+				box.left = boxRect.left;
+				box.top = boxRect.top;
+				box.width = boxRect.width;
+				box.height = boxRect.height;
+				box.right = boxRect.right;
+				box.bottom = boxRect.bottom;
+			} else {
+				box = this.pagePos();
+				box.width = this.width();
+				box.height = this.height();
+				box.right = box.left + box.width;
+				box.bottom = box.top + box.height;
+			}
+			return box;
 		}
     };
     var pagePos = function(element) {
