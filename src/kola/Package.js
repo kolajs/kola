@@ -4,7 +4,6 @@
  * @version 2.0.0
  */
 
- 
 (function() {
 	//	TODO: 循环依赖的问题，需要解决
 
@@ -528,10 +527,10 @@
 			} else {
 				var list = clone( requires );
 				for ( var i = list.length - 1; i >= 0; i-- ) {
-					var package = list[i];
+					var packageName = list[i];
 
 					//	FIXME: 暂时只检测简单的plugin，以后需要增强
-					var array = package.split( '[' );
+					var array = packageName.split( '[' );
 					//	有插件
 					if ( array.length == 2 ) {
 						var plugins = trim( array[1].substring(0, array[1].length - 1) ).split(',');
@@ -568,10 +567,10 @@
 			//	解析requires，主要是应付插件模式
 			var list = clone( requires );
 			for ( var i = list.length - 1; i >= 0; i-- ) {
-				var package = list[i];
+				var packageName = list[i];
 
 				//	FIXME: 暂时只检测简单的plugin，以后需要增强
-				var array = package.split( '[' );
+				var array = packageName.split( '[' );
 				//	有插件
 				if ( array.length == 2 ) {
 					var plugins = array[1].substring(0, array[1].length - 1).split(',');
@@ -596,18 +595,18 @@
 					} else {
 						//	是插件
 
-						var package = name,
+						var packageObj = name,
 							plugins = [],
 							pluginPrototype = {},
 							mainClass;
 
 						//	获取每个插件的结果
-						each( package.plugins, bind ( ( function(pluginName) {
+						each( packageObj.plugins, bind ( ( function(pluginName) {
 							plugins.push( this._complete( pluginName ) );
 						}), this ) );
 
 						//	获取主类的内容
-						mainClass = this._complete( package.name );
+						mainClass = this._complete( packageObj.name );
 						if (mainClass.prototype.__ME) {
 							pluginPrototype.__ME = mainClass.prototype.__ME;
 						}
@@ -809,18 +808,18 @@
 					} else {
 						//	是插件
 
-						var package = name,
+						var packageObj = name,
 							plugins = [],
 							pluginPrototype = {},
 							mainClass;
 
 						//	获取每个插件的结果
-						each( package.plugins, bind ( ( function(pluginName) {
+						each( packageObj.plugins, bind ( ( function(pluginName) {
 							plugins.push( this._complete( pluginName ) );
 						}), this ) );
 
 						//	获取主类的内容
-						mainClass = this._complete( package.name );
+						mainClass = this._complete( packageObj.name );
 						if (mainClass.prototype.__ME) {
 							pluginPrototype.__ME = mainClass.prototype.__ME;
 						}
