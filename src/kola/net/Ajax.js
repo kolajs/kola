@@ -109,36 +109,43 @@ kola('kola.net.Ajax',
         },
 
         text: function(url, options) {
+        	options = options || {};
             options.format = 'text';
             return this.request(url, options);
         },
 
         json: function(url, options) {
+        	options = options || {};
             options.format = 'json';
             return this.request(url, options);
         },
 
         xml: function(url, options) {
+        	options = options || {};
             options.format = 'xml';
             return this.request(url, options);
         },
         
         get: function(url, options) {
+        	options = options || {};
             options.method = 'get';
             return this.request(url, options);
         },
 
         post: function(url, options) {
+        	options = options || {};
             options.method = 'post';
             return this.request(url, options);
         },
 
         put: function(url, options) {
+        	options = options || {};
             options.method = 'put';
             return this.request(url, options);
         },
         
         'delete': function(url, options) {
+        	options = options || {};
             options.method = 'delete';
             return this.request(url, options);
         },
