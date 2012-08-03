@@ -9,6 +9,8 @@
 
 (function() {
 	//	TODO: 循环依赖的问题，需要解决
+	
+	var version = '2.0.0.1';
 
 	/********************************************** functions **********************************************/
 	
@@ -1071,6 +1073,8 @@
 	};
 
 	kola.Package = Package;
+	
+	kola.Version = version;
 
 	//  如果kola替身已经收集到了要执行的方法，那就处理之
 	if ( cache && typeof( cache.length ) == 'number' && cache.length > 0 ) {
