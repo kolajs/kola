@@ -1,7 +1,10 @@
 /**
- * @fileOverview kola 包机制支持类 
+ * kola系统的核心，负责包的加载、管理和使用
+ * 
+ * @module kola
+ * @main
+ * 
  * @author Jady Yang
- * @version 2.0.0
  */
 
 (function() {
@@ -453,6 +456,12 @@
 
 	/********************************************** Package Class **********************************************/
 
+	/**
+	 * Package类是kola系统的核心类，用于包的加载、管理和使用
+	 * 
+	 * @class Package
+	 * @static
+	 */
 	var Package = {
 
 		_followerMap: {},
@@ -949,8 +958,32 @@
 	//  记录正式kola方法之前的缓存
 	var cache = window.kola ? window.kola._cache : null;
 
+
 	/**
-	 * 执行指定的内容（方法或者字符串）。如果还有一些前置包（类），那就先加载指定的包（类）及其所依赖的所有包（类），并且等到指定的包已经完全可用，再执行指定的内容。
+	 * 注册一个kola包
+	 * 
+	 * @method kola
+	 * @for window
+	 * @param name {String} 要注册的包的包名
+	 * @param requires {Null | String | Array<String>} 其所依赖的包，可以没有任何依赖，也可以直至为一个包名，也可以是包名数组
+	 * @param creator {Function} 包实际内容的生成器，这个方法的返回值就是包的实际内容
+	 */
+	/**
+	 * 加载完指定的包之后，执行指定的方法
+	 * 
+	 * @method kola
+	 * @for window
+	 * @param requires {String | Array<String>} 其所依赖的包，也可以直至为一个包名，也可以是包名数组
+	 * @param callbackfn {Function} 包加载完成后的方法
+	 * @param [options] {Object} 配置参数
+	 * 		@param afterDom {Boolean} 是否在DomContentLoaded之后再运行
+	 */
+	/**
+	 * 加载配置文件
+	 * 
+	 * @method kola
+	 * @for window
+	 * @param config {Object} kola系统的设置文件
 	 */
 	window.kola = function(a, b, c) {
 

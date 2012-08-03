@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>kola\html\Content.js - kola</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.5.1&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title="kola"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 2.0.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/Array.html">Array</a></li>
+            
+                <li><a href="..&#x2F;classes/Class.html">Class</a></li>
+            
+                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+            
+                <li><a href="..&#x2F;classes/Package.html">Package</a></li>
+            
+                <li><a href="..&#x2F;classes/String.html">String</a></li>
+            
+                <li><a href="..&#x2F;classes/window.html">window</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.lang.html">kola.lang</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: kola\html\Content.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+kola(&#x27;kola.html.Content&#x27;, 
+	[&#x27;kola.html.ElementCore&#x27;,&#x27;kola.lang.Array&#x27;,&#x27;kola.lang.Function&#x27;,&#x27;kola.bom.Browser&#x27;,&#x27;kola.bom.Event&#x27;],
+function(KElement,A,F,Browser,KEvent){
+    var Content={
+		&#x2F;**
+		 * 获取节点中的html
+		 * @return html字符串
+		 * @type String
+		 *&#x2F;
+		&#x2F;**
+		 * 设置节点中的html
+		 * @param {String} value 要设置的html字符串
+		 * @return 当前的Element对象
+		 * @type kola.html.Element
+		 *&#x2F;
+		html: function(value) {
+            if(this.length==0)
+                return &quot;&quot;;
+			var el = this[0],
+				ret;
+
+			&#x2F;&#x2F;	如果是获取值，那就直接调用方法
+			if ( typeof value == &#x27;undefined&#x27; ) {
+				return el.innerHTML;
+			}
+
+			&#x2F;&#x2F;	这里是设置值
+			if (Browser.IE) {
+				&#x2F;&#x2F;	ie下直接调用替代方法
+				ret = innerHtml(el, value);
+			} else {
+
+				&#x2F;&#x2F;	首先调用原生方法，如果出错的话，那就调用替代方法
+				try {
+					ret = this.prop(&#x27;innerHTML&#x27;, value);
+				} catch(e) {
+					ret = innerHtml(el, value);
+				}
+			}
+            KElement.fire({type:&quot;DOMNodeInserted&quot;,data:this[0].childNodes});
+			
+			&#x2F;&#x2F;	TODO: 这里是需要经过包装的，而且还需要考虑单个节点还是多个节点
+			return this;
+		},
+		
+		&#x2F;**
+		 * 获取节点中的outerHTML
+		 * @return html字符串
+		 * @type String
+		 *&#x2F;
+		&#x2F;**
+		 * 设置节点中的outerHTML
+		 * @param {String} value 要设置的html字符串
+		 * @return 当前的Element对象
+		 * @type kola.html.Element
+		 *&#x2F;
+		outer: function(value) {
+			&#x2F;&#x2F;	TODO: 这部分的代码需要重写
+			var el = this[0];
+            if(this.length==0)
+                return &quot;&quot;;
+			&#x2F;&#x2F;	如果是获取值，那就直接调用方法
+			if ( typeof value == &#x27;undefined&#x27; ) {
+				return el.outerHTML;
+			} else {
+                this.before(value);
+                this.remove();
+				return this;
+			}
+		},
+		
+		&#x2F;**
+		 * 获取节点的text内容
+		 * @return text内容
+		 * @type String
+		 *&#x2F;
+		&#x2F;**
+		 * 设置节点中的text内容
+		 * @param {String} value 要设置的text内容
+		 * @return 当前的Element对象
+		 * @type kola.html.Element
+		 *&#x2F;
+		text: function(value) {
+            if(!this.length)
+                return &quot;&quot;;
+			return this.prop(typeof(this[0].innerText) != &#x27;undefined&#x27; ? &#x27;innerText&#x27; : &#x27;textContent&#x27;, value);
+		},
+		
+		&#x2F;**
+		 * 在第一个元素的子节点的最后添加元素
+		 * @return 被添加的节点
+		 * @type kola.html.Element
+		 *&#x2F;
+		append: function(target) {
+            var elements=KElement.util.toElements(target);
+            var el=this[0];
+            for(var i=0,il=elements.length;i&lt;il;i++){
+                appendChild(el, elements[i]);
+            }
+            return this;
+            &#x2F;&#x2F;给数组中的每一项都添加内容，暂时用不到
+            &#x2F;*
+            for(var i=1;il&lt;this.length;i++){
+                var el=this[i];
+                for(var i=0,il=elements.length;i&lt;il;i++){
+                    appendChild(el, elements[i].cloneNode(true));
+                }
+            }
+            *&#x2F;
+		},
+		
+		&#x2F;**
+		 * 在第一个元素的子节点的最开始添加元素
+		 * @return 被添加的节点
+		 * @type kola.html.Element
+		 *&#x2F;
+		prepend: function(target) {
+            var elements=KElement.util.toElements(target);
+            var el=this[0];
+            var offset = el.firstChild || null;
+            for(var i=elements.length-1;i&gt;=0;i--){
+                insertBefore(el, elements[i],offset);
+            }
+            return this;
+		},
+		
+		&#x2F;**
+		 * 在第一个元素之前添加元素
+		 * @return 被添加的节点
+		 * @type kola.html.Element
+		 *&#x2F;
+		before: function() {
+			var nodes = [],
+				offset = this[0],
+				parent = offset.parentNode;
+			A.forEach(arguments, F.bind((function(parent, offset, nodes, elementN) {
+				var node;
+				if (typeof(elementN) == &#x27;string&#x27;) {
+					var ctr = document.createElement(&#x27;div&#x27;);
+					ctr.innerHTML = elementN;
+					while (ctr.firstChild) {
+						node = insertBefore(parent, ctr.firstChild, offset);
+						if (!offset) offset = node;
+						if (node.nodeType == 1) {
+							nodes.push(node);
+						}
+					}
+				} else {
+					if (elementN.nodeType) {
+						elementN = [elementN];
+					}
+					for (var i = 0, il = elementN.length; i &lt; il; i ++) {
+						node = insertBefore(parent, elementN[i], offset);
+						if (!offset) offset = node;
+						if (node.nodeType == 1) {
+							nodes.push(node);
+						}
+					}
+				}
+			}), this, parent, offset, nodes));
+            KElement.fire({type:&quot;DOMNodeInserted&quot;,data:nodes});
+			return new this.constructor(nodes);
+		},
+		
+		&#x2F;**
+		 * 在第一个元素之后添加元素
+		 * @return 被添加的节点
+		 * @type kola.html.Element
+		 *&#x2F;
+		after: function() {
+			var nodes = [],
+				element = this[0],
+				parent = element.parentNode,
+				offset = element.nextSibling,
+				func = !!offset ? insertBefore : appendChild;
+			A.forEach(arguments, F.bind((function(parent, offset, func, nodes, elementN) {
+				var node;
+				if (typeof(elementN) == &#x27;string&#x27;) {
+					var ctr = document.createElement(&#x27;div&#x27;);
+					ctr.innerHTML = elementN;
+					while (ctr.firstChild) {
+						node = func(parent, ctr.firstChild, offset);
+						if (node.nodeType == 1) {
+							nodes.push(node);
+						}
+					}
+				} else {
+					if (elementN.nodeType) {
+						elementN = [elementN];
+					}
+					for (var i = 0, il = elementN.length; i &lt; il; i ++) {
+						node = func(parent, elementN[i], offset);
+						if (node.nodeType == 1) {
+							nodes.push(node);
+						}
+					}
+				}
+			}), this, parent, offset, func, nodes));
+            KElement.fire({type:&quot;DOMNodeInserted&quot;,data:nodes});
+			return new this.constructor(nodes);
+		},
+	
+		&#x2F;**
+		 * 删除自身元素
+         * @warn ie6,7下可能会造成内存泄露 
+		 *&#x2F;
+		remove: function() {
+			this._each( function(element) {
+				if (element.parentNode) 
+					element.parentNode.removeChild(element);
+			});
+		},
+		&#x2F;**
+		 * 判断是否包含指定的对象
+		 * @param {KolaElement} element 对象
+		 * @return true 或者 false
+		 * @type boolean
+		 *&#x2F;
+		contains: function(element) {
+			if (!element || !(element = this.constructor(element))) return false;
+			element = element[0];
+			var el = this[0];
+			if(el==element)
+                return true;
+			if (el.contains) {
+				return el.contains(element);
+			} else {
+				while (element = element.parentNode) {
+					if (element == el) return true;
+				}
+				return false;
+			}
+		}
+    };
+    
+	&#x2F;**
+	 * 在父元素的所有子元素之后添加一个元素
+	 *&#x2F;
+	var appendChild = function(parent, child) {
+		if (parent.tagName.toLowerCase() == &#x27;table&#x27; &amp;&amp; child.tagName.toLowerCase() == &#x27;tr&#x27;) {
+			if (parent.tBodies.length == 0) {
+				parent.appendChild(document.createElement(&#x27;tbody&#x27;));
+			}
+			parent = parent.tBodies[0];
+		}
+		&#x2F;&#x2F;	如果要添加的节点是DocumentFragment，那就进行特殊处理
+		if ( child.nodeType === 11 ) {
+			var length = child.childNodes.length;
+			parent.appendChild(child);
+			var nodes = parent.childNodes, news = [];
+			for ( var j = nodes.length, i = j - length; i &lt; j; i++ ) {
+				news.push( nodes[i] );
+			}
+			return news;
+		}
+		return parent.appendChild(child);
+	};
+
+	&#x2F;**
+	 * 在父元素的所有子元素之后添加一个元素
+	 *&#x2F;
+	var insertBefore = function(parent, child, before) {
+		if (parent.tagName.toLowerCase() == &#x27;table&#x27; &amp;&amp; child.tagName.toLowerCase() == &#x27;tr&#x27;) {
+			if (parent.tBodies.length == 0) {
+				parent.appendChild(document.createElement(&#x27;tbody&#x27;));
+			}
+			parent = parent.tBodies[0];
+		}
+		return parent.insertBefore(child, before || parent.firstChild);
+	};
+	
+	var isBody = function(tag) {
+		var reg = &#x2F;^body|html$&#x2F;i;
+		isBody = function(tag) {
+			return !reg.test(tag);
+		};
+		isBody(tag);
+	};
+    
+	&#x2F;**
+	 * 设置对象的innerHTML，主要针对不直接支持innerHTML的对象
+	 * @param el
+	 * @param value
+	 *&#x2F;
+	var innerHtml = function(el, value) {
+		&#x2F;&#x2F;	先解除旗下所有节点的事件，避免内存泄露
+		purgeChildren( el );
+		
+		&#x2F;&#x2F;	这里主要对table,select进行特殊处理，还有其他元素待处理
+		var translations = {
+				table: 	[1, &#x27;&lt;table&gt;&#x27;, &#x27;&lt;&#x2F;table&gt;&#x27;],
+				select: [1, &#x27;&lt;select&gt;&#x27;, &#x27;&lt;&#x2F;select&gt;&#x27;],
+				tbody: 	[2, &#x27;&lt;table&gt;&lt;tbody&gt;&#x27;, &#x27;&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;&#x27;],
+				tr: 	[3, &#x27;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&#x27;, &#x27;&lt;&#x2F;tr&gt;&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;&#x27;]
+			},
+			tagName = el.tagName.toLowerCase(),
+			wrap = translations[ tagName ];
+
+		if ( wrap ) {
+			var node,
+				wrapper = document.createElement(&#x27;div&#x27;);
+
+			&#x2F;&#x2F;	使用dom方法，删除所有子节点
+			while (el.firstChild) {
+				el.removeChild(el.firstChild);
+			}
+
+			&#x2F;&#x2F;	设置替代内容，并获取新添加的节点
+			wrapper.innerHTML = wrap[1] + value + wrap[2];
+			for (var i = wrap[0]; i--;) {
+				wrapper = wrapper.firstChild;
+			}
+			while ( node = wrapper.firstChild ) {
+				appendChild( el, node );
+			}
+
+			&#x2F;&#x2F;	如果是ie9以前的版本，并且设置的是select，那就默认聚焦到第一个。这主要是解决ie9之前的版本都是默认设置到最后一个，而别的浏览器级版本都是聚焦到第一个
+			if ( tagName == &#x27;select&#x27; &amp;&amp; Browser.IEStyle ) {
+				el.selectedIndex = 0;
+			}
+		} else {
+			el.innerHTML = value;
+		}
+
+		return el.childNodes;
+	};
+    
+	&#x2F;**
+	 * 移除某个节点所有子孙节点对js的引用，避免内存泄露
+	 *&#x2F;
+    if(!window.ActiveXObject || window.XDomainRequest){&#x2F;&#x2F;IE6,7需要移除所有事件
+        var purgeChildren = F.empty;
+    }else{
+        var purgeChildren = function( element ) {
+            var nodes = element.all,count;
+            for ( var i = nodes.length - 1; i &gt;= 0; i-- ) {
+                KEvent.off( nodes[ i ] );
+                node[ElementCore.expando]=null;
+            }
+        };
+        &#x2F;**
+         * 如果会引起内存泄露，那就跟踪unload事件，处理这些
+         *&#x2F;
+
+        KEvent.on( window, &#x27;unload&#x27;, function() {
+            purgeChildren(document);
+        });
+    }
+    return Content;
+});
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

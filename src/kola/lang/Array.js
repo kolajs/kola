@@ -1,25 +1,31 @@
 /**
- * @fileOverview kola.lang.Array 数组类
- * @author Jady Yang
- * @version 2.0.0
+ * kola language 包，提供JS语言中常见数据类型的常用方法
+ * 
+ * @module kola.lang
  */
 
-
-kola('kola.lang.Array', 
-	null, 
-	function() {
+kola('kola.lang.Array', null, function() {
 
 	/********************************************** 类定义 **********************************************/
 	
-	var Array = {
+	/**
+	 * kola的Array类，提供的方法和实现遵循ECMA-262的规范
+	 * 
+	 * @class Array
+	 * @static
+	 * 
+	 * @author Jady Yang
+	 */
+	var exports = {
 		
 		/**
-		 * 在数组中搜索指定元素的位置，可以设置起始位置
-		 * @param {Array} array 被搜索的数组
-		 * @param {String} searchElement 要搜索的元素
-		 * @param {Number} fromIndex 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
-		 * @return 搜索到的位置，如果没有则返回-1
-		 * @type Number
+		 * 获取指定元素在数组中的位置
+		 * 
+		 * @method indexOf
+		 * @param array {Array} 被搜索的数组
+		 * @param searchElement {Any} 要搜索的元素
+		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
+		 * @return {Number} 搜索到的位置，如果没有则返回-1
 		 */
 		indexOf: function(array, searchElement, fromIndex) {
 			//	如果存在原生的方法，那就直接调用之
@@ -42,13 +48,15 @@ kola('kola.lang.Array',
 			}
 			return -1;
 		},
+		
 		/**
-		 * 在数组中从后往前搜索指定元素的位置，可以设置起始位置
-		 * @param {Array} array 被搜索的数组
-		 * @param {String} searchElement 要搜索的元素
-		 * @param {Number} fromIndex 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
-		 * @return 搜索到的位置，如果没有则返回-1
-		 * @type Number
+		 * 在数组中从后往前搜索指定元素的位置
+		 * 
+		 * @method lastIndexOf
+		 * @param array {Array} 被搜索的数组
+		 * @param searchElement {Any} 要搜索的元素
+		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
+		 * @return {Number} 搜索到的位置，如果没有则返回-1
 		 */
 		lastIndexOf: function(array, searchElement, fromIndex) {
 			//	如果存在原生的方法，那就直接调用之
@@ -71,13 +79,15 @@ kola('kola.lang.Array',
 			}
 			return -1;
 		},
+		
 		/**
 		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值都是true，才会返回true，其他情况返回false
-		 * @param {Array} array 要循环的数组
-		 * @param {Function} callbackfn 迭代器
-		 * @param {ANY} thisArg 给迭代器设置的上下文。如果不存在的话，那就是undefined
-		 * @return 返回值
-		 * @type Boolean
+		 * 
+		 * @method every
+		 * @param array {Array} 要循环的数组
+		 * @param callbackfn {Function} 迭代器
+		 * @param [thisArg] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @return {Boolean} 返回值
 		 */
 		every: function(array, callbackfn, thisArg) {
 			return each(array, 'every', function(item, i, array) {
@@ -87,11 +97,12 @@ kola('kola.lang.Array',
 		
 		/**
 		 * 循环数组中的每一项，依次交给迭代器，如果存在返回值为true，那就返回true，其他情况返回false
-		 * @param {Array} array 要循环的数组
-		 * @param {Function} callbackfn 迭代器
-		 * @param {ANY} thisArg 给迭代器设置的上下文。如果不存在的话，那就是undefined
-		 * @return 返回值
-		 * @type Boolean
+		 * 
+		 * @method some
+		 * @param array {Array} 要循环的数组
+		 * @param callbackfn {Function} 迭代器
+		 * @param thisArg {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @return {Boolean} 返回值
 		 */
 		some: function(array, callbackfn, thisArg) {
 			return !each(array, 'some', function(item, i, array) {
@@ -101,9 +112,11 @@ kola('kola.lang.Array',
 		
 		/**
 		 * 在数组中从后往前搜索指定元素的位置，可以设置起始位置
-		 * @param {Array} array 要循环的数组
-		 * @param {Function} callbackfn 迭代器
-		 * @param {ANY} thisArg 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * 
+		 * @method forEach
+		 * @param array {Array} 要循环的数组
+		 * @param callbackfn {Function} 迭代器
+		 * @param thisArg {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 */
 		forEach: function(array, callbackfn, thisArg) {
 			each(array, 'forEach', function(item, i, array) {
@@ -113,27 +126,29 @@ kola('kola.lang.Array',
 		
 		/**
 		 * 循环数组中的每一项，依次交给迭代器，得到的每个返回值，依次装入得到一个新数组
-		 * @param {Array} array 要循环的数组
-		 * @param {Function} callbackfn 迭代器
-		 * @param {ANY} thisArg 给迭代器设置的上下文。如果不存在的话，那就是undefined
-		 * @return 返回值
-		 * @type Boolean
+		 * 
+		 * @method map
+		 * @param array {Array} 要循环的数组
+		 * @param callbackfn {Function} 迭代器
+		 * @param thisArg {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @return {Array} 包含每次迭代结果的新数组
 		 */
 		map: function(array, callbackfn, thisArg) {
-			var values = ArrayOrg(array.length);
+			var values = [];
 			each(array, 'some', function(item, i, array) {
-				values[i] = callbackfn.call(thisArg, item, i, array);
+				values.push(callbackfn.call(thisArg, item, i, array));
 			});
 			return values;
 		},
 		
 		/**
 		 * 循环数组中的每一项，依次交给迭代器，如果返回值为true，那就将该项存储到一个新数组中
-		 * @param {Array} array 要循环的数组
-		 * @param {Function} callbackfn 迭代器
-		 * @param {ANY} thisArg 给迭代器设置的上下文。如果不存在的话，那就是undefined
-		 * @return 返回值
-		 * @type Boolean
+		 * 
+		 * @method filter
+		 * @param array {Array} 要循环的数组
+		 * @param callbackfn {Function} 迭代器
+		 * @param thisArg {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @return {Array} 过滤后的新数组
 		 */
 		filter: function(array, callbackfn, thisArg) {
 			var values = [];
@@ -149,18 +164,19 @@ kola('kola.lang.Array',
 	
 	/********************************************** 私有变量 **********************************************/
 	
-	var ArrayOrg = [].constructor,			//	存储原生的Array方法
-		$break = {};
+	var $break = {};
 	
 	/********************************************** 私有方法 **********************************************/
 		
 	/**
 	 * 循环数组中的每一项，依次交给迭代器。如果迭代没有被中断，那就返回true，否则返回false
-	 * @param {Array} array 要循环的数组
-	 * @param {Function} fn 要对数组调用的方法的名称
-	 * @param {Function} callbackfn 迭代器
-	 * @return 返回值
-	 * @type Boolean
+	 * 
+	 * @method each
+	 * @private
+	 * @param array {Array} 要循环的数组
+	 * @param fn {Function} 要对数组调用的方法的名称
+	 * @param callbackfn {Function} 迭代器
+	 * @return {Boolean} 返回值
 	 */
 	var each = function(array, fn, callbackfn) {
 		//	如果存在原生的方法，那就直接调用之
@@ -175,8 +191,6 @@ kola('kola.lang.Array',
 		return true;
 	};
 	
-	/********************************************** 返回类 **********************************************/
-	
-	return Array;
+	return exports;
 	
 });

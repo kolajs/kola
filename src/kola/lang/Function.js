@@ -1,27 +1,31 @@
 /**
- * @fileOverview kola.lang.Function Function类
- * @author Jady Yang
- * @version 2.0.0
+ * kola language 包，提供JS语言中常见数据类型的常用方法
+ * 
+ * @module kola.lang
  */
 
-
-kola('kola.lang.Function', 
-	null, 
-	function() {
+kola('kola.lang.Function', null, function() {
 	
 	/********************************************** 类定义 **********************************************/
 	
-	return {
+	/**
+	 * kola的Function类，提供的方法和实现遵循ECMA-262的规范
+	 * 
+	 * @class Function
+	 * @static
+	 * 
+	 * @author Jady Yang
+	 */
+	var exports = {
 		
 		/**
 		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前
-		 * @param {Function} callbackfn 被绑定的方法
-		 * @param {ANY} thisArg 方法执行时的this
-		 * @param {ANY} arg1 要绑定的参数1
-		 * @param {ANY} arg2 要绑定的参数2
-		 * @param {ANY} argN 要绑定的参数N
-		 * @return 绑定过之后的新方法
-		 * @type Function
+		 * 
+		 * @method bind
+		 * @param callbackfn {Function} 被绑定的方法
+		 * @param thisArg {Any} 方法执行时的this
+		 * @param [arg]* {Any} 要绑定的参数
+		 * @return {Function} 创建的新Function
 		 */
 		bind: function(callbackfn, thisArg) {
 			var args = [];
@@ -39,18 +43,25 @@ kola('kola.lang.Function',
 
 		/**
 		 * 可被全局使用的空函数
+		 * 
+		 * @method empty
 		 */
 		empty: function() {},
 
 		/**
-		 * 返回一个新方法，用于返回指定的一个值
-		 * @param value
+		 * 创建一个新方法，返回指定的值
+		 * 
+		 * @method x
+		 * @param value {Any} 要返回的值
+		 * @return {Function}
 		 */
-		x: function( value ) {
+		x: function(value) {
 			return function() {
 				return value;
 			};
 		}
 	};
+	
+	return exports;
 	
 });

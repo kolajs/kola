@@ -1,12 +1,11 @@
 /**
- * @fileOverview kola.lang.Object类
- * @author Jady Yang
+ * kola language 包，提供JS语言中常见数据类型的常用方法
+ * 
+ * @module kola.lang
  */
 
-kola('kola.lang.Object', 
-	null, 
-	function() {
-    var eye=Object.prototype.toString;
+kola('kola.lang.Object', null, function() {
+    var eye = Object.prototype.toString;
 	var exports = {
 		
 		/**

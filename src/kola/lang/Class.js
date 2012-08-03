@@ -1,32 +1,34 @@
 /**
- * @fileOverview kola.lang.Class 类型支持类
- * @author Jady Yang
- * @version 2.0.0
+ * kola language 包，提供JS语言中常见数据类型的常用方法
+ * 
+ * @module kola.lang
  */
 
-kola('kola.lang.Class',
-	['kola.lang.Function'],
-	function(KolaFunction) {
+kola('kola.lang.Class', [
+	'kola.lang.Function'
+], function(KolaFunction) {
 
 	/********************************************** 类定义 **********************************************/
 
-	return {
+	/**
+	 * kola的Class类，用于类的创建和检测等
+	 * 
+	 * @class Class
+	 * @static
+	 * 
+	 * @author Jady Yang
+	 */
+	var exports = {
 
 		/**
 		 * 创建一个新类，并从指定的父类继承，并设置本类的方法
-		 * @param {Function} SuperClass 父类
-		 * @param {Object} Methods 本类的方法列表
-		 * @return 新创建的类
-		 * @type Function
+		 * 
+		 * @method create
+		 * @param [SuperClass] {Function} 父类
+		 * @param Methods {Object} 本类的方法列表
+		 * @return {Function} 新创建的类
 		 */
-		/**
-		 * 创建一个新类，并设置本类的方法
-		 * @param {Object} Methods 本类的方法列表
-		 * @param {Object} flag 默认不执行构造函数
-		 * @return 新创建的类
-		 * @type Function
-		 */
-		create: function( SuperClass, Methods ) {
+		create: function(SuperClass, Methods) {
 			//	判断是否存在要继承的父类
 			if ( typeof(Methods) == 'undefined' ) {
 				Methods = SuperClass;
@@ -108,10 +110,13 @@ kola('kola.lang.Class',
 
 		/**
 		 * 判断一个实例是否是某个类型
-		 * @param object
-		 * @param type
+		 * 
+		 * @method isInstanceOf
+		 * @param object {Any} 要检测的对象
+		 * @param type {String} 类型全名
+		 * @return {Boolean} 
 		 */
-		isInstance: function( object, type ) {
+		isInstanceOf: function(object, type) {
 
 			//	如果不存在要检测的实例，需要报错
 			if ( !object ) {
@@ -138,6 +143,8 @@ kola('kola.lang.Class',
 			//	执行到这里，表明该实例不是指定的类型的实例
 			return false;
 		},
+		
+		//	FIXME: 需要确定是否保留？与create的区别是什么？
         /**
             通过修改原型链方式实现继承
             origClass：构造函数
@@ -163,4 +170,6 @@ kola('kola.lang.Class',
             origClass.prototype.constructor = origClass;
         }
 	};
+	
+	return exports;
 });

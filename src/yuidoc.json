@@ -1,0 +1,8 @@
+{
+    "name": "kola",
+    "description": "kola library",
+    "version": "2.0.0",
+    "options": {
+        "outdir": "../docs"
+    }
+}
