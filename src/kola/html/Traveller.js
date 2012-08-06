@@ -60,7 +60,8 @@ function(O,KElement,A,Selector){
         is:function(selector){
             if(this.length==0)
                 return false;
-            return Selector.filter( selector, [this[0]] ).length > 0;
+            return this.length === 1 ?
+			Selector.matchesSelector(this[0], selector) : Selector.matches(selector, this.elements).length>0;
         },
         clone:function(){
             var newNodes=[]

@@ -11,6 +11,37 @@ kola("kola.bom.Selection",[
         if(!$(e.target).is(":text"))
             return false;
     }
+	function KolaRange(range,stCon,endCon,stPos,endPos){
+		this.range = range;
+		this.collapsed = range.collapsed;
+		this.startContainer = stCon||range.startContainer;
+        this.endContainer = endCon||range.endContainer;
+        this.startOffset = stPos||range.startOffset;
+        this.endOffset = endPos||range.endOffset;
+	}
+	KolaRange.prototype.collapse=function(top){
+		this.range.collapse(top);
+	}
+	KolaRange.prototype.parentElement=function(){
+		if(Browser.IEStyle){
+			return this.range.parentElement();
+		}else{
+			var commonAncestor=this.range.commonAncestorContainer;
+			if(commonAncestor.nodeType == 3)
+				commonAncestor=commonAncestor.parentElement;
+			return commonAncestor
+		}
+	}
+	KolaRange.prototype.wrappedContent=function(){
+		if(Browser.IEStyle){
+			return "<div>"+this.range.htmlText+"<div>";
+		}else{
+			var frag=this.range.cloneContents();
+			var node=document.createElement("div");
+			node.appendChild(frag);
+			return node;
+		}
+	}
     if(!Browser.IEStyle){
         var Selection={
             clearSelection:function(){//清空window的选择
@@ -24,18 +55,22 @@ kola("kola.bom.Selection",[
                 $(dom).style("-moz-user-select","-moz-all").style("-webkit-user-select","auto");
             },
             getRange:function(){
-                var selObj = window.getSelection();  
+                var selObj = window.getSelection();
+				if(selObj.rangeCount==0)
+					return null;
                 var range  = selObj.getRangeAt(0);
-                if(range.startContainer.nodeType!=3){
+                /*
+                if(range.startContainer.nodeType!=3){//如果是textarea的select
                     var dom=range.startContainer.childNodes[range.startOffset];
-                    return {
-                        startContainer:dom,
-                        endContainer:dom,
-                        startOffset:dom.selectionStart,
-                        endOffset:dom.selectionEnd
-                    }
-                }
-                return range;
+                    return new KolaRange(
+						range,
+                        dom,
+                        dom,
+                        dom.selectionStart,
+                        dom.selectionEnd
+					)
+                }*/
+                return new KolaRange(range);
             },
             select:function(node,start,end){
                 var sel = window.getSelection();
@@ -83,10 +118,13 @@ kola("kola.bom.Selection",[
                 rangeRuler.setEndPoint('EndToEnd', range);
                 var endOffset=rangeRuler.text.length;
                 
-                return{
-                    startOffset:startOffset,
-                    endOffset:endOffset
-                };
+                return new KolaRange(
+					range,
+					node,
+					node,
+                    startOffset,
+                    endOffset
+                );
             },
             select:function(node,start,end){
                 var dest=node.childNodes[0];

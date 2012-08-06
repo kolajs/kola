@@ -3,43 +3,95 @@
  * @author Jady Yang
  * @version 2.0.0
  */
+ 
+kola('kola.bom.Browser',[
+	'kola.lang.Function'
+],function( KolaFunction ) {
+	var agent = navigator.userAgent,
+		render,version;
 
+	//	判断是何种渲染模式
+	if ( agent.indexOf( 'MSIE' ) != -1 ) {
+		render = 'ie';
+	} else if ( agent.indexOf( 'AppleWebKit' ) != -1 ) {
+		render = 'webkit';
+	} else if ( agent.indexOf( 'Gecko' ) != -1 ) {
+		render = 'gecko';
+	} else if ( agent.indexOf( 'Presto' ) != -1 ) {
+		render = 'Presto';
+	} else {
+		render = 'unkown';
+	}
+	//判断版本
+	switch ( render ) {
+		case 'ie':
+			version = parseInt( agent.substr( agent.indexOf( 'MSIE' ) + 5, 3 ) );
+			break;
+		case 'webkit':
+			version = parseInt( agent.substr( agent.indexOf( 'AppleWebKit' ) + 12, 4 ) );
+			break;
+		case 'gecko':
+		    version = parseInt( agent.substr( agent.indexOf( 'Gecko' ) + 6, 8 ) );
+			break;
+		case 'presto':
+			version = parseInt( agent.substr( agent.indexOf( 'Presto' ) + 7, 3 ) );
+			break;
+	}
 
-kola('kola.bom.Browser',
-[ 'kola.lang.Function' ],
-function( KolaFunction ) {
-
-	var Browser = {
-
+	return {
 		/**
-		 * 获取渲染模式
-		 */
-		render: function() {
-			var agent = navigator.userAgent,
-				value;
-
-			//	判断是何种渲染模式
-			if ( agent.indexOf( 'MSIE' ) != -1 ) {
-				value = 'ie';
-			} else if ( agent.indexOf( 'AppleWebKit' ) != -1 ) {
-				value = 'webkit';
-			} else if ( agent.indexOf( 'Gecko' ) != -1 ) {
-				value = 'gecko';
-			} else if ( agent.indexOf( 'Presto' ) != -1 ) {
-				value = 'Presto';
-			} else {
-				value = 'unkown';
-			}
-
-			Browser.render = KolaFunction.x( value );
-			return value;
-		},
-
+		* 获取渲染内核模式
+		* @property render
+		* @type {string} ie|webkit|gecko|presto|unkown
+		*/
+		render: render,
+		/**
+		* 获取渲染内核版本
+		* @property renderVersion
+		* @type {string}
+		*/
+		renderVersion: version,
+		
+		/**
+		* 浏览器是否为ie内核
+		* @property IE
+		* @type {boolean}
+		*/
+		IE : (this.render=='ie'),
+		/**
+		* 浏览器是否为ie6内核
+		* @property IE6
+		* @type {boolean}
+		*/
+		IE6 : (this.render=='ie' && this.renderVersion==6),
+		/**
+		* 浏览器是否为ie6~8内核
+		* @property IEStyle
+		* @type {boolean}
+		*/
+		IEStyle : (this.render=='ie' && this.renderVersion<9),
+		/**
+		* 浏览器是否为Webkit内核
+		* @property Webkit
+		* @type {boolean}
+		*/
+		Webkit : (this.render=='webkit'),
+		/**
+		* 浏览器是否为Gecko内核
+		* @property Gecko
+		* @type {boolean}
+		*/
+		Gecko : (this.render=='gecko'),
+		/**
+		* 获取浏览器名称
+		* @method name
+		* @return {string} qq|maxthon|ie|chrome|safari|firefox|opera|unkown(360、遨游)
+		*/
 		name: function() {
 			var agent = navigator.userAgent,
 				value;
 
-			switch ( Browser.render() ) {
+			switch ( this.render ) {
 				case 'ie':
 					if ( agent.indexOf( 'QQBrowser' ) != -1 ) {
 						value = 'qq';
@@ -76,39 +128,8 @@ function( KolaFunction ) {
 					break;
 			}
 
-			Browser.name = KolaFunction.x( value );
-			return value;
-		},
-
-		renderVersion: function() {
-			var agent = navigator.userAgent,
-				value;
-
-			switch ( Browser.render() ) {
-				case 'ie':
-					value = parseInt( agent.substr( agent.indexOf( 'MSIE' ) + 5, 3 ) );
-					break;
-				case 'webkit':
-					value = parseInt( agent.substr( agent.indexOf( 'AppleWebKit' ) + 12, 4 ) );
-					break;
-				case 'gecko':
-				    value = parseInt( agent.substr( agent.indexOf( 'Gecko' ) + 6, 8 ) );
-					break;
-				case 'presto':
-					value = parseInt( agent.substr( agent.indexOf( 'Presto' ) + 7, 3 ) );
-					break;
-			}
-
-			Browser.renderVersion = KolaFunction.x( value );
+			this.name = KolaFunction.x( value );
 			return value;
 		}
 	};
-    Browser.IE=(Browser.render()=='ie');
-    Browser.IE6=(Browser.render()=='ie' && Browser.renderVersion()==6);
-    Browser.IEStyle=(Browser.render()=='ie' && Browser.renderVersion()<9);
-    
-    Browser.Webkit=(Browser.render()=='webkit');
-    Browser.Gecko=(Browser.render()=='gecko');
-	return Browser;
-	
 });

@@ -14,6 +14,16 @@ function(C, O, Dispatcher, Selector){
     var cacheSize=1;
     
     var ElementCore=C.create(Dispatcher,{
+        /**
+        * show the current version of kolaDom
+        * @param kolaVersion
+        * @type {number}
+        */
+        kolaVersion: 2.5,
+        /**
+        * @function [direct]
+        * @return {kolaElement}
+        */
         __ME:function(selector, context){
             if(O.isString(selector) && selector.charAt(0)!='<'){
                 //	如果为css selector
@@ -44,7 +54,12 @@ function(C, O, Dispatcher, Selector){
             }
             return new this(nodes);
         },
-        _init:function(elements){
+		/**
+        * 构造函数
+        * @function [_constructor]
+        * @return {kolaElement}
+        */
+        _init: function(elements){
             this.length=elements.length;
             for(var i=0;i<this.length;i++)
                 this[i]=elements[i];
@@ -52,10 +67,19 @@ function(C, O, Dispatcher, Selector){
         },
         /*-------------------------------------- data相关 --------------------------------------*/
         /**
-            得到第0个元素的data[name]
-            或者设置所有元素的data[name]
+        * 设置所有dom元素的附加数据
+        * @function data
+        * @param {string} name 要设置的数据的名称
+        * @param {ANY} data 要设置的数据
+        * @return {kolaElement} 原dom
         */
-        data:function(name,data){
+        /**
+        * 得到第0个元素的附加数据
+        * @function data
+        * @param {string} name 要设置的数据的名称
+        * @return {ANY} dom上name对应的数据
+        */
+        data: function(name,data){
             if(O.isUndefined(data)){
                 index=this[0][cache_attr_name];
                 if(!index || !cache[index])
@@ -72,29 +96,36 @@ function(C, O, Dispatcher, Selector){
                         cache[index]={};
                     cache[index][name]=data;
                 })
+                return this;
             }
         },
         /**
-            移除所有元素的data[name]
+        * 移除dom上指定的附加数据
+        * @function removeData
+        * @param {string} name 要删除的数据名称
+        * @return {kolaElement} 原dom
+        */
+        /**
+        * 移除dom上所有的附加数据
+        * @function removeData
+        * @return {kolaElement} 原dom
         */
         removeData:function(name){
-            this._each(function(e){
-                index=e[cache_attr_name];
-                if(!index || !cache[index])
-                    return;
-                cache[index][name]=null;
-            });
-        },
-        /**
-            移除所有元素的所有data
-        */
-        removeAllData:function(){
-            this._each(function(e){
+            if(name){
+                this._each(function(e){
+                    index=e[cache_attr_name];
+                    if(!index || !cache[index])
+                        return;
+                    cache[index][name]=null;
+                });
+            }else{
+                this._each(function(e){
                 index=e[cache_attr_name];
                 if(!index)
                     return;
                 cache[index]=null;
             });
+            return this;
         },
 		/*-------------------------------------- 数组相关 --------------------------------------*/
 		elements: function(){
@@ -111,19 +142,18 @@ function(C, O, Dispatcher, Selector){
 			return this;
 		},
         /*-------------------------------------- KolaElement内部函数 --------------------------------------*/
-        /**
-        简单each
-        */
+        // 简单each
         _each:function(callBack){
             for(var i=0,il=this.length;i<il;i++)
                 callBack.call(this,this[i]);
         },
-        //使得浏览器认为实例是一个数组，方便调试
+        //
         length:0,
+        //使得浏览器认为实例是一个数组，方便调试
         splice:[].splice
     });
     
-    /**
+    /*
 	* 将驼峰式转换为css写法
 	*/
 	function hyphenate(name) {
@@ -133,7 +163,7 @@ function(C, O, Dispatcher, Selector){
 	}
     ElementCore.expando=cache_attr_name;
     ElementCore.util={
-        /**
+        /*
          * 获取样式属性
          * @param element
          * @param name
@@ -152,7 +182,7 @@ function(C, O, Dispatcher, Selector){
             }
             return element.style[name];
         },
-        /**
+        /*
         得到元素数组
             Array[element] :不变
             element：[element]
@@ -185,7 +215,8 @@ function(C, O, Dispatcher, Selector){
             //	如果为DOMLElement
             if (selector.nodeType === 1) 
                 return [selector];
-            if(selector.nodeType === 9){
+			// 如果为document或document-fragment
+            if(selector.nodeType === 9 || selector.nodeType === 11){
                 if(selector.documentElement)
                     selector=selector.documentElement;
                 return [selector];

@@ -18,7 +18,7 @@ kola('kola.bom.Event', [
 	/********************************************** 类定义 **********************************************/
 
     //FIXME:给window绑定onscroll事件没有位置信息
-    var copyParams=["keyCode","ctrlKey","shiftKey","clientX","clientY","screenX","screenY"];
+    var copyParams=["keyCode","componentKey","shiftKey","clientX","clientY","screenX","screenY", "offsetX", "offsetY", "wheelDeltaY","wheelDeltaX","wheelDelta"];
     /**
 	 * kola事件对象
 	 * @prop currentTarget 绑定时没有设置option.delegate时，currentTarget为绑定该事件的元素，设置option.delegate时，currentTarget为被代理的元素
@@ -40,10 +40,14 @@ kola('kola.bom.Event', [
                 this.button=1;
             if(e.button==2)
                 this.button=2;
+			this.pageY=e.clientY+document.documentElement.scrollTop;
+			this.pageX=e.clientX+document.documentElement.scrollLeft;
         }else{
             this.target=e.target;
             this.button=e.button;
             this.relatedTarget = e.relatedTarget;
+			this.pageX=e.pageX;
+			this.pageY=e.pageY;
         }
         for(var i=0,il=copyParams.length;i<il;i++){
             this[copyParams[i]]=e[copyParams[i]];
@@ -179,7 +183,7 @@ kola('kola.bom.Event', [
 
             //	建立替代方法，主要是设定作用域
             obj = {
-                l: listenerfn,
+                l: option._definer||listenerfn,
                 h: eventBind(eventAgent, element, listenerfn, option),
                 o: option
             };

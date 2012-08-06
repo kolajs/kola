@@ -3,8 +3,6 @@ kola('kola.html.Event', [
     'kola.lang.Array',
     'kola.event.Dispatcher'
 ],function(E,A,Dispatcher){
-    var domEventType='resize,click,mouseover,mouseout,mouseenter,mouseleave,mouseup,mousedown,mousemove,keyup,keydown,keypress,change,focus,blur,submit,scroll'
-    var out_cache=[];
     var DomEvent={
         /**
 		 * 监听事件
@@ -14,13 +12,9 @@ kola('kola.html.Event', [
 		 * @type kola.html.Element
 		 */
 		on: function(name, listenerfn, option) {
-            //if(domEventType.indexOf(name)!=-1){
-                this._each( function(element) {
-                    E.on(element, name, listenerfn,option);
-                });
-            //}else{
-            //    Dispatcher.prototype.on.call(name, listenerfn, option)
-            //}
+			this._each( function(element) {
+				E.on(element, name, listenerfn,option);
+			});
 			return this;
 		},
 		/**
@@ -31,25 +25,23 @@ kola('kola.html.Event', [
 		 * @type kola.html.Element
 		 */
 		off: function(name, listenerfn) {
-            //if(domEventType.indexOf(name)!=-1){
-                this._each( function(element) {
-                    E.off(element, name, listenerfn);
-                });
-            //}else{
-            //    Dispatcher.prototype.off.call(name, listenerfn);
-            //}
+			if(name=="mouseleave")
+				name="mouseout";
+			if(name=="mouseenter")
+				name="mouseover";
+			this._each( function(element) {
+				E.off(element, name, listenerfn);
+			});
 			return this;
 		},
         fire:function(name){
-            //if(domEventType.indexOf(name)!=-1){
-                this._each( function(element) {
-                    E.fire(element, name);
-                });
-            //}else{
-            //    Dispatcher.prototype.fire.call(name);
-            //}
+			this._each( function(element) {
+				E.fire(element, name);
+			});
         },
         mouseenter:function(listenerfn, option){
+			option = option||{}
+			option._definer = listenerfn;
             this._each( function(element) {
 				E.on(element,"mouseover", function(e){
                     var from=e.relatedTarget;
@@ -63,6 +55,8 @@ kola('kola.html.Event', [
 			});
         },
         mouseleave:function(listenerfn, option){
+			option = option||{}
+			option._definer = listenerfn;
             this._each( function(element) {
 				E.on(element,"mouseout", function(e){
                     var from=e.relatedTarget;

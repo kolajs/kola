@@ -1,8 +1,10 @@
 kola('kola.html.Properties',[
     'kola.html.ElementCore',
     'kola.bom.Browser',
-    'kola.lang.String'
-],function(KElement,Browser,KolaString){
+    'kola.lang.String',
+	'kola.html.Document'
+],function(KElement, Browser, KolaString, KolaDocument){
+	KolaDocument.createInlineCss(".___Kola___Hidden{display:none!important}");
     var Properties={
         /**
 		 * 获取某个属性值
@@ -211,7 +213,7 @@ kola('kola.html.Properties',[
 				if (name == 'opacity') {
 					var filter;
 					if (Browser.IEStyle) {
-						return filter.indexOf("opacity=") >= 0 ? parseFloat(filter.match(/opacity=([^)]*)/)[1]) / 100 : 1;
+						return st.filter.indexOf("opacity=") >= 0 ? parseFloat(st.filter.match(/opacity=([^)]*)/)[1]) / 100 : 1;
 					} else {
 						return (filter = st.opacity) ? parseFloat(filter) : 1;
 					}
@@ -260,6 +262,14 @@ kola('kola.html.Properties',[
 				}
 			});
 			return this;
+		},
+		
+		hide:function(){
+			return this.addClass("___Kola___Hidden");
+		},
+		
+		show:function(){
+			return this.removeClass("___Kola___Hidden");
 		}
     }
     var noPx={

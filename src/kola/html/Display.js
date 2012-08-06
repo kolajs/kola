@@ -116,9 +116,7 @@ function(KElement){
                     parseInt(this.style("padding-left")||"0")+
                     parseInt(this.style("padding-right")||"0")+
                     parseInt(this.style("border-left")||"0")+
-                    parseInt(this.style("border-right")||"0")+
-                    parseInt(this.style("margin-left")||"0")+
-                    parseInt(this.style("margin-right")||"0");
+                    parseInt(this.style("border-right")||"0");
         },
 		/**
 		 * 获取第一个对象的高度
@@ -150,9 +148,7 @@ function(KElement){
                     parseInt(this.style("padding-top")||"0")+
                     parseInt(this.style("padding-down")||"0")+
                     parseInt(this.style("border-top")||"0")+
-                    parseInt(this.style("border-down")||"0")+
-                    parseInt(this.style("margin-top")||"0")+
-                    parseInt(this.style("margin-down")||"0");
+                    parseInt(this.style("border-down")||"0");
         },
 		/**
 		 * 获取第一个对象客户区域的宽度
