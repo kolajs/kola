@@ -157,9 +157,6 @@ window.kola = (function(kola) {
 	
 	//	如果存在缓存的kola方法，那就保存之
 	var cachedKolaCall = !!kola && kola._cache;
-	if (typeof cachedKolaCall != 'object' || cachedKolaCall == null || !cachedKolaCall.length) {
-		cachedKolaCall = false;
-	}
 	
 	/**
 	 * 定义一个包
@@ -220,7 +217,10 @@ window.kola = (function(kola) {
 	});
 	
 	// 如果存在之前的kola调用缓存，那就依次执行之
-	if (cachedKolaCall) {
+	if (typeof cachedKolaCall == 'object' 
+		&& cachedKolaCall != null 
+		&& cachedKolaCall.length
+	) {
 		for (var i = 0, il = cachedKolaCall.length; i < il; i++) {
 			var args = cachedKolaCall[i],
 				scope = cachedKolaCall.shift();
