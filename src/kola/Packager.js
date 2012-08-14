@@ -7,6 +7,10 @@
 
 window.kola = (function(kola) {
 	
+	/*********************************************************************
+	 *                        辅助方法
+	 ********************************************************************/
+	
 	/**
 	 * 创建一个新的空方法
 	 */
@@ -60,10 +64,14 @@ window.kola = (function(kola) {
 		return newClass;
 	};
 	
+	/*********************************************************************
+	 *                        PackageStatus类
+	 ********************************************************************/
+	
 	/**
 	 * Package加载状态枚举类
 	 */
-	var Status = {
+	var PackageStatus = {
 		uninitialized:	0,		// 未初始化
 		loading:		1,		// 正在加载
 		loaded:			2,		// 加载完成
@@ -73,41 +81,85 @@ window.kola = (function(kola) {
 		complete:		5		// 完全可用
 	};
 	
+	/*********************************************************************
+	 *                        Package类
+	 ********************************************************************/
+	
 	var Package = newKolaClass({
 		
 		/**
 		 * 每个kola包的对应控制类
 		 * 
 		 * @param name {String} 包全名
-		 * @param dependence {Array | Null} 依赖包，如果为null，即没有依赖包
-		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
+		 * @param [creator] {Function} 创造包内容的方法，其返回值就是包内容
+		 * @param [dependence] {Array | Null} 依赖包，如果为null，即没有依赖包
 		 */
-		_init: function(name, dependence, creator) {
+		_init: function(name, creator, dependence) {
 			this._name = name;
 			
-			// 如果存在依赖包，那就保存，并找到无效包
-			if (dependence !== null) {
-				this._dependence = dependence;
-				this._unavilable = findUnavilable.call(this, dependence);
-			} else {
-				this._dependence = null;
-				this._unavilable = null;
-			}
-			
-			this._creator = creator;
-			this._entity = null;
-			
 			// 设置为默认状态
-			this._status = Status.uninitialized;
+			this._status = PackageStatus.uninitialized;
+			
+			switch (arguments.length) {
+				case 3:
+					// 保存dependence
+					if (dependence !== null) {
+						this._dependence = dependence;
+						this._unavilable = findUnavilable.call(this, dependence);
+					} else {
+						this._dependence = null;
+						this._unavilable = null;
+					}
+					
+				case 2:
+					// 保存creator
+					this._creator = creator;
+					this._entity = null;
+					break;
+				
+			}
 		},
 		
 		/**
 		 * 加载当前包
 		 * 
-		 * @param 
+		 * @param path {String} 加载地址
 		 */
 		load: function(path) {
-			
+			// FIXME: 待写
+		},
+		
+		/**
+		 * 当前包已经加载成功，并设置依赖包信息
+		 * 
+		 * @param dependence {Array<String> | Null} 依赖包的列表
+		 */
+		loaded: function(dependence) {
+			// FIXME: 待写
+		},
+		
+		/**
+		 * 需要将当前包置为完成状态，并在完成后回调指定的方法
+		 * 
+		 * @param callback {Function} 包可用后的回调方法
+		 */
+		complete: function(callback) {
+			// FIXME: 待写
+		},
+		
+		/**
+		 * 获取包的状态
+		 * 
+		 * @return {Number}
+		 */
+		/**
+		 * 设置包的状态
+		 * 
+		 * @param status {Number} 包的新状态码
+		 * @chainable
+		 */
+		status: function(status) {
+			// FIXME: 待写
 		}
 		
 	});
@@ -119,41 +171,167 @@ window.kola = (function(kola) {
 		// FIXME: 待写
 	};
 	
+	/*********************************************************************
+	 *                        Packager类
+	 ********************************************************************/
+	
 	/**
 	 * kola的Package控制管理中心
+	 * 
+	 * @class Packager
+	 * @static
 	 */
 	var Packager = {
 		
 		/**
 		 * 定义一个包
 		 * 
+		 * @method define
 		 * @param name {String} 包全名
-		 * @param dependence {Array | Null} 依赖包，如果为null，即没有依赖包
+		 * @param dependence {Array<String> | Null | String} 依赖包列表
+		 * 	如果为null，即没有依赖包；
+		 * 	如果为String类型，说明只有一个依赖包
+		 * 	如果是Array类型，那就是依赖包的列表
 		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
+		 * @chainable
 		 */
 		define: function(name, dependence, creator) {
-			// FIXME: 待写
+			// 如果包早已加载完成，那则不做处理
+			var packageObj = packageObjects[name] 
+				|| (packageObjects[name] = new Package(name, creator));	// 或新建之
+			if (packageObj.status() >= PackageStatus.loaded) return;
+			
+			// 把dependence转化为数组或者字符串
+			switch (typeof dependence) {
+				case 'string':
+					// 一个依赖包
+					dependence = [dependence];
+					break;
+				case 'object':
+					if (dependence.length) {
+						// 一个或多个依赖包
+						break;
+					}
+				default:
+					// 没有依赖包
+					dependence = null;
+			}
+			
+			// 设置当前包加载成功
+			packageObj.loaded(dependence);
+			
+			return Packager;
 		},
 		
 		/**
 		 * 使用某些包执行某个方法
 		 * 
+		 * @method use
 		 * @param packages {String | Array<String>} 要使用的包，如果是string也就是一个包的包名，如果是Array，那可能就是依赖的包列表
 		 * @param callback {Function} 包可用之后的回调方法
+		 * @chainable
 		 */
 		use: function(packages, callback) {
-			// FIXME: 待写
+			// packages都变成数组格式
+			packages = typeof packages == 'string' ? [packages] : packages.concat();
+			var unavilable = packages.concat();	// 无效的包列表
+			
+			// 创建一个完成后的回调方法
+			var completeListener = createPackageCompleteListener(packages, unavilable, callback);
+			
+			// 循环每个依赖包，监听其complete事件
+			for (var i = 0, il = packages.length; i < il; i++) {
+				var packageObj = packageObjects[name] 
+					|| (packageObjects[name] = new Package(packages[i]));	// 或新建之
+				packageObj.complete(completeListener);
+			}
+			
+			return Packager;
 		},
 		
 		/**
 		 * 增量保存设置信息
 		 * 
+		 * @method config
 		 * @param config {Object} 增量设置对象
+		 * @chainable
 		 */
 		config: function(config) {
-			// FIXME: 待写
+			objectExtend(config, packagerConfig);
+			
+			return Packager;
 		}
 	};
+	
+	/**
+	 * 深度复制对象
+	 */
+	var objectExtend = function(fromObject, toObject) {
+		for (var name in fromObject) {
+			var value = fromObject[name];
+			
+			switch (typeof value) {
+				case 'funtion': 
+					break;
+				
+				case 'object':
+					if (value !== null) {
+						// 对于map对象进行深度复制
+						// 注意：这里没有判断是否为数组，因为配置参数中不会出现这种情景
+						objectExtend(value, (toObject[name] = {}));
+						break;
+					}
+				
+				default:
+					// 剩下的都是值类型，直接复制
+					toObject[name] = value;
+			}
+		}
+	};
+	
+	/**
+	 * packager的配置信息
+	 * 
+	 * @property packagerConfig
+	 * @type {Object}
+	 * @private
+	 * @for Packager
+	 */
+	var packagerConfig = {};
+	
+	/**
+	 * 保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象
+	 * 
+	 * @property packageObjects
+	 * @type {Object}
+	 * @private
+	 * @for Packager
+	 */
+	var packageObjects = {};
+	
+	/**
+	 * 创建一个确保所有需要的包都加载完成就能执行相应回调方法的事件监听器
+	 * 
+	 * @method createPackageCompleteListener
+	 * @private
+	 * @for Packager
+	 * @param usedPackages {Array<String>} 需要的包名列表
+	 * @param callback {Function} 包都加载完成后的回调方法
+	 * @param unavilableCount {Number} 无效包的数量
+	 * @return {Function} 生成的事件监听器方法，其输入参数只有一个，为加载成功的包名称
+	 */
+	var createPackageCompleteListener = function(usedPackages, callback, unavilableCount) {
+		return function(name) {
+			if (--unavilableCount <= 0) {
+				// 需要的包全部加载完成，可以执行了回调方法了
+				// FIXME: 待写
+			}
+		};
+	};
+	
+	/*********************************************************************
+	 *                         kola方法定义
+	 ********************************************************************/
 	
 	//	如果存在缓存的kola方法，那就保存之
 	var cachedKolaCall = !!kola && kola._cache;
