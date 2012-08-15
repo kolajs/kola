@@ -27,9 +27,9 @@
 	<script>
 		kola("kola.lang.String",function(KolaString){
 			test("trim",function(testCase){
-				testCase.test(KolaString.trim(" ddfs") == "ddfs", "left");
-				testCase.test(KolaString.trim("ddfs ") == "ddfs", "right");
-				testCase.test(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
+				testCase(KolaString.trim(" ddfs") == "ddfs", "left");
+				testCase(KolaString.trim("ddfs ") == "ddfs", "right");
+				testCase(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
 			});
 		});
 	</script>

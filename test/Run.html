@@ -48,12 +48,12 @@
 					cases= cases.concat(element.contentWindow.testCases);
 			});
 
-			for(var i=0; i<cases.length; i++){
+			for(var i=0; i < cases.length; i ++){
 				cases[i].dom = drawCase(cases[i]);
 				$(".cases").append(cases[i].dom);
 			}
 			function drawCase(testCase){
-				return $('<div class="case ' + testCase.status + '">' + testCase.name + '<div class="numberI">[<span class ="fail"></span><span class ="ok"></span>]</div></div>');
+				return $('<div class="case ' + testCase.status + '">' + testCase.caseName + '<div class="numberI">[<span class ="fail"></span><span class ="ok"></span>]</div></div>');
 			}
 			window.onNewCase = function(testCase, window){
 				cases.push(testCase);
@@ -76,6 +76,8 @@
 			$("button").click(function(){
 				for(var i=0; i<cases.length; i++){
 					cases[i].status = "waiting";
+					cases[i].succCase = 0;
+					cases[i].failCase = 0;
 					cases[i].run();
 				}
 			});

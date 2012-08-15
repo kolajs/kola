@@ -1,18 +1,28 @@
 (function(){
-	var TestCase = function(name, run, asyn){
-		this.status = "waiting";
-		this.name = name;
-		this._run = run;
-		this.asyn = asyn;
-		this.succCase = 0;
-		this.failCase = 0;
-		this.errorMessage = "";
+	function getNewCase(name, _run, asyn){
+		var newCase = function(value, why){
+			test.call(newCase, value, why)
+		}
+		newCase.status = "waiting";
+		newCase.caseName = name;
+		newCase._run = _run;
+		newCase.asyn = asyn;
+		newCase.succCase = 0;
+		newCase.failCase = 0;
+		newCase.errorMessage = "";
+
+		newCase.run = function (){run.call(newCase)}
+		newCase.end = function (){end.call(newCase)}
+		newCase.log = function (message){log.call(newCase, message)}
+
+		return newCase;
 	}
+
 	function cleanUp(){
 		if(window.parent && window.parent.onTestEnd)
 			window.parent.onTestEnd(this, window);
 	}
-	TestCase.prototype.run = function(){
+	var run = function(){
 		try{
 			this._run(this);
 		}catch(e){
@@ -24,32 +34,33 @@
 			this.end()
 		}
 	}
-	TestCase.prototype.end = function(){
+	var end = function(){
 		if(this.status == "waiting"){
 			this.status = "success";
 		}
 		cleanUp.call(this);
 	}
-	TestCase.prototype.fail = function(why){
+	fail = function(why){
 		this.status = "fail";
 		this.failCase ++;
 		this.errorMessage += why + "\n"
 		cleanUp.call(this);
 	}
-	TestCase.prototype.test = function(value, why){
+	var test = function(value, why){
 		if(!value){
-			this.fail(why);
+			fail.call(this, why);
 		}else{
 			this.succCase ++;
 			cleanUp.call(this);
 		}
 	}
-	TestCase.prototype.log = function(txt){
+	var log = function(txt){
 		console.log(txt);
 	}
+
 	window.testCases = []
 	window.test = function(name, run, asyn){
-		var newCase=new TestCase(name, run, asyn)
+		var newCase = getNewCase(name, run, asyn)
 		testCases.push(newCase);
 		if(window.parent && window.parent.onNewCase)
 			window.parent.onNewCase(newCase, window);
