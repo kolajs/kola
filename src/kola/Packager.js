@@ -50,6 +50,7 @@ window.kola = (function(kola) {
 	 * @param methods {Object} 方法列表
 	 * @return {KolaClass}
 	 */
+	// TODO: 还没有支持__ME这样的写法
 	var newKolaClass = function(superClass, methods) {
 		// 如果只有一个输入参数，那说明没有父类
 		if (arguments.length == 1) {
@@ -73,11 +74,20 @@ window.kola = (function(kola) {
 			}
 		}
 		
-		// 创建新的类
+		// 创建新的类，并根据是否存在直接调用方法，进行不同的处理
 		var newClass = newConstructor();
 		newClass.prototype = prototypeInstance;
 		
 		return newClass;
+	};
+	
+	/**
+	 * 抛出一个错误信息
+	 */
+	var throwError = function(message) {
+		if (window.Error) {
+			throw new Error(message);
+		}
 	};
 	
 	/*********************************************************************
@@ -312,9 +322,7 @@ window.kola = (function(kola) {
 		this._status = PackageStatus.error;
 		
 		// 显示错误
-		if (window.Error) {
-			throw new Error("can't load package " + packageName + " in uri: " + script.src);
-		}
+		throwError("can't load package " + packageName + " in uri: " + script.src);
 		
 		// 去除事件绑定
 		node.onerror = null;
@@ -333,9 +341,7 @@ window.kola = (function(kola) {
 			// 如果该包还处于未加载完成状态，那就报错
 			if (scope._status < PackageStatus.loaded) {
 				// 显示错误
-				if (window.Error) {
-					throw new Error("can't define package " + packageName);
-				}
+				throwError("can't define package " + packageName);
 			}
 		}, 0);
 		
@@ -526,7 +532,8 @@ window.kola = (function(kola) {
 				return path + names.join('/') + '.js';
 			}
 			
-			// FIXME: 没有找到路径信息，抛出错误
+			// 没有找到路径信息，抛出错误
+			throwError("can't get file path of package " + name);
 		},
 		
 		/**
@@ -661,6 +668,7 @@ window.kola = (function(kola) {
 	 * @for window
 	 * @param config {Object} 设置对象
 	 */
+	// FIXME: 还没有增加插件支持
 	kola = function() {
 		var args = arguments,
 			scope = this;
