@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script>
+		(function() {
+			window.kola = function() {
+				var args = [this];
+				for (var i = 0, il = arguments.length; i < il; i++) {
+					args.push(arguments[i]);
+				}
+				kola._cache.push(args);
+			};
+			kola._cache = [];
+			var s = document.createElement('script');
+			s.src = 'http://localhost/kola/Packager.js';
+			s.type = 'text/javascript';
+			s.charset = 'utf-8';
+			document.getElementsByTagName('head')[0].appendChild(s);
+			s = null
+		})();
+	</script>
+	<script src="http://localhost/cv/kola-js/test/testsuit/testSuit.js" type="application/javascript"></script>
+	<script>
+		test('无kola配置测试', function(test) {
+		}, false);
+		
+		
+		
+		kola("kola.html.Element",function($){
+			test("选择器测试",function(testCase){
+				//testCase.test($("div").length, "类型选择");
+				//testCase.test($(".class").length, "class选择");
+				//testCase.test($("#id").length, "id选择");
+				//testCase.test($("[name=name]").length, "attr选择");
+				testCase.test(q($("p", document.getElementsByTagName("div")).elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+				testCase.test(q($("p", "div").elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+				testCase.test(q($("p", $("div")).elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+				testCase.test(q($("div").find("p").elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+				testCase.test($("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+				testCase.test($("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+				//#7533
+				testCase.test($("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length == 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
+
+				testCase.test(q($(".blog", document.getElementsByTagName("p")).elements(), "mark", "simon"), "Finding elements with a context." );
+				testCase.test(q($(".blog", "p").elements(), "mark", "simon"), "Finding elements with a context." );
+				testCase.test(q($(".blog", $("p")).elements(), "mark", "simon"), "Finding elements with a context." );
+				testCase.test(q($("p").find(".blog").elements(), "mark", "simon"), "Finding elements with a context." );
+			});		
+			test("属性测试",function(testCase){
+				var dom = $("div");
+				testCase.test(dom.attr("name") == "name", "读取属性");
+				dom.attr("name", "farName");
+				testCase.test(dom.attr("name") == "farName", "设置属性");
+			});
+			test("内容测试",function(testCase){
+				var dom = $("#id");
+				testCase.test(dom.html() == "<p>123</p>", "html读取");
+				dom.html("345");
+				testCase.test(dom.html() == "345", "html设置");
+			});
+		});
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
