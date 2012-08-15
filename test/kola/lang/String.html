@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script>
+		(function() {
+			window.kola = function() {
+				var arr = [this];
+				for (var i = 0, il = arguments.length; i < il; i++) {
+					arr.push(arguments[i]);
+				}
+				kola._cache.push(arr);
+			};
+			kola._cache = [];
+			var s = document.createElement('script');
+			kola({charset:'UTF-8'});
+			s.src = 'http://localhost/kola/Package.js';
+			s.type = 'text/javascript';
+			s.charset = 'utf-8';
+			document.getElementsByTagName('head')[0].appendChild(s);
+			s = null
+		})();
+	</script>
+	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
+</head>
+<body>
+	<script>
+		kola("kola.lang.String",function(KolaString){
+			test("trim",function(testCase){
+				testCase.test(KolaString.trim(" ddfs") == "ddfs", "left");
+				testCase.test(KolaString.trim("ddfs ") == "ddfs", "right");
+				testCase.test(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
+			});
+		});
+	</script>
+</body>
+</html>

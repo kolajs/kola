@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script>
+		(function() {
+			window.kola = function() {
+				var arr = [this];
+				for (var i = 0, il = arguments.length; i < il; i++) {
+					arr.push(arguments[i]);
+				}
+				kola._cache.push(arr);
+			};
+			kola._cache = [];
+			var s = document.createElement('script');
+			kola({charset:'UTF-8'});
+			s.src = 'http://localhost/kola/Package.js';
+			s.type = 'text/javascript';
+			s.charset = 'utf-8';
+			document.getElementsByTagName('head')[0].appendChild(s);
+			s = null
+		})();
+	</script>
+	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
+</head>
+<body>
+	<script>
+		kola("kola.lang.Object",function(KolaObject){
+			var base = {a: '1', b: '2', my:{a: '1', b:'2'}};
+			var extra = {c: '3', d: '4'};
+			var moreExtra = {a: '5', f: '6', my:{a: '2'}};
+			KolaObject.extend(true, base, extra, moreExtra);
+			test("extend",function(testCase){
+				testCase.test(base.a == "5", "a");
+				testCase.test(base.c == "3", "c");
+				testCase.test(base.f == "6", "f");
+
+				testCase.test(base.my.a == "2", "deep a");
+				testCase.test(base.my.b == "2", "deep b");
+			});
+			test("keys",function(testCase){
+				var keys = KolaObject.keys(extra);
+				testCase.test(keys.length == 2, "length");
+				testCase.test(keys[0] == "c", "c");
+				testCase.test(keys[1] == "d", "d");
+			});
+		});
+	</script>
+</body>
+</html>
