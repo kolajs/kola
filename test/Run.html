@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<document>
+<head>
+	<style>
+		.cases{
+			border: 2px dashed #fef;
+			background: #aa8;
+			padding: 4px;
+			margin: 5px;
+			box-shadow: 1px 1px 3px black;
+		}
+		.case{
+			width: 150px;
+			height: 20px;
+			display: inline-block;
+			border: 2px solid #eef;
+			margin: 3px;
+			text-align: center;
+			vertical-align: center;
+			font-weight: 900;
+			color: white;
+			font-family: "Arial"
+		}
+		.waiting{
+			background: #666;
+		}
+		.success{
+			background: green;
+		}
+		.fail{
+			background: red;
+		}
+		.numberI{
+			float: right;
+			font-weight: normal;
+		}
+		iframe{
+			width: 100%;
+			display: none;
+		}
+	</style>
+	<script type="text/javascript" src="jQuery.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var cases = [];
+			var windows = $("iframe").each(function(i, element){
+				if(element.contentWindow.testCases)
+					cases= cases.concat(element.contentWindow.testCases);
+			});
+
+			for(var i=0; i<cases.length; i++){
+				cases[i].dom = drawCase(cases[i]);
+				$(".cases").append(cases[i].dom);
+			}
+			function drawCase(testCase){
+				return $('<div class="case ' + testCase.status + '">' + testCase.name + '<div class="numberI">[<span class ="fail"></span><span class ="ok"></span>]</div></div>');
+			}
+			window.onNewCase = function(testCase, window){
+				cases.push(testCase);
+				testCase.dom = drawCase(testCase);
+				$(".cases").append(testCase.dom);
+			}
+			window.onTestEnd = function(testCase, window){
+				testCase.dom.attr("class", "case " + testCase.status);
+				testCase.dom.find(".ok").html(testCase.succCase);
+				if(testCase.failCase != 0){
+					testCase.dom.find(".fail").html(testCase.failCase);
+				}else{
+					testCase.dom.find(".fail").html("");
+				}
+				if(testCase.status == "fail"){
+					//console.log(testCase.errorMessage)
+					//testCase.dom.append("<p>" + testCase.errorMessage + "</p>")
+				}
+			}
+			$("button").click(function(){
+				for(var i=0; i<cases.length; i++){
+					cases[i].status = "waiting";
+					cases[i].run();
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<button class="run">Run</button>
+	<div class="cases"></div>
+	<iframe src="kola/lang/Array.html" style="display:block"></iframe>
+	<iframe src="kola/lang/Function.html"></iframe>
+	<iframe src="kola/lang/String.html"></iframe>
+	<iframe src="kola/lang/Object.html"></iframe>
+</body>
+</document>
