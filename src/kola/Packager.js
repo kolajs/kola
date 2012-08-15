@@ -31,8 +31,15 @@ window.kola = (function(kola) {
 	 * 给方法绑定一个作用域
 	 */
 	var bindScope = function(fn, scope) {
+		var args = [];
+		for (var i = 2, il = arguments.length; i < il; i++) {
+			args.push(arguments[i]);
+		}
 		return function() {
-			fn.apply(scope, arguments);
+			for (var i = 0, il = arguments.length; i < il; i++) {
+				args.push(arguments[i]);
+			}
+			return fn.apply(scope, args);
 		};
 	};
 	
@@ -124,16 +131,17 @@ window.kola = (function(kola) {
 				script.charset = path.charset;
 			}
 			
-			// FIXME: 跟踪error事件，用于发现链接错误或包名笔误的包
-			script.onerror = bindScope(loadError, this);
+			// 跟踪error事件，用于发现链接错误或包名笔误的包
+			script.onerror = bindScope(scriptFail, this, this._name, script);
 			
-			// FIXME: 跟踪加载完成事件，用于发现包执行错误或者期望与实际包名不同的包
+			// 跟踪加载完成事件，用于发现包执行错误或者期望与实际包名不同的包
+			script.onload = bindScope(scriptSucc, this, this._name, script);
 			
 			// 设置加载状态为加载中
 			this.status(PackageStatus.loading);
 			
 			// 开始加载
-			document.body.appendChild(script);
+			(document.head || document.getElementsByTagName('head')[0]).appendChild(script);
 			
 			return this;
 		},
@@ -291,6 +299,49 @@ window.kola = (function(kola) {
 		}
 		
 		return this;
+	};
+	
+	/**
+	 * 文件加载失败的调用方法
+	 * 
+	 * @param packageName {String} 对应的包名称
+	 * @param node {HTMLElement} 对应的script节点
+	 */
+	var scriptFail = function(packageName, node) {
+		// 设置为错误状态
+		this._status = PackageStatus.error;
+		
+		// 显示错误
+		if (window.Error) {
+			throw new Error("can't load package " + packageName + " in uri: " + script.src);
+		}
+		
+		// 去除事件绑定
+		node.onerror = null;
+		node.onload = null;
+	};
+	
+	/**
+	 * 文件加载成功后的调用方法
+	 * 
+	 * @param packageName {String} 对应的包名称
+	 * @param node {HTMLElement} 对应的script节点
+	 */
+	var scriptSucc = function(packageName, node) {
+		var scope = this;
+		setTimeout(function() {
+			// 如果该包还处于未加载完成状态，那就报错
+			if (scope._status < PackageStatus.loaded) {
+				// 显示错误
+				if (window.Error) {
+					throw new Error("can't define package " + packageName);
+				}
+			}
+		}, 0);
+		
+		// 去除事件绑定
+		node.onerror = null;
+		node.onload = null;
 	};
 	
 	/*********************************************************************
