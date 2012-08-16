@@ -122,7 +122,6 @@
 						&& F.dependence[2].name == 'defineuse.simple.C'
 						&& F.dependence[3].name == 'defineuse.simple.D'
 						&& F.dependence[4].name == 'defineuse.simple.E'
-						&& F.argumentsLength === 5
 					, '如果有多个依赖包，定义不成功'
 				);
 				
@@ -142,7 +141,7 @@
 			});
 			
 			// 测试use一个包，并且是Array类型
-			kola('defineuse.simple.B', function(B) {
+			kola(['defineuse.simple.B'], function(B) {
 				
 				test(arguments.length === 1
 					, '使用一个包（Array形式）执行方法时，注入参数的个数却是' + arguments.length
@@ -171,39 +170,116 @@
 					test(A.name == 'defineuse.simple.A'
 							&& B.name == 'defineuse.simple.B'
 							&& C.name == 'defineuse.simple.C'
+							&& C.dependence.name == 'defineuse.simple.A'
 							&& D.name == 'defineuse.simple.D'
+							&& D.dependence.name == 'defineuse.simple.B'
 							&& E.name == 'defineuse.simple.E'
+							&& E.dependence.length == 2
+							&& E.dependence[0].name == 'defineuse.simple.A'
+							&& E.dependence[1].name == 'defineuse.simple.B'
 							&& F.name == 'defineuse.simple.F'
+							&& F.dependence.length == 5
+							&& F.dependence[0].name == 'defineuse.simple.A'
+							&& F.dependence[1].name == 'defineuse.simple.B'
+							&& F.dependence[2].name == 'defineuse.simple.C'
+							&& F.dependence[3].name == 'defineuse.simple.D'
+							&& F.dependence[4].name == 'defineuse.simple.E'
 						, '使用多个包执行方法时，注入的参数不是依赖的那个包'
 					);
 				
 			});
 			
-		});
-		
-		test('使用简单包', function(test) {
+			// 测试use一个包，并且是string类型，并设置scope
+			kola('defineuse.simple.A', function(A) {
+				
+				test(arguments.length === 1
+					, '使用一个包（字符串形式）执行方法时，并设置了方法的scope，注入参数的个数却是' + arguments.length
+				);
+				
+				test(A.name == 'defineuse.simple.A'
+					, '使用一个包（字符串形式）执行方法时，并设置了方法的scope，注入的参数不是依赖的那个包'
+				);
+				
+				test(this.name == 'scope of A', '使用一个包（字符串形式）执行方法时，并设置了其scope，但是方法执行时，其scope却不是设定的那个scope');
+				
+			}, {
+				name: 'scope of A'
+			});
 			
-			kola('use.simple.A', function(A) {
-				test(A.name == 'use.simple.A'
-						&& arguments.length === 1
-					, '');
+			// 测试use一个包，并且是Array类型，并设置scope
+			kola(['defineuse.simple.B'], function(B) {
+				
+				test(arguments.length === 1
+					, '使用一个包（Array形式）执行方法时，并设置了方法的scope，注入参数的个数却是' + arguments.length
+				);
+				
+				test(B.name == 'defineuse.simple.B'
+					, '使用一个包（Array形式）执行方法时，并设置了方法的scope，注入的参数不是依赖的那个包'
+				);
+				
+				test(this.name == 'scope of B', '使用一个包（Array形式）执行方法时，并设置了其scope，但是方法执行时，其scope却不是设定的那个scope');
+				
+			}, {
+				name: 'scope of B'
+			});
+			
+			// 测试use多个包，并设置scope
+			kola([
+					'defineuse.simple.A'
+					, 'defineuse.simple.B'
+					, 'defineuse.simple.C'
+					, 'defineuse.simple.D'
+					, 'defineuse.simple.E'
+					, 'defineuse.simple.F'
+				], function(A, B, C, D, E, F) {
+				
+					test(arguments.length === 6
+						, '使用多个包执行方法时，并设置了方法的scope，注入参数的个数与使用包的个数不符'
+					);
+					
+					test(A.name == 'defineuse.simple.A'
+							&& B.name == 'defineuse.simple.B'
+							&& C.name == 'defineuse.simple.C'
+							&& C.dependence.name == 'defineuse.simple.A'
+							&& D.name == 'defineuse.simple.D'
+							&& D.dependence.name == 'defineuse.simple.B'
+							&& E.name == 'defineuse.simple.E'
+							&& E.dependence.length == 2
+							&& E.dependence[0].name == 'defineuse.simple.A'
+							&& E.dependence[1].name == 'defineuse.simple.B'
+							&& F.name == 'defineuse.simple.F'
+							&& F.dependence.length == 5
+							&& F.dependence[0].name == 'defineuse.simple.A'
+							&& F.dependence[1].name == 'defineuse.simple.B'
+							&& F.dependence[2].name == 'defineuse.simple.C'
+							&& F.dependence[3].name == 'defineuse.simple.D'
+							&& F.dependence[4].name == 'defineuse.simple.E'
+						, '使用多个包执行方法时，并设置了方法的scope，注入的参数不是依赖的那个包'
+					);
+				
+					test(this.name == 'scope of ABCDEF', '使用多个包执行方法时，并设置了其scope，但是方法执行时，其scope却不是设定的那个scope');
+				
+			}, {
+				name: 'scope of ABCDEF'
 			});
 			
 		});
 		
+		/*
 		test('测试注册或使用包时，自动错误提示的功能', function() {
 			
-			// 测试错误的地址
+			// TODO: 测试错误的地址
 			
-			// 测试错误的包内容
+			// TODO: 测试错误的包内容
 			
 		});
 		
 		test('注册包，非正常使用测试', function(test) {
 			
-			// 测试重复注册
+			// TODO: 测试重复注册
 			
 		});
+		*/
 	</script>
 </head>
 <body>
