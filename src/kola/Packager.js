@@ -448,6 +448,11 @@ window.kola = (function(kola) {
 	 */
 	var toComplete = function() {
 		// 设置当前包为完成状态
+		
+		// FIXME: 临时的输出语句
+		if (this._status == PackageStatus.complete) {
+			throwError('重复将包' + this._name + '置为可用状态');
+		}
 				
 		// 获取包的实体内容
 		this._creator = this._creator.apply(window, arguments);
@@ -805,8 +810,10 @@ window.kola = (function(kola) {
 			if (--usedPackages.unavilable <= 0) {
 				// 需要的包全部加载完成，可以执行了回调方法了
 				
+				/*
 				// 放到下一个队列的原因是，避免太多JS在一起执行
 				setTimeout(function() {
+				*/
 					// 轮询所有的包，获取包的内容
 					var objects = [];
 					for (var i = 0, il = usedPackages.length; i < il; i++) {
@@ -832,7 +839,10 @@ window.kola = (function(kola) {
 					
 					// 调用回调方法
 					callback.apply(scope || window, objects);
+				
+				/*
 				}, 0);
+				*/
 			}
 		};
 	};

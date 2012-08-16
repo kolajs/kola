@@ -265,6 +265,79 @@
 			
 		});
 		
+			/*
+		test('测试文件加载', function(test) {
+			
+			kola({
+				
+				packages: {
+					'simple': '/test/kola/Packager.support/simple/'
+				}
+				
+			});
+			
+			// 测试use一个包，并且是string类型
+			kola('simple.A', function(A) {
+				
+				test(A.name == 'simple.A'
+					, '使用一个包（字符串形式）执行方法时，注入的参数不是依赖的那个包'
+				);
+				
+			});
+			
+			// 测试use一个包，并且是Array类型
+			kola(['simple.hasdependence.C'], function(C) {
+				
+				test(C.name == 'simple.hasdependence.C'
+					, '使用一个包（Array形式）执行方法时，注入的参数不是依赖的那个包'
+				);
+				
+			});
+			
+			// 测试use多个包
+			kola([
+					'simple.A'
+					, 'simple.B'
+					, 'simple.hasdependence.C'
+					, 'simple.hasdependence.D'
+					, 'simple.hasdependence.manydependence.E'
+					, 'simple.hasdependence.manydependence.F'
+				], function(A, B, C, D, E, F) {
+				
+					test(arguments.length === 6
+						, '使用多个包执行方法时，注入参数的个数与使用包的个数不符'
+					);
+					
+					test(A.name == 'simple.A'
+							&& B.name == 'simple.B'
+							&& C.name == 'simple.hasdependence.C'
+							&& C.dependence.name == 'simple.A'
+							&& D.name == 'simple.hasdependence.D'
+							&& D.dependence.name == 'simple.B'
+							&& E.name == 'simple.hasdependence.manydependence.E'
+							&& E.dependence.length == 2
+							&& E.dependence[0].name == 'simple.A'
+							&& E.dependence[1].name == 'simple.B'
+							&& F.name == 'simple.hasdependence.manydependence.F'
+							&& F.dependence.length == 5
+							&& F.dependence[0].name == 'simple.A'
+							&& F.dependence[1].name == 'simple.B'
+							&& F.dependence[2].name == 'simple.hasdependence.C'
+							&& F.dependence[3].name == 'simple.hasdependence.D'
+							&& F.dependence[4].name == 'simple.hasdependence.manydependence.E'
+						, '使用多个包执行方法时，注入的参数不是依赖的那个包'
+					);
+					
+					test(this.name == 'scope of ABCDEF loading with packages config'
+						, '使用包执行方法时，假如包时通过外部文件动态加载，这是给方法设置的scope并没有应用到方法上');
+				
+			}, {
+				name: 'scope of ABCDEF loading with packages config'
+			});
+			
+		});
+			*/
+		
 		/*
 		test('测试注册或使用包时，自动错误提示的功能', function() {
 			
