@@ -821,39 +821,31 @@ window.kola = (function(kola) {
 			if (--usedPackages.unavilable <= 0) {
 				// 需要的包全部加载完成，可以执行了回调方法了
 				
-				/*
-				// 放到下一个队列的原因是，避免太多JS在一起执行
-				setTimeout(function() {
-				*/
-					// 轮询所有的包，获取包的内容
-					var objects = [];
-					for (var i = 0, il = usedPackages.length; i < il; i++) {
-						var object = Packager._package(usedPackages[i]).entity();
-						
-						// 如果存在插件的话，那就生成加入插件的包
-						var plugin = usedPackages['_' + i];
-						if (plugin) {
-							// 获取每个插件的实体内容
-							for (var j = 0, jl = plugin.length; j < jl; j++) {
-								plugin[j] = Packager._package(plugin[j]).entity();
-							}
-							
-							// 增加基类和methods
-							plugin.unshift(object);	// 基类
-							
-							// 生成新的类
-							object = newPluginJoinedClass.apply(window, plugin);
+				// 轮询所有的包，获取包的内容
+				var objects = [];
+				for (var i = 0, il = usedPackages.length; i < il; i++) {
+					var object = Packager._package(usedPackages[i]).entity();
+					
+					// 如果存在插件的话，那就生成加入插件的包
+					var plugin = usedPackages['_' + i];
+					if (plugin) {
+						// 获取每个插件的实体内容
+						for (var j = 0, jl = plugin.length; j < jl; j++) {
+							plugin[j] = Packager._package(plugin[j]).entity();
 						}
 						
-						objects.push(object);
+						// 增加基类和methods
+						plugin.unshift(object);	// 基类
+						
+						// 生成新的类
+						object = newPluginJoinedClass.apply(window, plugin);
 					}
 					
-					// 调用回调方法
-					callback.apply(scope || window, objects);
+					objects.push(object);
+				}
 				
-				/*
-				}, 0);
-				*/
+				// 调用回调方法
+				callback.apply(scope || window, objects);
 			}
 		};
 	};
