@@ -265,7 +265,72 @@
 			
 		});
 		
-		test('测试文件加载', function(test) {
+		test('配置测试', function(test) {
+			
+			// 没有进行任何配置时，自动读取路径信息，进行测试
+			kola('kola.lang.Function', function(KolaFunction) {
+				test(KolaFunction.bind, 'kola没有进行任何配置时，无法正确加载文件');
+			});
+			
+			// 测试只有全局默认path时，能否找到路径信息
+			kola({
+				path: '/src/'
+			});
+			kola('kola.lang.String', function(KolaString) {
+				test(KolaString.trim, '仅仅配置了全局path，也无法正确的加载文件');
+			});
+			
+			// 测试配置了libs，能否正确的找到路径信息
+			kola({
+				libs: {
+					'config': {
+						path: '/test/kola/Packager.support/config/'
+					}
+				}
+			});
+			kola('config.A', function(A) {
+				test(A.name === 'config.A', 'lib根目录下的包加载失败');
+			});
+			kola(['config.second.A', 'config.second.third.A'], function(second, third) {
+				test(second.name === 'config.second.A'
+						&& third.name === 'config.second.third.A'
+					, 'lib子孙目录下的包加载失败'
+				);
+			});
+			
+			// 测试config能够增量添加
+			kola({
+				libs: {
+					'configmerge': {
+						path: '/test/kola/Packager.support/configmerge/'
+					}
+				}
+			});
+			kola('configmerge.A', function(A) {
+				test(A.name === 'configmerge.A', 'config信息不能merge');
+			});
+			
+			// 测试lib中包含子lib的情况
+			kola({
+				libs: {
+					'config.newlib': {
+						path: '/test/kola/Packager.support/confignewlib/'
+					}
+				}
+			});
+			kola('config.newlib.A', function(A) {
+				test(A.name === 'config.newlib.A', '子lib根目录下的包加载失败');
+			});
+			kola(['config.second.A', 'config.second.third.A'], function(second, third) {
+				test(second.name === 'config.second.A'
+						&& third.name === 'config.second.third.A'
+					, '子lib子孙目录下的包加载失败'
+				);
+			});
+			
+		});
+		
+		test('文件加载测试', function(test) {
 			
 			kola({
 				
