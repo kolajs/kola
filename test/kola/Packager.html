@@ -265,13 +265,14 @@
 			
 		});
 		
-			/*
 		test('测试文件加载', function(test) {
 			
 			kola({
 				
-				packages: {
-					'simple': '/test/kola/Packager.support/simple/'
+				libs: {
+					'simple': {
+						path: '/test/kola/Packager.support/simple/'
+					}
 				}
 				
 			});
@@ -336,7 +337,6 @@
 			});
 			
 		});
-			*/
 		
 		/*
 		test('测试注册或使用包时，自动错误提示的功能', function() {

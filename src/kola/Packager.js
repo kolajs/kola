@@ -369,7 +369,7 @@ window.kola = (function(kola) {
 			switch (this._status) {
 				
 				// 如果是未初始化状态，那就需要开始加载
-				case PackageStatus.unavilable:
+				case PackageStatus.uninitialized:
 					this.load();
 					break;
 				
@@ -668,19 +668,19 @@ window.kola = (function(kola) {
 		 * 	charset，文件编码，没有的话那就是不设定编码；
 		 */
 		path: function(name) {
-			var names = name;
+			var names = name.split('.');
 			
-			// FIXME: 现在packages配置项上查找
+			// TODO: 先到packages上寻找
 			
-			// 在libs上查找
+			// 在packages上查找
 			var libs = packagerConfig.libs;
 			if (libs) {
-				for (var il = names.length - 1, i = il - 1; i >= 0; i--) {
+				for (var il = names.length, i = il - 1; i >= 0; i--) {
 					var config = libs[names.slice(0, i).join('.')];
 					if (config) {
 						config = objectExtend(config, {});
 						config.uri = config.path 
-							+ names.slice(i + 1, il).join('/') 
+							+ names.slice(i, il).join('/') 
 							+ '.js';
 							
 						delete config.path;
@@ -933,6 +933,7 @@ window.kola = (function(kola) {
 	};
 
 	// 声明kola.Packager包
+	// FIXME: kola的状态在这时，竟然是2，需要解决。对于所有依赖为null的，都需要考虑
 	Packager.define('kola.Packager', null, function() {
 		return Packager;
 	});
