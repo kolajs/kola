@@ -502,7 +502,7 @@ window.kola = (function(kola) {
 		this._status = PackageStatus.failed;
 		
 		// 显示错误
-		throwError("can't load package " + packageName + " in uri: " + script.src);
+		throwError("can't load package " + packageName + " in uri: " + node.src);
 		
 		// 去除事件绑定
 		node.onerror = null;
@@ -672,7 +672,7 @@ window.kola = (function(kola) {
 			
 			// TODO: 先到packages上寻找
 			
-			// 在packages上查找
+			// 在libs上查找
 			var libs = packagerConfig.libs;
 			if (libs) {
 				for (var il = names.length, i = il - 1; i >= 0; i--) {
@@ -705,15 +705,26 @@ window.kola = (function(kola) {
 					if (index == -1) continue;
 					
 					// 判断上一级是否存在kola
-					index = src.lastIndexOf('kola', src.length - index);
+					index = src.lastIndexOf('kola', index);
 					if (index == -1) continue;
 					
 					// 找到kola之前的/，这就是path
-					path = packagerConfig.path = src.substr(0, src.lastIndexOf('/', src.length - index) + 1);
+					path = packagerConfig.path = src.substr(0, src.lastIndexOf('/', index) + 1);
+					
+					break;
 				}
 			}
 			if (path) {
-				return path + names.join('/') + '.js';
+				var pathObj = {
+					uri: path + names.join('/') + '.js'
+				};
+				
+				// 使用全局的编码信息
+				var charset = packagerConfig.charset;
+				if (typeof charset == 'string' && charset.length > 0) {
+					pathObj.charset = charset;
+				}
+				return pathObj;
 			}
 			
 			// 没有找到路径信息，抛出错误
