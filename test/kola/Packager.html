@@ -2,63 +2,207 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="../../src/kola/Packager.js" type="text/javascript"></script>
+	<script src="../testsuit/testSuit.js" type="text/javascript"></script>
 	<script>
-		(function() {
-			window.kola = function() {
-				var args = [this];
-				for (var i = 0, il = arguments.length; i < il; i++) {
-					args.push(arguments[i]);
-				}
-				kola._cache.push(args);
-			};
-			kola._cache = [];
-			var s = document.createElement('script');
-			s.src = 'http://localhost/kola/Packager.js';
-			s.type = 'text/javascript';
-			s.charset = 'utf-8';
-			document.getElementsByTagName('head')[0].appendChild(s);
-			s = null
-		})();
-	</script>
-	<script src="http://localhost/cv/kola-js/test/testsuit/testSuit.js" type="application/javascript"></script>
-	<script>
-		test('无kola配置测试', function(test) {
-		}, false);
-		
-		
-		
-		kola("kola.html.Element",function($){
-			test("选择器测试",function(testCase){
-				//testCase.test($("div").length, "类型选择");
-				//testCase.test($(".class").length, "class选择");
-				//testCase.test($("#id").length, "id选择");
-				//testCase.test($("[name=name]").length, "attr选择");
-				testCase.test(q($("p", document.getElementsByTagName("div")).elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test(q($("p", "div").elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test(q($("p", $("div")).elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test(q($("div").find("p").elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test($("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
-				testCase.test($("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
-				//#7533
-				testCase.test($("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length == 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
-
-				testCase.test(q($(".blog", document.getElementsByTagName("p")).elements(), "mark", "simon"), "Finding elements with a context." );
-				testCase.test(q($(".blog", "p").elements(), "mark", "simon"), "Finding elements with a context." );
-				testCase.test(q($(".blog", $("p")).elements(), "mark", "simon"), "Finding elements with a context." );
-				testCase.test(q($("p").find(".blog").elements(), "mark", "simon"), "Finding elements with a context." );
-			});		
-			test("属性测试",function(testCase){
-				var dom = $("div");
-				testCase.test(dom.attr("name") == "name", "读取属性");
-				dom.attr("name", "farName");
-				testCase.test(dom.attr("name") == "farName", "设置属性");
+		test('简单包的注册和使用', function(test) {
+			
+			// 定义无任何依赖的包
+			kola('defineuse.simple.A', null, function() {
+				
+				test(arguments.length === 0, '没有依赖包时，包的生成方法却有' + arguments.length + '个注入参数');
+				
+				return {
+					name: 'defineuse.simple.A'
+				};
 			});
-			test("内容测试",function(testCase){
-				var dom = $("#id");
-				testCase.test(dom.html() == "<p>123</p>", "html读取");
-				dom.html("345");
-				testCase.test(dom.html() == "345", "html设置");
+			
+			kola('defineuse.simple.A', function(A) {
+				
+				test(A.name == 'defineuse.simple.A'
+					, '不能定义一个无任何依赖的包'
+				);
+				
 			});
+			
+			kola('defineuse.simple.B', null, function() {
+				
+				return {
+					name: 'defineuse.simple.B'
+				};
+			});
+			
+			// 定义有一个字符串形式依赖的、简单包
+			kola('defineuse.simple.C', 'defineuse.simple.A', function(A) {
+				
+				test(arguments.length === 1, '只有一个依赖包时（字符串形式），包的生成方法却有' + arguments.length + '个注入参数');
+				
+				return {
+					name: 'defineuse.simple.C',
+					dependence: A
+				};
+			});
+			
+			kola('defineuse.simple.C', function(C) {
+				
+				test(C.name == 'defineuse.simple.C'
+						&& C.dependence.name == 'defineuse.simple.A'
+					, '如果一个包的依赖包只有一个，并且为字符串形式的话，定义不成功'
+				);
+				
+			});
+			
+			// 定义只有一个依赖，并且为数组形式时的包
+			kola('defineuse.simple.D', ['defineuse.simple.B'], function(B) {
+				
+				test(arguments.length === 1, '只有一个依赖包时（数组形式），包的生成方法却有' + arguments.length + '个注入参数');
+				
+				return {
+					name: 'defineuse.simple.D',
+					dependence: B
+				};
+			});
+			
+			kola('defineuse.simple.D', function(D) {
+				
+				test(D.name == 'defineuse.simple.D'
+						&& D.dependence.name == 'defineuse.simple.B'
+					, '如果一个包的依赖包只有一个，并且放到数组中的话，定义不成功'
+				);
+				
+			});
+			
+			// 定义有两个依赖
+			kola('defineuse.simple.E', [
+				'defineuse.simple.A', 'defineuse.simple.B'
+			], function(A, B) {
+				
+				test(arguments.length === 2, '有多个依赖包时，包生成方法的注入参数个数却与依赖包的个数不同');
+				
+				return {
+					name: 'defineuse.simple.E',
+					dependence: [A, B]
+				};
+			});
+			
+			kola('defineuse.simple.E', function(E) {
+				
+				test(E.name == 'defineuse.simple.E'
+						&& E.dependence.length == 2
+						&& E.dependence[0].name == 'defineuse.simple.A'
+						&& E.dependence[1].name == 'defineuse.simple.B'
+					, '如果有多个依赖包，定义不成功'
+				);
+				
+			});
+			
+			// 定义多个依赖
+			kola('defineuse.simple.F', [
+				'defineuse.simple.A'
+				, 'defineuse.simple.B'
+				, 'defineuse.simple.C'
+				, 'defineuse.simple.D'
+				, 'defineuse.simple.E'
+			], function(A, B, C, D, E) {
+				
+				test(arguments.length === 5, '有多个依赖包时，包生成方法的注入参数个数却与依赖包的个数不同');
+				
+				return {
+					name: 'defineuse.simple.F',
+					dependence: [A, B, C, D, E]
+				};
+			});
+			
+			kola('defineuse.simple.F', function(F) {
+				
+				test(F.name == 'defineuse.simple.F'
+						&& F.dependence.length == 5
+						&& F.dependence[0].name == 'defineuse.simple.A'
+						&& F.dependence[1].name == 'defineuse.simple.B'
+						&& F.dependence[2].name == 'defineuse.simple.C'
+						&& F.dependence[3].name == 'defineuse.simple.D'
+						&& F.dependence[4].name == 'defineuse.simple.E'
+						&& F.argumentsLength === 5
+					, '如果有多个依赖包，定义不成功'
+				);
+				
+			});
+			
+			// 测试use一个包，并且是string类型
+			kola('defineuse.simple.A', function(A) {
+				
+				test(arguments.length === 1
+					, '使用一个包（字符串形式）执行方法时，注入参数的个数却是' + arguments.length
+				);
+				
+				test(A.name == 'defineuse.simple.A'
+					, '使用一个包（字符串形式）执行方法时，注入的参数不是依赖的那个包'
+				);
+				
+			});
+			
+			// 测试use一个包，并且是Array类型
+			kola('defineuse.simple.B', function(B) {
+				
+				test(arguments.length === 1
+					, '使用一个包（Array形式）执行方法时，注入参数的个数却是' + arguments.length
+				);
+				
+				test(B.name == 'defineuse.simple.B'
+					, '使用一个包（Array形式）执行方法时，注入的参数不是依赖的那个包'
+				);
+				
+			});
+			
+			// 测试use多个包
+			kola([
+					'defineuse.simple.A'
+					, 'defineuse.simple.B'
+					, 'defineuse.simple.C'
+					, 'defineuse.simple.D'
+					, 'defineuse.simple.E'
+					, 'defineuse.simple.F'
+				], function(A, B, C, D, E, F) {
+				
+					test(arguments.length === 6
+						, '使用多个包执行方法时，注入参数的个数与使用包的个数不符'
+					);
+					
+					test(A.name == 'defineuse.simple.A'
+							&& B.name == 'defineuse.simple.B'
+							&& C.name == 'defineuse.simple.C'
+							&& D.name == 'defineuse.simple.D'
+							&& E.name == 'defineuse.simple.E'
+							&& F.name == 'defineuse.simple.F'
+						, '使用多个包执行方法时，注入的参数不是依赖的那个包'
+					);
+				
+			});
+			
+		});
+		
+		test('使用简单包', function(test) {
+			
+			kola('use.simple.A', function(A) {
+				test(A.name == 'use.simple.A'
+						&& arguments.length === 1
+					, '');
+			});
+			
+		});
+		
+		test('测试注册或使用包时，自动错误提示的功能', function() {
+			
+			// 测试错误的地址
+			
+			// 测试错误的包内容
+			
+		});
+		
+		test('注册包，非正常使用测试', function(test) {
+			
+			// 测试重复注册
+			
 		});
 	</script>
 </head>

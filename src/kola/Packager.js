@@ -46,6 +46,19 @@ window.kola = (function(kola) {
 	};
 	
 	/**
+	 * 抛出一个错误信息
+	 */
+	var throwError = function(message) {
+		if (window.Error) {
+			throw new Error(message);
+		}
+	};
+	
+	/*********************************************************************
+	 *                        kola类相关
+	 ********************************************************************/
+	
+	/**
 	 * 创建一个新的类构造器
 	 */
 	var newConstructor = function() {
@@ -80,14 +93,16 @@ window.kola = (function(kola) {
 	/**
 	 * 创建一个新的类
 	 * 
-	 * @param superClass {Function | Null} 父类。如果为null，那就是没有父类
-	 * @param methods {Object | Null} 方法列表。如果为null，那就是为了增加插件，不过必须存在父类
-	 * @param [plugin]* {Object} 插件
+	 * @param [superClass] {KolaClass} 父类
+	 * @param methods {Object} 方法列表
 	 * @return {KolaClass}
 	 */
 	var newKolaClass = function(superClass, methods) {
-		// 是否是插件模式
-		var pluginMode = false;
+		// 判断是否指定了父类
+		if (arguments.length == 1) {
+			methods = superClass;
+			superClass = null;
+		}
 		
 		// 建立原型对象
 		var prototypeInstance;
@@ -100,90 +115,16 @@ window.kola = (function(kola) {
 			var superPrototype = superClass.prototype;
 			prototypeClass.prototype = superPrototype;
 			prototypeInstance = new prototypeClass();
-			
-			// 根据methods是否为null，来决定是否是插件模式
-			if (methods === null) {
-				// 这是插件模式
-				pluginMode = true;
-				
-				// 如果父类中存在__ME，那就复制下
-				if (superPrototype.hasOwnProperty('__ME') && typeof superPrototype.__ME == 'function') {
-					prototypeInstance.__ME = superPrototype.__ME;
-				}
-				
-				//	循环添加每个插件对象到原型上
-				var aops = [];
-				for (var i = 2, il = arguments.length; i < il; i++) {
-					var plugin = arguments[i];
-					for (var item in plugin) {
-						var before = -1,
-							after = -1,
-							index = -1,
-							realName = '';
 							
-						//	如果存在前置切面方法，那就处理之
-						if ((before = item.indexOf('__before__')) != -1) {
-							realName = item.substring(0, before);
-							if (typeof (index = aops[realName]) != 'number') {
-								index = aops[realName] = aops.length;
-								aops.push({
-									name: realName,
-									befores: [],
-									afters: []
-								});
-							}
-							aops[index].befores.push(plugin[item]);
-							
-						} else if ((after = item.indexOf('__after__')) != -1) {
-							//	如果存在前置切面方法，那就处理之
-							realName = item.substring(0, after);
-							if (typeof (index = aops[realName]) != 'number') {
-								index = aops[realName] = aops.length;
-								aops.push({
-									name: realName,
-									befores: [],
-									afters: []
-								});
-							}
-							aops[index].afters.push(plugin[item]);
-						} else {
-							//	只有当当前方法不是切面方法时，才予以添加
-							prototypeInstance[item] = plugin[item];
-						}
-					}
-				}
-				
-				// 如果存在切面方法，那就替代相应方法
-				if (aops.length > 0) {
-					for (var i = 0, il = aops.length; i < il; i++) {
-						var aop = aops[i];
-						
-						//	生成替代方法
-						prototypeInstance[aop.name] = createAopedFunc(superPrototype[aop.name], aop);
-					}
-				}
-			
-			} else {
-				// 不是插件模式
-				
-				// 复制方法列表到原型对象上
-				for (var name in methods) {
-					prototypeInstance[name] = methods[name];
-				}
+			// 复制方法列表到原型对象上
+			for (var name in methods) {
+				prototypeInstance[name] = methods[name];
 			}
 		}
 		
-		// 确保存在_init方法
-		if (pluginMode) {
-			// 插件模式下，是从父类复制_init方法
-			
-			// 插件模式下，必然存在父类，且存在_init方法
-			prototypeInstance._init = superClass.prototype._init;
-		} else {
-			// 非插件模式下，如果不存在自己的_init初始化方法，那就创建一个默认的方法
-			if (typeof prototypeInstance._init != 'function' || !prototypeInstance.hasOwnProperty('_init')) {
-				prototypeInstance._init = newEmptyFunction();
-			}
+		// 如果不存在自己的_init初始化方法，那就创建一个默认的方法
+		if (typeof prototypeInstance._init != 'function' || !prototypeInstance.hasOwnProperty('_init')) {
+			prototypeInstance._init = newEmptyFunction();
 		}
 		
 		// 创建新的类，并根据是否存在直接调用方法，进行不同的处理
@@ -191,15 +132,90 @@ window.kola = (function(kola) {
 			&& typeof prototypeInstance.__ME == 'function'
 			? newAllIn1Constructor(prototypeInstance._init, prototypeInstance.__ME)
 			: newConstructor(); 
-		newClass.prototype = prototypeInstance;
+		newClass.prototype = prototypeInstance;	
 		
-		// 如果是插件模式
-		if (pluginMode) {
-			// 复制主类的静态属性和方法
-			for (var item in superClass) {
-				newClass[item] = superClass[item];
+		return newClass;
+	};
+	
+	/**
+	 * 创建一个加入插件的新类
+	 * 
+	 * @param superClass {KolaClass} 父类
+	 * @param plugin* {Object} 插件
+	 * @return {KolaClass}
+	 */
+	var newPluginJoinedClass = function(superClass) {
+		// 从父类复制一下关键方法
+		var superPrototype = superClass.prototype;
+		var methods = {
+			_init: superPrototype._init		// 父类必然存在初始化方法
+		};
+		
+		// 如果父类存在__ME方法，那就复制
+		if (typeof superPrototype.__ME == 'function' && superPrototype.hasOwnProperty('__ME')) {
+			methods.__ME = superPrototype.__ME;
+		}
+		
+		// 创建新类
+		var newClass = newKolaClass(superClass, methods);
+		var newClassPrototype = newClass.prototype;
+		
+		//	循环添加每个插件对象到原型上
+		var aops = [];
+		for (var i = 1, il = arguments.length; i < il; i++) {
+			var plugin = arguments[i];
+			for (var item in plugin) {
+				var before = -1,
+					after = -1,
+					index = -1,
+					realName = '';
+					
+				//	如果存在前置切面方法，那就处理之
+				if ((before = item.indexOf('__before__')) != -1) {
+					realName = item.substring(0, before);
+					if (typeof (index = aops[realName]) != 'number') {
+						index = aops[realName] = aops.length;
+						aops.push({
+							name: realName,
+							befores: [],
+							afters: []
+						});
+					}
+					aops[index].befores.push(plugin[item]);
+					
+				} else if ((after = item.indexOf('__after__')) != -1) {
+					//	如果存在前置切面方法，那就处理之
+					realName = item.substring(0, after);
+					if (typeof (index = aops[realName]) != 'number') {
+						index = aops[realName] = aops.length;
+						aops.push({
+							name: realName,
+							befores: [],
+							afters: []
+						});
+					}
+					aops[index].afters.push(plugin[item]);
+				} else {
+					//	只有当当前方法不是切面方法时，才予以添加
+					newClassPrototype[item] = plugin[item];
+				}
 			}
-		}	
+		}
+		
+		// 如果存在切面方法，那就替代相应方法
+		if (aops.length > 0) {
+			for (var i = 0, il = aops.length; i < il; i++) {
+				var aop = aops[i];
+				
+				//	生成替代方法
+				newClassPrototype[aop.name] = createAopedFunc(newClassPrototype[aop.name], aop);
+			}
+		}
+		
+		// 复制父类的静态属性和方法
+		for (var item in superClass) {
+			newClass[item] = superClass[item];
+		}
 		
 		return newClass;
 	};
@@ -247,15 +263,6 @@ window.kola = (function(kola) {
 			
 			return result;
 		};
-	};
-	
-	/**
-	 * 抛出一个错误信息
-	 */
-	var throwError = function(message) {
-		if (window.Error) {
-			throw new Error(message);
-		}
 	};
 	
 	/*********************************************************************
@@ -554,7 +561,7 @@ window.kola = (function(kola) {
 					dependence = [dependence];
 					break;
 				case 'object':
-					if (dependence.length) {
+					if (dependence !== null && dependence.length) {
 						// 一个或多个依赖包
 						break;
 					}
@@ -578,7 +585,6 @@ window.kola = (function(kola) {
 		 * @param [scope] {Any} 回调方法的作用域
 		 * @chainable
 		 */
-		// FIXME: 需要考虑packages为插件形式
 		use: function(packages, callback, scope) {
 			// packages都变成数组格式
 			packages = typeof packages == 'string' ? [packages] : packages.concat();
@@ -717,17 +723,7 @@ window.kola = (function(kola) {
 		 * @param methods {Object} 方法列表
 		 * @return {KolaClass}
 		 */
-		createClass: function(superClass, methods) {
-			if (typeof superClass == 'function') {
-				// 存在父类
-				return newKolaClass(superClass, methods);
-			} else {
-				// 不存在父类
-				
-				// 这时候的superClass就是methods
-				return newKolaClass(null, superClass);
-			}
-		},
+		createClass: newKolaClass,
 		
 		/**
 		 * 获取某个package的控制对象
@@ -825,11 +821,10 @@ window.kola = (function(kola) {
 							}
 							
 							// 增加基类和methods
-							plugin.unshift(null);	// methods
 							plugin.unshift(object);	// 基类
 							
 							// 生成新的类
-							object = newKolaClass.apply(window, plugin);
+							object = newPluginJoinedClass.apply(window, plugin);
 						}
 						
 						objects.push(object);
