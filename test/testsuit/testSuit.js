@@ -6,8 +6,12 @@
 		
 		var runstr = _run.toString();
 		var testCaseName = /function[ ]*\([ ]*([0-9a-zA-Z$_]+)/.exec(runstr);
-		newCase.expectCase = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g')).length;
-		
+		if(testCaseName && testCaseName.length > 1){
+			var match = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g'))
+			newCase.expectCase = match ? match.length : 0;
+		}else{
+			newCase.expectCase = 0;
+		}
 		newCase.status = 'waiting';
 		newCase.caseName = name;
 		newCase._run = _run;
