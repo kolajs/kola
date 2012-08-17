@@ -29,12 +29,18 @@
 
 		return newCase;
 	}
-
-	function statusChange(){
+	var refresh = function () {
+		this.status = 'waiting';
+		this.succCase = 0;
+		this.failCase = 0;
+		this.errorMessage = '';
+	}
+	var statusChange = function () {
 		if(window.parent && window.parent.onTestEnd)
 			window.parent.onTestEnd(this);
 	}
-	var run = function(){
+	var run = function () {
+		refresh.call(this);
 		this.status = 'testing';
 		statusChange.call(this);
 		try{
@@ -47,13 +53,13 @@
 			this.end()
 		}
 	}
-	var end = function(){
+	var end = function () {
 		if(this.status == 'waiting'){
 			this.status = 'success';
 		}
 		statusChange.call(this);
 	}
-	fail = function(why){
+	fail = function (why) {
 		this.status = 'fail';
 		this.failCase ++;
 		this.errorMessage += why + '\n'
