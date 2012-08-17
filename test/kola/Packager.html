@@ -328,6 +328,8 @@
 				);
 			});
 			
+			// 测试config是不是merge
+			
 		});
 		
 		test('文件加载测试', function(test) {
@@ -399,6 +401,99 @@
 				
 			}, {
 				name: 'scope of ABCDEF loading with packages config'
+			});
+			
+		});
+		
+		test('kola插件注入测试', function(test) {
+			
+			kola({
+				libs: {
+					'plugin': {
+						path: '/test/kola/Packager.support/plugin/'
+					}
+				}
+			});
+			
+			kola('plugin.Person[plugin.simple.Sports]', function(Person) {
+				
+				test(arguments.length === 1, '注入的参数个数不对');
+				
+				var person = new Person('Jady Yang');
+				
+				test(person.name === 'Jady Yang'
+					, '实例初始化时的参数注入失败'
+				);
+				
+				test(person.work() === '去工作'
+						&& person.sleep() === '去睡觉'
+					, '主类的方法调用失败'
+				);
+				
+				test(person.run() === '去跑步'
+						&& person.jump() === '去跳跳'
+					, '插件的方法调用失败'
+				);
+				
+			});
+			
+			kola(['plugin.Person[plugin.simple.Sports, plugin.simple.Play]'
+					, 'plugin.Animal[plugin.simple.InNight]'
+				], function(Person, Animal) {
+				
+					test(arguments.length === 2, '注入的参数个数不对');
+					
+					var person = new Person('Jady Yang');
+					var animal = new Animal('小强');
+					
+					test(person.name === 'Jady Yang'
+							&& person.sleep() === '去睡觉'
+							&& person.run() === '去跑步'
+							&& person.playGame() === '去玩游戏'
+						, '注入两个插件时，第一个插件的方法不能正常调用'
+					);
+					
+					test(animal.name === '小强'
+							&& animal.isDead() === '还没死'
+							&& animal.status() === '睡觉中'
+						, '注入两个插件时，第二个插件的方法不能正常调用'
+					);
+				
+			});
+			
+			kola([
+					'plugin.Person[plugin.simple.Sports, plugin.simple.Play]'
+					, 'plugin.Animal[plugin.simple.InNight, plugin.simple.Play]'
+					, 'plugin.Animal[plugin.simple.InNight]'
+				], function(Person, SuperAnimal, Animal) {
+				
+					test(arguments.length === 3, '注入的参数个数不对');
+					
+					var person = new Person('Jady Yang');
+					var animal = new Animal('小强');
+					var dragon = new SuperAnimal('龙');
+					
+					test(person.name === 'Jady Yang'
+							&& person.sleep() === '去睡觉'
+							&& person.run() === '去跑步'
+							&& person.playGame() === '去玩游戏'
+						, '注入多个插件时，第一个插件的方法不能正常调用'
+					);
+					
+					test(animal.name === '小强'
+							&& animal.isDead() === '还没死'
+							&& animal.status() === '睡觉中'
+						, '注入多个插件时，第二个插件的方法不能正常调用'
+					);
+					
+					test(dragon.name === '龙'
+							&& dragon.isDead() === '还没死'
+							&& dragon.playGame() === '去玩游戏'
+							&& dragon.watchTV() === '去看电视'
+							&& dragon.status() === '睡觉中'
+						, '注入多个插件时，第三个插件的方法不能正常调用'
+					);
+				
 			});
 			
 		});

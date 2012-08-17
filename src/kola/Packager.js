@@ -347,7 +347,7 @@ window.kola = (function(kola) {
 			this.status(PackageStatus.loaded);
 			
 			// 加载完成后的，需要考虑是否自动加载依赖项
-			if (this._wanted) {
+			if (this._wanted || dependence === null) {
 				depending.call(this);
 			}
 		},
@@ -769,7 +769,7 @@ window.kola = (function(kola) {
 					if (value !== null) {
 						// 对于map对象进行深度复制
 						// 注意：这里没有判断是否为数组，因为配置参数中不会出现这种情景
-						toObject[name] = objectExtend(value, {});
+						toObject[name] = objectExtend(value, toObject[name] || {});
 						break;
 					}
 				
@@ -856,12 +856,12 @@ window.kola = (function(kola) {
 	var parsePackages = function(packages) {
 		var allPlugin = [];
 		for (var i = 0, il = packages.length; i < il; i++) {
-			var name = packages[i];
+			var name = trimAll(packages[i]);
 			var index = name.indexOf('[');
 			if (index == -1) continue;
 			
 			// 找到插件列表
-			var plugin = name.substring(index + 1, -1).split(',');
+			var plugin = name.substring(index + 1, name.length - 1).split(',');
 			packages['_' + i] = plugin;
 			allPlugin = allPlugin.concat(plugin);
 			
@@ -909,7 +909,6 @@ window.kola = (function(kola) {
 	 * @for window
 	 * @param config {Object} 设置对象
 	 */
-	// FIXME: 还没有增加插件支持
 	// TODO: 还未解决循环依赖问题
 	// TODO: 还未增加对lib和版本的支持
 	kola = function() {
@@ -936,7 +935,6 @@ window.kola = (function(kola) {
 	};
 
 	// 声明kola.Packager包
-	// FIXME: kola的状态在这时，竟然是2，需要解决。对于所有依赖为null的，都需要考虑
 	Packager.define('kola.Packager', null, function() {
 		return Packager;
 	});
