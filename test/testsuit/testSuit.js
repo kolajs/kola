@@ -29,9 +29,9 @@
 		//to do :nonbrowser(node.js) support
 	}else{
 		window.testCases = []
-		
+		var targetWindow;
 		if(window.parent && window.parent.onNewCase){
-			var targetWindow = window.parent;
+			targetWindow = window.parent;
 		}else{
 			var scripts = document.getElementsByTagName("script");
 			for(var i = scripts.length;--i;){
@@ -45,8 +45,11 @@
 			iframe.src = src.replace("testSuit.js","Run.html");
 			setTimeout(function(){
 				document.body.appendChild(iframe);
+				setTimeout(function(){
+					targetWindow = iframe.contentWindow;
+				});
 			});
-			var targetWindow = iframe.contentWindow;
+			
 		}
 	}
 	function statusChange(){
@@ -93,8 +96,10 @@
 
 	window.test = function(name, run, asyn){
 		var newCase = getNewCase(name, run, asyn)
-		testCases.push(newCase);
-		if(window.parent && window.parent.onNewCase)
-			window.parent.onNewCase(newCase);
+		if(targetWindow){
+			targetWindow.onNewCase(newCase);
+		}else{
+			window.testCases.push(newCase);
+		}
 	}
 })();

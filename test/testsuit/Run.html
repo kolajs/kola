@@ -6,6 +6,13 @@
 		body{
 			background: #ffd;
 		}
+		.caseLink{
+			border: 1px solid #33a;
+			padding: 2px;
+			margin: 2px;
+			background: #ccc;
+			cursor: pointer;
+		}
 		.cases{
 			border: 2px dashed #fef;
 			background: #aa8;
@@ -76,29 +83,84 @@
 	</style>
 	<script type="text/javascript" src="jQuery.js"></script>
 	<script type="text/javascript">
-		function x(value) {
-	console.log(x.caller)
-}
-function caller(){
-	x.call();
-}
-var anotherCaller=function(){
-	x();
-}
- x();
-caller();
-anotherCaller();
+		$(function(){
+			var cases = [];
+			var cases_cache = [];
+			if(window.parent){
+				if(window.parent.testCases)	cases_cache = window.parent.testCases;
+			}else{
+				var windows = $('iframe').each(function(i, element){
+					if(element.contentWindow.testCases)
+						cases_cache = cases_cache.concat(element.contentWindow.testCases);
+				});
+			}
+			for(var i=0; i < cases_cache.length; i ++){
+				newCase(cases_cache[i]);
+			}
 
+			function newCase(testCase){
+				cases.push(testCase);
+				testCase.dom = $('<div class="warpper"></div>');
+				testCase.dom.click(function(){
+					$(".info").text(testCase.errorMessage);
+					$(".warpper").removeClass("selected");
+					$(this).addClass("selected");
+				})
+				$('.cases').append(testCase.dom);
+				drawCase(testCase);
+			}
+			function drawCase(testCase){
+				var dom = $('<div class="case ' + testCase.status + '">' + testCase.caseName + '<span class ="errorCount"></span><div class="numberI">[<span class ="ok"></span>|<span class ="all"></span>]</div></div>');
+				dom.attr('class', 'case ' + testCase.status);
+				dom.find('.ok').html(testCase.succCase);
+				dom.find('.all').html(testCase.expectCase);
+				if(testCase.failCase != 0){
+					dom.find('.errorCount').html(testCase.failCase).show();
+				}else{
+					dom.find('.errorCount').hide();
+				}
+				if(testCase.status == 'errorCount'){
+					//console.log(testCase.errorMessage)
+					//testCase.dom.append("<p>" + testCase.errorMessage + "</p>")
+				}
+				testCase.dom.html(dom);
+				return dom;
+			}
+			window.onNewCase = function(testCase){
+				newCase(testCase);
+			}
+			window.onTestEnd = function(testCase){
+				drawCase(testCase);
+			}
+			$('button').click(function(){
+				for(var i=0; i<cases.length; i++){
+					cases[i].status = 'waiting';
+					cases[i].succCase = 0;
+					cases[i].failCase = 0;
+					cases[i].run();
+				}
+			});
+		});
 	</script>
 </head>
 <body>
+	<span class="caseLink" data-src="../kola/Packager.html">Packager</span>
+	<span class="caseLink" data-src="../kola/lang/Array.html">Array</span>
+	<span class="caseLink" data-src="../kola/lang/String.html">String</span>
+	<span class="caseLink" data-src="../kola/lang/Function.html">Function</span>
+	<span class="caseLink" data-src="../kola/lang/Object.html">Object</span>
+	<script>
+		if(window.parent == window){
+			$(".caseLink").click(function(e){
+				var target = $(e.target).attr("data-src");
+				var iframe = $('<iframe src="' + target + '"></iframe>').appendTo("body");
+			});
+		}else{
+			$(".caseLink").remove();
+		}
+	</script>
 	<button class="run">Run</button>
 	<div class="cases"></div>
 	<pre class="info"></pre>
-	<iframe src="kola/Packager.html"></iframe>
-	<!--iframe src="kola/lang/Array.html"></iframe>
-	<iframe src="kola/lang/Function.html"></iframe>
-	<iframe src="kola/lang/String.html"></iframe>
-	<iframe src="kola/lang/Object.html"></iframe-->
 </body>
 </html>
