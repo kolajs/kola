@@ -6,12 +6,8 @@
 		
 		var runstr = _run.toString();
 		var testCaseName = /function[ ]*\([ ]*([0-9a-zA-Z$_]+)/.exec(runstr);
-		if(testCaseName && testCaseName.length > 1){
-			var match = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g'))
-			newCase.expectCase = match ? match.length : 0;
-		}else{
-			newCase.expectCase = 0;
-		}
+		newCase.expectCase = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g')).length;
+		
 		newCase.status = 'waiting';
 		newCase.caseName = name;
 		newCase._run = _run;
@@ -29,18 +25,34 @@
 
 		return newCase;
 	}
-	var refresh = function () {
-		this.status = 'waiting';
-		this.succCase = 0;
-		this.failCase = 0;
-		this.errorMessage = '';
+	if(!window){
+		//to do :nonbrowser(node.js) support
+	}else{
+		window.testCases = []
+		
+		if(window.parent && window.parent.onNewCase){
+			var targetWindow = window.parent;
+		}else{
+			var scripts = document.getElementsByTagName("script");
+			for(var i = scripts.length;--i;){
+				if(scripts[i].src.indexOf("testSuit.js")!=-1){
+					var src = scripts[i].src
+					break;
+				}
+			}
+			var iframe = document.createElement("iframe")
+			iframe.style.cssText = "margin:0;width:100%;border:1px solid black"
+			iframe.src = src.replace("testSuit.js","Run.html");
+			setTimeout(function(){
+				document.body.appendChild(iframe);
+			});
+			var targetWindow = iframe.contentWindow;
+		}
 	}
-	var statusChange = function () {
-		if(window.parent && window.parent.onTestEnd)
-			window.parent.onTestEnd(this);
+	function statusChange(){
+		targetWindow.onTestEnd(this);
 	}
-	var run = function () {
-		refresh.call(this);
+	var run = function(){
 		this.status = 'testing';
 		statusChange.call(this);
 		try{
@@ -53,13 +65,13 @@
 			this.end()
 		}
 	}
-	var end = function () {
+	var end = function(){
 		if(this.status == 'waiting'){
 			this.status = 'success';
 		}
 		statusChange.call(this);
 	}
-	fail = function (why) {
+	fail = function(why){
 		this.status = 'fail';
 		this.failCase ++;
 		this.errorMessage += why + '\n'
@@ -79,7 +91,6 @@
 		console.log(txt);
 	}
 
-	window.testCases = []
 	window.test = function(name, run, asyn){
 		var newCase = getNewCase(name, run, asyn)
 		testCases.push(newCase);
