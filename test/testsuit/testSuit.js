@@ -6,7 +6,10 @@
 		
 		var runstr = _run.toString();
 		var testCaseName = /function[ ]*\([ ]*([0-9a-zA-Z$_]+)/.exec(runstr);
-		newCase.expectCase = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g')).length;
+		if(!testCaseName)
+			newCase.expectCase = 0;
+		else
+			newCase.expectCase = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g')).length;
 		
 		newCase.status = 'waiting';
 		newCase.caseName = name;
@@ -63,7 +66,7 @@
 		try{
 			this._run(this);
 		}catch(e){
-			this.fail('Exception:' + e.message);
+			fail.call(this, 'Exception:' + e.message);
 			throw e;
 		}
 		if(!this.asyn){

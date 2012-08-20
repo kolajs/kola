@@ -57,13 +57,13 @@ kola('kola.lang.Object', [
 								continue;
 							}
 			
-							if ( deep && copy && ( this.isPlainObject(copy) || (copyIsArray = KolaClass.isArray(copy)) ) ) {
+							if ( deep && copy && ( isPlainObject(copy) || (copyIsArray = KolaClass.isArray(copy)) ) ) {
 								if ( copyIsArray ) {
 									copyIsArray = false;
 									clone = src && KolaClass.isArray(src) ? src : [];
 			
 								} else {
-									clone = src && this.isPlainObject(src) ? src : {};
+									clone = src && isPlainObject(src) ? src : {};
 								}
 								target[ name ] = this.extend( deep, clone, copy );
 							} else if ( copy !== undefined ) {
@@ -91,6 +91,21 @@ kola('kola.lang.Object', [
 			return keys
 		}
 	};
-	
+	var isPlainObject = function( obj ) {
+		if (!obj || !KolaClass.isObject(obj) || obj.nodeType) {
+			return false;
+		}
+
+		if ( obj.constructor &&
+			!obj.hasOwnProperty("constructor") &&
+			!obj.constructor.prototype.hasOwnProperty("isPrototypeOf") ) {
+			return false;
+		}
+
+		var key;
+		for (key in obj) {}
+
+		return key === undefined || obj.hasOwnProperty(key);
+	}
 	return exports;
 });

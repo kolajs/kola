@@ -34,7 +34,7 @@ Element Display
 Tree test
 	is()
 	contains()
-
+	index()
 Tree travel:
 	parent()
 	parents(selector)
@@ -87,3 +87,6 @@ kola("kola.HtmlElement",function(){
 	var email = $(".mailInput").data("email");
 	email.isEmailOk()
 });
+//
+selector 
+toStyle

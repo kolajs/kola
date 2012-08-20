@@ -2,71 +2,11 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script>
-		(function() {
-			window.kola = function() {
-				var arr = [this];
-				for (var i = 0, il = arguments.length; i < il; i++) {
-					arr.push(arguments[i]);
-				}
-				kola._cache.push(arr);
-			};
-			kola._cache = [];
-			var s = document.createElement('script');
-			kola({charset:'UTF-8'});
-			s.src = 'http://localhost/kola/Package.js';
-			s.type = 'text/javascript';
-			s.charset = 'utf-8';
-			document.getElementsByTagName('head')[0].appendChild(s);
-			s = null
-		})();
-	</script>
-	<script type="application/javascript" src="http://localhost/cv/kola-js/test/testsuit/testSuit.js"></script>
-	<script>
-		function q(arr) {
-			for (var i = 1; i < arguments.length; i++ ) {
-				if(document.getElementById( arguments[i] ) != arr[i - 1])
-					return false;
-			}
-			return true;
-		}
-		kola("kola.html.Element",function($){
-			test("选择器测试",function(testCase){
-				//testCase.test($("div").length, "类型选择");
-				//testCase.test($(".class").length, "class选择");
-				//testCase.test($("#id").length, "id选择");
-				//testCase.test($("[name=name]").length, "attr选择");
-				testCase.test(q($("p", document.getElementsByTagName("div")).elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test(q($("p", "div").elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test(q($("p", $("div")).elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test(q($("div").find("p").elements(), "firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-				testCase.test($("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
-				testCase.test($("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
-				//#7533
-				testCase.test($("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length == 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
-
-				testCase.test(q($(".blog", document.getElementsByTagName("p")).elements(), "mark", "simon"), "Finding elements with a context." );
-				testCase.test(q($(".blog", "p").elements(), "mark", "simon"), "Finding elements with a context." );
-				testCase.test(q($(".blog", $("p")).elements(), "mark", "simon"), "Finding elements with a context." );
-				testCase.test(q($("p").find(".blog").elements(), "mark", "simon"), "Finding elements with a context." );
-			});		
-			test("属性测试",function(testCase){
-				var dom = $("div");
-				testCase.test(dom.attr("name") == "name", "读取属性");
-				dom.attr("name", "farName");
-				testCase.test(dom.attr("name") == "farName", "设置属性");
-			});
-			test("内容测试",function(testCase){
-				var dom = $("#id");
-				testCase.test(dom.html() == "<p>123</p>", "html读取");
-				dom.html("345");
-				testCase.test(dom.html() == "345", "html设置");
-			});
-		});
-	</script>
+	<script type="text/javascript" src="../../../src/kola/Packager.js"></script>
+	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
 </head>
-<body id="body">
-	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a></h1>
+<body>
+		<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a></h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
@@ -226,7 +166,7 @@
 			</datalist>
 		</form>
 		<div id="moretests">
-			<form>
+			<form id="form11">
 				<div id="checkedtest" style="display:none;">
 					<input type="radio" name="checkedtestradios" checked="checked"/>
 					<input type="radio" name="checkedtestradios" value="on"/>
@@ -309,5 +249,41 @@
 	<map name="imgmap" id="imgmap">
 		<area shape="rect" coords="0,0,200,50">
 	</map>
+	<script>
+		kola(["kola.dom.G", "kola.lang.Array"], function($, KolaArray){
+			function q(arr, dest) {
+				for(var i = 0; i < arguments.length; i++){
+					if(document.getElementById(dest[i]) != arr[i])
+						return false;
+				}
+				return true;
+			}
+			var group = $("p", "div");
+			var groupIDs = ["firstp","ap","sndp","en","sap","first"];
+			test("选择器测试",function(testCase){
+				testCase(q($("p"), ["firstp","ap","sndp","en","sap","first"]), "Finding elements with a context." );
+				testCase($("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+				testCase($("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+
+				testCase(q($(".blog", document.getElementsByTagName("p")), ["mark", "simon"]), "Finding elements with a context." );
+				testCase(q($(".blog", "p"), ["mark", "simon"]), "Finding elements with a context." );
+				testCase(q($(".blog", $("p")), ["mark", "simon"]), "Finding elements with a context." );
+			});
+			test("dom转换为KolaElement",function(testCase){
+				var adom = document.getElementById("firstp");
+				var formDom = document.getElementsByTagName("form")[0];
+				testCase(q($(group), groupIDs), "由kolaElement生成kolaElement");
+				testCase(q($(KolaArray.toArray($(group))), groupIDs), "由HTMLElement数组生成kolaElement");
+				testCase($(adom)[0] == adom, "由HTMLElement生成kolaElement");
+				testCase($(formDom)[0] == formDom, "由form生成kolaElement")
+				var htmlCollection = document.getElementById("moretests").children;
+				testCase(q($(htmlCollection),["form11","nonnodes","t2037","t6652","no-clone-exception"]),"由HTMLCollection生成kolaElement")
+			});
+			test("attr测试",function(testCase){
+				var adom = $(document.getElementById("firstp"));
+				testCase(adom.attr('id') == 'firstp' , 'ID 属性');
+			});
+		});
+	</script>
 </body>
 </html>
