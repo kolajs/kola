@@ -28,6 +28,10 @@
 			margin: 5px;
 			box-shadow: 1px 1px 3px black;
 		}
+		.lineNum{
+			display: inline-block;
+			float:right;
+		}
 		.case{
 			height: 20px;
 			border: 2px solid white;
@@ -62,8 +66,8 @@
 			border: 2px solid white;
 			background: red;
 			padding: 2px;
-			top: -15px;
-			left: 100px;
+			top: -25px;
+			left: 10px;
 			box-shadow: 1px 1px 3px black;
 		}
 		.warpper{
@@ -132,6 +136,12 @@
 			window.onTestEnd = function(testCase){
 				drawCase(testCase);
 			}
+			window.onNewError = function(messageObject){
+				$(".errorMessage").append('<div>' + messageObject.message + '<div class="lineNum">' + messageObject.lineNumber + '</div></div>');
+			}
+			document.body.onresize = function(){
+				console.log("sdsf");
+			}
 			$('button').click(function(){
 				for(var i=0; i<cases.length; i++){
 					cases[i].status = 'waiting';
@@ -161,6 +171,7 @@
 	</script>
 	<button class="run">Run</button>
 	<div class="cases"></div>
+	<div class="errorMessage info"></div>
 	<pre class="info"></pre>
 </body>
 </html>

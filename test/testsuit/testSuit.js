@@ -6,7 +6,10 @@
 		
 		var runstr = _run.toString();
 		var testCaseName = /function[ ]*\([ ]*([0-9a-zA-Z$_]+)/.exec(runstr);
-		newCase.expectCase = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g')).length;
+		if(!testCaseName)
+			newCase.expectCase = 0;
+		else
+			newCase.expectCase = runstr.match(RegExp('[^0-9a-zA-Z$_]' + testCaseName[1] + '\\(', 'g')).length;
 		
 		newCase.status = 'waiting';
 		newCase.caseName = name;
@@ -18,6 +21,7 @@
 		newCase.errorMessage = '';
 
 		newCase.run = function (){run.call(newCase)}
+		newCase.getMessage = function (){run.call(newCase)}
 		newCase.end = function (){end.call(newCase)}
 		newCase.log = function (message){log.call(newCase, message)}
 
@@ -52,6 +56,7 @@
 			
 		}
 	}
+	
 	function statusChange(){
 		targetWindow.onTestEnd(this);
 	}
@@ -61,7 +66,7 @@
 		try{
 			this._run(this);
 		}catch(e){
-			this.fail('Exception:' + e.message);
+			fail.call(this, 'Exception:' + e.message);
 			throw e;
 		}
 		if(!this.asyn){
@@ -93,10 +98,20 @@
 	var log = function(txt){
 		console.log(txt);
 	}
-
+	window.testCases.errorBox=[];
+	window.onerror = function(txt,line,no){
+		var errorObject = {
+			message:txt,
+			lineNumber:no
+		}
+		window.testCases.errorBox.push(errorObject);
+		if(targetWindow.onNewError){
+			targetWindow.onNewError(errorObject);
+		}
+	}
 	window.test = function(name, run, asyn){
 		var newCase = getNewCase(name, run, asyn)
-		if(targetWindow){
+		if(targetWindow && targetWindow.onNewCase){
 			targetWindow.onNewCase(newCase);
 		}else{
 			window.testCases.push(newCase);

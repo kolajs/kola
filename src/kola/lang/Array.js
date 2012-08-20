@@ -229,11 +229,11 @@ kola('kola.lang.Array', [
 	}
 	/**
 	 * 从一个拥有length属性的object生成一个数组
-	 * @method makeArray
+	 * @method toArray
 	 * @param source {Object} 类数组
 	 * @return {Array}
 	 */
-	exports.makeArray = function (source) {
+	exports.toArray = function (source) {
 		var sourceLength = source.length
 		var result = [];
 		if( !sourceLength )
