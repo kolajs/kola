@@ -100,11 +100,11 @@
 				}), "和");
 			});
 
-			test("makeArray",function(testCase){
+			test("toArray",function(testCase){
 				var likeArray = {}
 				likeArray[0] = 0;
 				likeArray.length = 1;
-				var testArray = KolaArray.makeArray(likeArray);
+				var testArray = KolaArray.toArray(likeArray);
 				testCase(testArray.length == 1 && testArray[0] == 0, "object转数组");
 			});
 		});
