@@ -93,7 +93,7 @@ window.kola = (function(kola) {
 			} else {
 				
 				// 不存在有效的初始化方法，那说明这是直接调用方式
-				me.apply(arguments.callee, arguments);
+				return me.apply(arguments.callee, arguments);
 			}
 		};
 	};

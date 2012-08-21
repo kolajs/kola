@@ -6,7 +6,13 @@
 	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
 </head>
 <body>
-		<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a></h1>
+	<p id="ap">
+		Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
+		<a id="groups" href="http://groups.google.com/" class="GROUPS">Google Groups (Link)</a>.
+		This link has <code><a href="http://smin" id="anchor1">class="blog"</a></code>:
+		<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
+	</p>
+	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a></h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
@@ -21,13 +27,7 @@
 	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px">
 	<div id="qunit-fixture">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
-		<p id="ap">
-			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
-			<a id="groups" href="http://groups.google.com/" class="GROUPS">Google Groups (Link)</a>.
-			This link has <code><a href="http://smin" id="anchor1">class="blog"</a></code>:
-			<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
-
-		</p>
+		
 		<div id="foo">
 			<p id="sndp">Everything inside the red border is inside a div with <code>id="foo"</code>.</p>
 			<p lang="en" id="en">This is a normal link: <a id="yahoo" href="http://www.yahoo.com/" class="blogTest">Yahoo</a></p>
@@ -250,7 +250,7 @@
 		<area shape="rect" coords="0,0,200,50">
 	</map>
 	<script>
-		kola(["kola.dom.G", "kola.lang.Array"], function($, KolaArray){
+		kola(["kola.html.Element", "kola.lang.Array"], function($, KolaArray){
 			function q(arr, dest) {
 				for(var i = 0; i < arguments.length; i++){
 					if(document.getElementById(dest[i]) != arr[i])
@@ -259,9 +259,9 @@
 				return true;
 			}
 			var group = $("p", "div");
-			var groupIDs = ["firstp","ap","sndp","en","sap","first"];
-			test("选择器测试",function(testCase){
-				testCase(q($("p"), ["firstp","ap","sndp","en","sap","first"]), "Finding elements with a context." );
+			var groupIDs = ["ap","firstp","sndp","en","sap","first"];
+			test("选择器",function(testCase){
+				testCase(q($("p"), groupIDs), "Finding elements with a context." );
 				testCase($("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 				testCase($("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 
@@ -273,7 +273,7 @@
 				var adom = document.getElementById("firstp");
 				var formDom = document.getElementsByTagName("form")[0];
 				testCase(q($(group), groupIDs), "由kolaElement生成kolaElement");
-				testCase(q($(KolaArray.toArray($(group))), groupIDs), "由HTMLElement数组生成kolaElement");
+				testCase(q($(KolaArray.parse($(group))), groupIDs), "由HTMLElement数组生成kolaElement");
 				testCase($(adom)[0] == adom, "由HTMLElement生成kolaElement");
 				testCase($(formDom)[0] == formDom, "由form生成kolaElement")
 				var htmlCollection = document.getElementById("moretests").children;
@@ -282,6 +282,17 @@
 			test("attr测试",function(testCase){
 				var adom = $(document.getElementById("firstp"));
 				testCase(adom.attr('id') == 'firstp' , 'ID 属性');
+				testCase(adom.attr('name') == undefined , 'name 属性');
+				testCase(adom.attr('name', 'nono'), 'name 属性');
+				testCase(adom.attr('name') == 'nono', 'name 属性');
+			});
+			test("find",function(testCase){
+				testCase(q($("div").find("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
+				testCase(q($("#select1").find("select"), ["select1"]), "包括自己")
+			});
+			test("descendants",function(testCase){
+				testCase(q($("div").descendants("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
+				testCase(q($("#select1").descendants("select"), []), "不包括自己")
 			});
 		});
 	</script>

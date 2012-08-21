@@ -100,11 +100,19 @@
 				}), "和");
 			});
 
+<<<<<<< HEAD
+			test("parse",function(testCase){
+				var likeArray = {}
+				likeArray[0] = 0;
+				likeArray.length = 1;
+				var testArray = KolaArray.parse(likeArray);
+=======
 			test("toArray",function(testCase){
 				var likeArray = {}
 				likeArray[0] = 0;
 				likeArray.length = 1;
 				var testArray = KolaArray.toArray(likeArray);
+>>>>>>> 79a71c2d228bae865c4719d9ea1fb0d8c2627146
 				testCase(testArray.length == 1 && testArray[0] == 0, "object转数组");
 			});
 		});
