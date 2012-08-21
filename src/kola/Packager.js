@@ -27,10 +27,7 @@ window.kola = (function(kola) {
 			args.push(arguments[i]);
 		}
 		return function() {
-			for (var i = 0, il = arguments.length; i < il; i++) {
-				args.push(arguments[i]);
-			}
-			return fn.apply(scope, args);
+			return fn.apply(scope, args.concat(toArray(arguments)));
 		};
 	};
 			
@@ -43,6 +40,17 @@ window.kola = (function(kola) {
 			return string.replace(reg, '');
 		};
 		return trimAll(string);
+	};
+	
+	/**
+	 * 把一个类数组变成数组
+	 */
+	var toArray = function(arraible) {
+		var newArray = [];
+		for (var i = 0, il = arraible.length; i < il; i++) {
+			newArray.push(arraible[i]);
+		}
+		return newArray;
 	};
 	
 	/**
@@ -138,6 +146,14 @@ window.kola = (function(kola) {
 	};
 	
 	/**
+	 * Aop方法列表
+	 */
+	var AopMethod = {
+		before: 1,
+		after: 1
+	};
+	
+	/**
 	 * 创建一个加入插件的新类
 	 * 
 	 * @param superClass {KolaClass} 父类
@@ -165,36 +181,28 @@ window.kola = (function(kola) {
 		for (var i = 1, il = arguments.length; i < il; i++) {
 			var plugin = arguments[i];
 			for (var item in plugin) {
-				var before = -1,
-					after = -1,
-					index = -1,
-					realName = '';
+				var names = item.split('__');
+				
+				// 判断是否是一个注入
+				if (names.length === 3 
+					&& names[0].length > 0 
+					&& AopMethod[names[1]] === 1
+					&& names[2].length === 0
+				) {
+					var name = names[0];
 					
-				//	如果存在前置切面方法，那就处理之
-				if ((before = item.indexOf('__before__')) != -1) {
-					realName = item.substring(0, before);
-					if (typeof (index = aops[realName]) != 'number') {
-						index = aops[realName] = aops.length;
+					// 如果不存在包装对象，那就创建之
+					var index = aops[name];
+					if (typeof index != 'number') {
+						aops[name] = index = aops.length;
 						aops.push({
-							name: realName,
-							befores: [],
-							afters: []
+							name: 	name,
+							before: [],
+							after:	[]
 						});
 					}
-					aops[index].befores.push(plugin[item]);
 					
-				} else if ((after = item.indexOf('__after__')) != -1) {
-					//	如果存在前置切面方法，那就处理之
-					realName = item.substring(0, after);
-					if (typeof (index = aops[realName]) != 'number') {
-						index = aops[realName] = aops.length;
-						aops.push({
-							name: realName,
-							befores: [],
-							afters: []
-						});
-					}
-					aops[index].afters.unshift(plugin[item]);
+					aops[index][names[1]].push(plugin[item]);
 				} else {
 					//	只有当当前方法不是切面方法时，才予以添加
 					newClassPrototype[item] = plugin[item];
@@ -224,36 +232,33 @@ window.kola = (function(kola) {
 	 * 生成一个新的Aop方法
 	 * @param fn {Function} 原生的方法
 	 * @param aop {Object} aop配置参数
-	 * 	@param befores {Array<Function>} 之前需要调用的方法
-	 * 	@param afters {Array<Function>} 之后需要调用的方法
+	 * 	@param before {Array<Function>} 之前需要调用的方法
+	 * 	@param after {Array<Function>} 之后需要调用的方法
 	 */
 	var createAopedFunc = function(fn, aop) {
 		return function() {
-			var args = [];
-			for (var i = 0, il = arguments.length; i < il; i++) {
-				args.push(arguments[i]);
-			}
+			var args = toArray(arguments);
 			
 			//	如果存在调用前的方法，那就调用之
-			var befores = aop.befores;
-			if (befores.length > 0) {
-				for (var i = 0, il = befores.length; i < il; i++) {
-					var tempResult = befores[i].apply(this, args);
+			var before = aop.before;
+			if (before.length > 0) {
+				for (var i = 0, il = before.length; i < il; i++) {
+					var tempResult = before[i].apply(this, args);
 					if (typeof tempResult != 'undefined') {
 						args = tempResult;
 					}
 				}
 			}
 			
-			//	调用原来的方法
+			// 那就调用原来的方法
 			var result = fn.apply(this, args);
 			
 			//	如果存在调用后的方法，那就调用之
-			var afters = aop.afters;
-			if (afters.length > 0) {
+			var after = aop.after;
+			if (after.length > 0) {
 				args.unshift(result);
-				for (var i = 0, il = afters.length; i < il; i++) {
-					var tempResult = afters[i].apply(this, args);
+				for (var i = 0, il = after.length; i < il; i++) {
+					var tempResult = after[i].apply(this, args);
 					if (typeof tempResult != 'undefined') {
 						args = tempResult;
 					}
