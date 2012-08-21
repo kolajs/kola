@@ -496,6 +496,44 @@
 				
 			});
 			
+			kola('plugin.Person[plugin.aop.Person]', function(Person) {
+				
+				test(arguments.length === 1, '注入的参数个数不对');
+				
+				var person = new Person('Jady Yang');
+				
+				test(person.name === 'Jady Yang'
+						&& person.eat() === '去吃饭'
+					, '插件新添加的方法，调用不了'
+				);
+				
+				test(person.work() === '坐公交车去\n去工作\n坐公交车回'
+					, '宿主方法不接受参数时，一个插件化之后的方法不能正常使用'
+				);
+				
+				test(person.build('大厦') === '建造现代化的大厦\n那就开始吧！'
+					, '宿主方法接受一个参数时，一个插件化的方法不能正常使用'
+				);
+				
+			});
+			
+			kola('plugin.Person[plugin.aop.Person, plugin.aop.Faraway]', function(Person) {
+				
+				test(arguments.length === 1, '注入的参数个数不对');
+				
+				var person = new Person('Jady Yang');
+				
+				test(person.name === 'Jady Yang'
+						&& person.eat() === '去吃饭'
+					, '插件新添加的方法，调用不了'
+				);
+				
+				test(person.build('大厦') === '建造现代化的大厦\n每天去这个“现代化的大厦”也很远\n那就开始吧！'
+					, '宿主方法接受一个参数时，多个插件化的方法不能正常使用'
+				);
+				
+			});
+			
 		});
 		
 		/*

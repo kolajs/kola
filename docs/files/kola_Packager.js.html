@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>kola\Packager.js - kola</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.5.1&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title="kola"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 2.1.0.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/Array.html">Array</a></li>
+            
+                <li><a href="..&#x2F;classes/Class.html">Class</a></li>
+            
+                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+            
+                <li><a href="..&#x2F;classes/Object.html">Object</a></li>
+            
+                <li><a href="..&#x2F;classes/Packager.html">Packager</a></li>
+            
+                <li><a href="..&#x2F;classes/String.html">String</a></li>
+            
+                <li><a href="..&#x2F;classes/window.html">window</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.lang.html">kola.lang</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: kola\Packager.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * kola是一个面向于大型、富交互Web应用的基础框架
+ * 
+ * @module kola
+ * @main kola
+ *&#x2F;
+
+window.kola = (function(kola) {
+	
+	&#x2F;*********************************************************************
+	 *                        辅助方法
+	 ********************************************************************&#x2F;
+	
+	&#x2F;**
+	 * 创建一个新的空方法
+	 *&#x2F;
+	var newEmptyFunction = function() {
+		return function() {};
+	};
+	
+	&#x2F;**
+	 * 给方法绑定一个作用域
+	 *&#x2F;
+	var bindScope = function(fn, scope) {
+		var args = [];
+		for (var i = 2, il = arguments.length; i &lt; il; i++) {
+			args.push(arguments[i]);
+		}
+		return function() {
+			for (var i = 0, il = arguments.length; i &lt; il; i++) {
+				args.push(arguments[i]);
+			}
+			return fn.apply(scope, args);
+		};
+	};
+			
+	&#x2F;**
+	 * 删除字符串中的所有空格
+	 *&#x2F;
+	var trimAll = function(string) {
+		var reg = &#x2F;\s&#x2F;mg;
+		trimAll = function(string) {
+			return string.replace(reg, &#x27;&#x27;);
+		};
+		return trimAll(string);
+	};
+	
+	&#x2F;**
+	 * 抛出一个错误信息
+	 *&#x2F;
+	var throwError = function(message) {
+		if (window.Error) {
+			throw new Error(message);
+		}
+	};
+	
+	&#x2F;*********************************************************************
+	 *                        kola类相关
+	 ********************************************************************&#x2F;
+	
+	&#x2F;**
+	 * 创建一个新的类构造器
+	 *&#x2F;
+	var newConstructor = function() {
+		return function() {
+			&#x2F;&#x2F; 调用初始化方法
+			this._init.apply(this, arguments);
+			
+			&#x2F;&#x2F; 设置当前对象的初始化方法为null
+			this._init = null;
+		};
+	};
+	
+	&#x2F;**
+	 * 创建一个新的AllInOne类构造器
+	 *&#x2F;
+	var newAllIn1Constructor = function(init, me) {
+		return function() {
+			if (this &amp;&amp; (init === this._init)) {
+				&#x2F;&#x2F; 如果存在初始化方法，并且跟当前类的初始化方法相同，那就认为是实例化
+				init.apply(this, arguments);
+				
+				&#x2F;&#x2F; 将实例的_init设置为null，是为了标记其已经进行过了实例化
+				this._init = null;
+			} else {
+				
+				&#x2F;&#x2F; 不存在有效的初始化方法，那说明这是直接调用方式
+				me.apply(arguments.callee, arguments);
+			}
+		};
+	};
+	
+	&#x2F;**
+	 * 创建一个新的类
+	 * 
+	 * @param [superClass] {KolaClass} 父类
+	 * @param methods {Object} 方法列表
+	 * @return {KolaClass}
+	 *&#x2F;
+	var newKolaClass = function(superClass, methods) {
+		&#x2F;&#x2F; 判断是否指定了父类
+		if (arguments.length == 1) {
+			methods = superClass;
+			superClass = null;
+		}
+		
+		&#x2F;&#x2F; 建立原型对象
+		var prototypeInstance;
+		if (superClass === null) {
+			&#x2F;&#x2F; 这时候methods一定不为null
+			prototypeInstance = methods;
+		} else {
+			&#x2F;&#x2F; 需要建立一个中间类，用于生成一个原型对象
+			var prototypeClass = newEmptyFunction();
+			var superPrototype = superClass.prototype;
+			prototypeClass.prototype = superPrototype;
+			prototypeInstance = new prototypeClass();
+							
+			&#x2F;&#x2F; 复制方法列表到原型对象上
+			for (var name in methods) {
+				prototypeInstance[name] = methods[name];
+			}
+		}
+		
+		&#x2F;&#x2F; 如果不存在自己的_init初始化方法，那就创建一个默认的方法
+		if (typeof prototypeInstance._init != &#x27;function&#x27; || !prototypeInstance.hasOwnProperty(&#x27;_init&#x27;)) {
+			prototypeInstance._init = newEmptyFunction();
+		}
+		
+		&#x2F;&#x2F; 创建新的类，并根据是否存在直接调用方法，进行不同的处理
+		var newClass = prototypeInstance.hasOwnProperty(&#x27;__ME&#x27;) 
+			&amp;&amp; typeof prototypeInstance.__ME == &#x27;function&#x27;
+			? newAllIn1Constructor(prototypeInstance._init, prototypeInstance.__ME)
+			: newConstructor(); 
+		newClass.prototype = prototypeInstance;	
+		
+		return newClass;
+	};
+	
+	&#x2F;**
+	 * 创建一个加入插件的新类
+	 * 
+	 * @param superClass {KolaClass} 父类
+	 * @param plugin* {Object} 插件
+	 * @return {KolaClass}
+	 *&#x2F;
+	var newPluginJoinedClass = function(superClass) {
+		&#x2F;&#x2F; 从父类复制一下关键方法
+		var superPrototype = superClass.prototype;
+		var methods = {
+			_init: superPrototype._init		&#x2F;&#x2F; 父类必然存在初始化方法
+		};
+		
+		&#x2F;&#x2F; 如果父类存在__ME方法，那就复制
+		if (typeof superPrototype.__ME == &#x27;function&#x27; &amp;&amp; superPrototype.hasOwnProperty(&#x27;__ME&#x27;)) {
+			methods.__ME = superPrototype.__ME;
+		}
+		
+		&#x2F;&#x2F; 创建新类
+		var newClass = newKolaClass(superClass, methods);
+		var newClassPrototype = newClass.prototype;
+		
+		&#x2F;&#x2F;	循环添加每个插件对象到原型上
+		var aops = [];
+		for (var i = 1, il = arguments.length; i &lt; il; i++) {
+			var plugin = arguments[i];
+			for (var item in plugin) {
+				var before = -1,
+					after = -1,
+					index = -1,
+					realName = &#x27;&#x27;;
+					
+				&#x2F;&#x2F;	如果存在前置切面方法，那就处理之
+				if ((before = item.indexOf(&#x27;__before__&#x27;)) != -1) {
+					realName = item.substring(0, before);
+					if (typeof (index = aops[realName]) != &#x27;number&#x27;) {
+						index = aops[realName] = aops.length;
+						aops.push({
+							name: realName,
+							befores: [],
+							afters: []
+						});
+					}
+					aops[index].befores.push(plugin[item]);
+					
+				} else if ((after = item.indexOf(&#x27;__after__&#x27;)) != -1) {
+					&#x2F;&#x2F;	如果存在前置切面方法，那就处理之
+					realName = item.substring(0, after);
+					if (typeof (index = aops[realName]) != &#x27;number&#x27;) {
+						index = aops[realName] = aops.length;
+						aops.push({
+							name: realName,
+							befores: [],
+							afters: []
+						});
+					}
+					aops[index].afters.unshift(plugin[item]);
+				} else {
+					&#x2F;&#x2F;	只有当当前方法不是切面方法时，才予以添加
+					newClassPrototype[item] = plugin[item];
+				}
+			}
+		}
+		
+		&#x2F;&#x2F; 如果存在切面方法，那就替代相应方法
+		if (aops.length &gt; 0) {
+			for (var i = 0, il = aops.length; i &lt; il; i++) {
+				var aop = aops[i];
+				
+				&#x2F;&#x2F;	生成替代方法
+				newClassPrototype[aop.name] = createAopedFunc(newClassPrototype[aop.name], aop);
+			}
+		}
+		
+		&#x2F;&#x2F; 复制父类的静态属性和方法
+		for (var item in superClass) {
+			newClass[item] = superClass[item];
+		}
+		
+		return newClass;
+	};
+	
+	&#x2F;**
+	 * 生成一个新的Aop方法
+	 * @param fn {Function} 原生的方法
+	 * @param aop {Object} aop配置参数
+	 * 	@param befores {Array&lt;Function&gt;} 之前需要调用的方法
+	 * 	@param afters {Array&lt;Function&gt;} 之后需要调用的方法
+	 *&#x2F;
+	var createAopedFunc = function(fn, aop) {
+		return function() {
+			var args = [];
+			for (var i = 0, il = arguments.length; i &lt; il; i++) {
+				args.push(arguments[i]);
+			}
+			
+			&#x2F;&#x2F;	如果存在调用前的方法，那就调用之
+			var befores = aop.befores;
+			if (befores.length &gt; 0) {
+				for (var i = 0, il = befores.length; i &lt; il; i++) {
+					var tempResult = befores[i].apply(this, args);
+					if (typeof tempResult != &#x27;undefined&#x27;) {
+						args = tempResult;
+					}
+				}
+			}
+			
+			&#x2F;&#x2F;	调用原来的方法
+			var result = fn.apply(this, args);
+			
+			&#x2F;&#x2F;	如果存在调用后的方法，那就调用之
+			var afters = aop.afters;
+			if (afters.length &gt; 0) {
+				args.unshift(result);
+				for (var i = 0, il = afters.length; i &lt; il; i++) {
+					var tempResult = afters[i].apply(this, args);
+					if (typeof tempResult != &#x27;undefined&#x27;) {
+						args = tempResult;
+					}
+				}
+				result = args[0];
+			}
+			
+			return result;
+		};
+	};
+	
+	&#x2F;*********************************************************************
+	 *                        PackageStatus类
+	 ********************************************************************&#x2F;
+	
+	&#x2F;**
+	 * Package加载状态枚举类
+	 *&#x2F;
+	var PackageStatus = {
+		uninitialized:	0,		&#x2F;&#x2F; 未初始化
+		loading:		1,		&#x2F;&#x2F; 正在加载
+		loaded:			2,		&#x2F;&#x2F; 加载完成
+		failed:			-1,		&#x2F;&#x2F; 加载失败
+		depending:		3,		&#x2F;&#x2F; 正在加载依赖包
+		interactive:	4,		&#x2F;&#x2F; 所有直接或间接依赖包已经加载完成，处于待用状态
+		complete:		5		&#x2F;&#x2F; 完全可用
+	};
+	
+	&#x2F;*********************************************************************
+	 *                        Package类
+	 ********************************************************************&#x2F;
+	
+	var Package = newKolaClass(null, {
+		
+		&#x2F;**
+		 * 每个kola包的对应控制类
+		 * 
+		 * @param name {String} 包全名
+		 *&#x2F;
+		_init: function(name) {
+			this._name = name;
+			
+			&#x2F;&#x2F; 设置为默认状态
+			this._status = PackageStatus.uninitialized;
+		},
+		
+		&#x2F;**
+		 * 加载当前包
+		 * 
+		 * @chainable
+		 *&#x2F;
+		load: function() {
+			&#x2F;&#x2F; 获取路径信息
+			var path = Packager.path(this._name);
+			
+			&#x2F;&#x2F; 创建用于加载的script节点，并设置相关信息
+			var script = document.createElement(&#x27;script&#x27;);
+			script.src = path.uri;
+			if (path.charset) {
+				script.charset = path.charset;
+			}
+			
+			&#x2F;&#x2F; 跟踪error事件，用于发现链接错误或包名笔误的包
+			script.onerror = bindScope(scriptFail, this, this._name, script);
+			
+			&#x2F;&#x2F; 跟踪加载完成事件，用于发现包执行错误或者期望与实际包名不同的包
+			script.onload = bindScope(scriptSucc, this, this._name, script);
+			
+			&#x2F;&#x2F; 设置加载状态为加载中
+			this.status(PackageStatus.loading);
+			
+			&#x2F;&#x2F; 开始加载
+			(document.head || document.getElementsByTagName(&#x27;head&#x27;)[0]).appendChild(script);
+			
+			return this;
+		},
+		
+		&#x2F;**
+		 * 当前包已经加载成功，并设置依赖包信息
+		 * 
+		 * @param creator {Function} 包内容生成器
+		 * @param dependence {Array&lt;String&gt; | Null} 依赖包的列表
+		 *&#x2F;
+		loaded: function(creator, dependence) {
+			this._creator = creator;
+			if (dependence !== null) {
+				this._dependence = dependence;
+			}
+			
+			&#x2F;&#x2F; 设置为加载完成状态
+			this.status(PackageStatus.loaded);
+			
+			&#x2F;&#x2F; 加载完成后的，需要考虑是否自动加载依赖项
+			if (this._wanted || dependence === null) {
+				depending.call(this);
+			}
+		},
+		
+		&#x2F;**
+		 * 当包处于可用状态时，回调该方法
+		 * 
+		 * @param callback {Function} 包可用后的回调方法
+		 * @chainable
+		 *&#x2F;
+		complete: function(callback) {
+			&#x2F;&#x2F; 这是监听包的可用状态
+			this._wanted = true;
+			
+			&#x2F;&#x2F; 把可用后的回调方法放到排队表中
+			(this._demander || (this._demander = [])).push(callback);
+			
+			&#x2F;&#x2F; 根据不同的状态，执行不同的操作
+			switch (this._status) {
+				
+				&#x2F;&#x2F; 如果是未初始化状态，那就需要开始加载
+				case PackageStatus.uninitialized:
+					this.load();
+					break;
+				
+				&#x2F;&#x2F; 如果处于加载完成状态，那就开始加载依赖包
+				case PackageStatus.loaded:
+					depending.call(this);
+					break;
+				
+				&#x2F;&#x2F; 如果处于可用状态，那就在下一个队列中执行之
+				case PackageStatus.complete:
+					fireComplete.call(this);
+					break;
+				
+				&#x2F;&#x2F; 其他状态（加载中、待用）则无需其他处理
+			}
+			
+			return this;
+		},
+		
+		&#x2F;**
+		 * 获取包的实体内容
+		 * 
+		 * @return {Any}
+		 *&#x2F;
+		entity: function() {
+			return this._creator;
+		},
+		
+		&#x2F;**
+		 * 获取包的状态
+		 * 
+		 * @return {Number}
+		 *&#x2F;
+		&#x2F;**
+		 * 设置包的状态
+		 * 
+		 * @param status {Number} 包的新状态码
+		 * @chainable
+		 *&#x2F;
+		status: function(status) {
+			if (arguments.length == 0) {
+				&#x2F;&#x2F; 获取状态
+				return this._status;
+			} else {
+				&#x2F;&#x2F; 设置状态
+				this._status = status;
+				
+				return this;
+			}
+		}
+		
+	});
+	
+	&#x2F;**
+	 * 开始加载依赖包
+	 * 
+	 * @private
+	 * @chainable
+	 *&#x2F;
+	var depending = function() {
+		var dependence = this._dependence;
+		if (dependence) {
+			&#x2F;&#x2F; 如果有依赖包，那就加载之
+			Packager.use(dependence, toComplete, this);
+		} else {
+			&#x2F;&#x2F; 没有依赖包，那就直接进入可用状态
+			toComplete.call(this);
+		}
+	};
+	
+	&#x2F;**
+	 * 设置当前包为可用状态
+	 * 
+	 * @param [package]* {Any} 依赖包
+	 * @return {Function} 生成的可用回调方法
+	 *&#x2F;
+	var toComplete = function() {
+		&#x2F;&#x2F; 设置当前包为完成状态
+		
+		&#x2F;&#x2F; FIXME: 临时的输出语句
+		if (this._status == PackageStatus.complete) {
+			throwError(&#x27;重复将包&#x27; + this._name + &#x27;置为可用状态&#x27;);
+		}
+				
+		&#x2F;&#x2F; 获取包的实体内容
+		this._creator = this._creator.apply(window, arguments);
+		
+		&#x2F;&#x2F; 设置状态为完成状态
+		this.status(PackageStatus.complete);
+		
+		&#x2F;&#x2F; 触发complete事件
+		fireComplete.call(this);
+		
+		&#x2F;&#x2F; 清除不必要的属性
+		delete this._dependence;
+		delete this._wanted;
+		
+		return this;
+	};
+	
+	&#x2F;**
+	 * 触发complete事件
+	 *&#x2F;
+	var fireComplete = function() {
+		&#x2F;&#x2F; 如果有等待者的话，那就通知之
+		var demander = this._demander,
+			name = this._name;
+		if (demander) {
+			&#x2F;&#x2F; 循环每个回调，依次执行之
+			var callback;
+			while (callback = demander.shift()) {
+				callback(name);
+			}
+			
+			&#x2F;&#x2F; 清除
+			delete this._demander;
+		}
+		
+		return this;
+	};
+	
+	&#x2F;**
+	 * 文件加载失败的调用方法
+	 * 
+	 * @param packageName {String} 对应的包名称
+	 * @param node {HTMLElement} 对应的script节点
+	 *&#x2F;
+	var scriptFail = function(packageName, node) {
+		&#x2F;&#x2F; 设置为错误状态
+		this._status = PackageStatus.failed;
+		
+		&#x2F;&#x2F; 显示错误
+		throwError(&quot;can&#x27;t load package &quot; + packageName + &quot; in uri: &quot; + node.src);
+		
+		&#x2F;&#x2F; 去除事件绑定
+		node.onerror = null;
+		node.onload = null;
+	};
+	
+	&#x2F;**
+	 * 文件加载成功后的调用方法
+	 * 
+	 * @param packageName {String} 对应的包名称
+	 * @param node {HTMLElement} 对应的script节点
+	 *&#x2F;
+	var scriptSucc = function(packageName, node) {
+		var scope = this;
+		setTimeout(function() {
+			&#x2F;&#x2F; 如果该包还处于未加载完成状态，那就报错
+			if (scope._status &lt; PackageStatus.loaded) {
+				&#x2F;&#x2F; 显示错误
+				throwError(&quot;can&#x27;t define package &quot; + packageName);
+			}
+		}, 0);
+		
+		&#x2F;&#x2F; 去除事件绑定
+		node.onerror = null;
+		node.onload = null;
+	};
+	
+	&#x2F;*********************************************************************
+	 *                        Packager类
+	 ********************************************************************&#x2F;
+	
+	&#x2F;**
+	 * kola的Package控制管理中心
+	 * 
+	 * @class Packager
+	 * @static
+	 *&#x2F;
+	var Packager = {
+		
+		&#x2F;**
+		 * 定义一个包
+		 * 
+		 * @method define
+		 * @param name {String} 包全名
+		 * @param dependence {Array&lt;String&gt; | Null | String} 依赖包列表
+		 * 	如果为null，即没有依赖包；
+		 * 	如果为String类型，说明只有一个依赖包
+		 * 	如果是Array类型，那就是依赖包的列表
+		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
+		 * @chainable
+		 *&#x2F;
+		define: function(name, dependence, creator) {
+			&#x2F;&#x2F; 如果包早已加载完成，那则不做处理
+			var packageObj = Packager._package(name);
+			if (packageObj.status() &gt;= PackageStatus.loaded) return;
+			
+			&#x2F;&#x2F; 把dependence转化为数组或者字符串
+			switch (typeof dependence) {
+				case &#x27;string&#x27;:
+					&#x2F;&#x2F; 一个依赖包
+					dependence = [dependence];
+					break;
+				case &#x27;object&#x27;:
+					if (dependence !== null &amp;&amp; dependence.length) {
+						&#x2F;&#x2F; 一个或多个依赖包
+						break;
+					}
+				default:
+					&#x2F;&#x2F; 没有依赖包
+					dependence = null;
+			}
+			
+			&#x2F;&#x2F; 设置当前包加载成功
+			packageObj.loaded(creator, dependence);
+			
+			return Packager;
+		},
+		
+		&#x2F;**
+		 * 使用某些包执行某个方法
+		 * 
+		 * @method use
+		 * @param packages {String | Array&lt;String&gt;} 要使用的包，如果是string也就是一个包的包名，如果是Array，那可能就是依赖的包列表
+		 * @param callback {Function} 包可用之后的回调方法
+		 * @param [scope] {Any} 回调方法的作用域
+		 * @chainable
+		 *&#x2F;
+		use: function(packages, callback, scope) {
+			&#x2F;&#x2F; packages都变成数组格式
+			packages = typeof packages == &#x27;string&#x27; ? [packages] : packages.concat();
+			packages = parsePackages(packages);
+			var following = packages.concat(packages.plugin);
+			packages.unavilable = following.length;	&#x2F;&#x2F; 无效包的个数
+			
+			&#x2F;&#x2F; 创建一个完成后的回调方法
+			var completeListener = createPackageCompleteListener(packages, callback, scope);
+			
+			&#x2F;&#x2F; 循环每个依赖包，监听其complete事件
+			for (var i = 0, il = following.length; i &lt; il; i++) {
+				Packager._package(following[i]).complete(completeListener);
+			}
+			
+			return Packager;
+		},
+		
+		&#x2F;**
+		 * 增量保存设置信息
+		 * 
+		 * @method config
+		 * @param config {Object} 增量设置对象
+		 * @chainable
+		 * 
+		 * @example
+		 * 	{
+		 * 		charset: &#x27;utf-8&#x27;,			&#x2F;&#x2F; 编码，默认没有
+		 * 		path: &#x27;&#x2F;…&#x2F;&#x27;,				&#x2F;&#x2F; 跟路径，默认自动寻找当前的
+		 * 		domReady: true,				&#x2F;&#x2F; 要执行的方法默认都在domReady之后执行，默认为true
+		 * 
+		 * 		&#x2F;&#x2F; lib配置，优先级高于全局配置，但是低于packages
+		 * 		libs: {                     &#x2F;&#x2F; lib列表
+		 * 			&#x27;kola&#x27;: {				&#x2F;&#x2F; kola lib的定义
+		 * 				charset: &#x27;utf-8&#x27;,	&#x2F;&#x2F; 编码，默认使用全局配置
+		 * 				path: &#x27;...&#x27;			&#x2F;&#x2F; 根路径，默认使用全局配置
+		 * 			},
+		 * 			&#x27;kola.ui&#x27;: {			&#x2F;&#x2F; kola.ui lib的定义
+		 * 				charset: &#x27;gbk&#x27;,		&#x2F;&#x2F; 编码，默认使用全局配置
+		 * 				path: &#x27;...&#x27;			&#x2F;&#x2F; 根路径，默认使用全局配置
+		 * 			},
+		 * 			&#x27;webbricks.clay&#x27;: {		&#x2F; webbricks.clay lib的定义
+		 * 				charset: &#x27;gbk&#x27;,		&#x2F;&#x2F; 编码，默认使用全局配置
+		 * 				path: &#x27;...&#x27;			&#x2F;&#x2F; 根路径，默认使用全局配置
+		 * 			}
+		 * 		},
+		 * 
+		 * 		&#x2F;&#x2F; package配置，编码采用全局配置，优先级高于libs
+		 * 		packages: {
+		 * 			&#x27;kola.lang.Class&#x27;: 0,	&#x2F;&#x2F; 如果是数字，代表要去uris数组上获取最终地址
+		 * 			&#x27;kola.net.Ajax&#x27;, 0,
+		 * 			&#x27;kola.lang&#x27;: 1,			&#x2F;&#x2F; 这个代表所有kola.lang下的包，都在这个地址上
+		 * 			&#x27;webbricks.magicbox&#x27;: &#x27;http:&#x2F;&#x2F;...&#x2F;magicbox.js&#x27;
+		 * 		},
+		 * 
+		 * 		&#x2F;&#x2F; 可用地址列表
+		 * 		uris: [
+		 * 			&#x27;http:&#x2F;&#x2F;...&#x2F;common.js&#x27;,
+		 * 			&#x27;http:&#x2F;&#x2F;...&#x2F;index.js&#x27;
+		 * 		]
+		 * 	}
+		 *&#x2F;
+		config: function(config) {
+			objectExtend(config, packagerConfig);
+			
+			return Packager;
+		},
+		
+		&#x2F;**
+		 * 获取一个包的路径配置信息
+		 * 
+		 * @method path
+		 * @param name {String} package名称
+		 * @return {Object} 路径信息，有这些属性：
+		 * 	uri，文件路径地址；
+		 * 	charset，文件编码，没有的话那就是不设定编码；
+		 *&#x2F;
+		path: function(name) {
+			var names = name.split(&#x27;.&#x27;);
+			
+			&#x2F;&#x2F; TODO: 先到packages上寻找
+			
+			&#x2F;&#x2F; 在libs上查找
+			var libs = packagerConfig.libs;
+			if (libs) {
+				for (var il = names.length, i = il - 1; i &gt;= 0; i--) {
+					var config = libs[names.slice(0, i).join(&#x27;.&#x27;)];
+					if (config) {
+						config = objectExtend(config, {});
+						config.uri = config.path 
+							+ names.slice(i, il).join(&#x27;&#x2F;&#x27;) 
+							+ &#x27;.js&#x27;;
+							
+						delete config.path;
+						return config;
+					}
+				}
+			}
+			
+			&#x2F;&#x2F; 按照全局配置生成地址
+			var path = packagerConfig.path;
+			if (typeof path != &#x27;string&#x27;) {
+				&#x2F;&#x2F; 没有默认的路径配置信息，那就查找所有script节点，自动匹配确认
+				var scripts = document.getElementsByTagName(&#x27;script&#x27;);
+				for (var i = 0, il = scripts.length; i &lt; il; i++) {
+					var src = scripts[i].src;
+					if (!src) continue;
+					
+					src = src.toLowerCase();
+					
+					&#x2F;&#x2F; 首先判断是否存在packager
+					var index = src.indexOf(&#x27;packager&#x27;);
+					if (index == -1) continue;
+					
+					&#x2F;&#x2F; 判断上一级是否存在kola
+					index = src.lastIndexOf(&#x27;kola&#x27;, index);
+					if (index == -1) continue;
+					
+					&#x2F;&#x2F; 找到kola之前的&#x2F;，这就是path
+					path = packagerConfig.path = src.substr(0, src.lastIndexOf(&#x27;&#x2F;&#x27;, index) + 1);
+					
+					break;
+				}
+			}
+			if (path) {
+				var pathObj = {
+					uri: path + names.join(&#x27;&#x2F;&#x27;) + &#x27;.js&#x27;
+				};
+				
+				&#x2F;&#x2F; 使用全局的编码信息
+				var charset = packagerConfig.charset;
+				if (typeof charset == &#x27;string&#x27; &amp;&amp; charset.length &gt; 0) {
+					pathObj.charset = charset;
+				}
+				return pathObj;
+			}
+			
+			&#x2F;&#x2F; 没有找到路径信息，抛出错误
+			throwError(&quot;can&#x27;t get file path of package &quot; + name);
+		},
+		
+		&#x2F;**
+		 * 创建一个新类
+		 * 
+		 * @method createClass
+		 * @param [superClass] {Function} 父类
+		 * @param methods {Object} 方法列表
+		 * @return {KolaClass}
+		 *&#x2F;
+		createClass: newKolaClass,
+		
+		&#x2F;**
+		 * 获取某个package的控制对象
+		 * 
+		 * @method _package
+		 * @protected
+		 * @param name {String} package名称
+		 *&#x2F;
+		_package: function(name) {
+			&#x2F;&#x2F; 没有该package那就创建之
+			return packageObjects[name] || (packageObjects[name] = new Package(name));
+		}
+	};
+	
+	&#x2F;**
+	 * 深度复制对象
+	 *&#x2F;
+	var objectExtend = function(fromObject, toObject) {
+		for (var name in fromObject) {
+			var value = fromObject[name];
+			
+			switch (typeof value) {
+				case &#x27;funtion&#x27;: 
+					break;
+				
+				case &#x27;object&#x27;:
+					if (value !== null) {
+						&#x2F;&#x2F; 对于map对象进行深度复制
+						&#x2F;&#x2F; 注意：这里没有判断是否为数组，因为配置参数中不会出现这种情景
+						toObject[name] = objectExtend(value, toObject[name] || {});
+						break;
+					}
+				
+				default:
+					&#x2F;&#x2F; 剩下的都是值类型，直接复制
+					toObject[name] = value;
+			}
+		}
+		return toObject;
+	};
+	
+	&#x2F;**
+	 * packager的配置信息
+	 * 
+	 * @property packagerConfig
+	 * @type {Object}
+	 * @private
+	 * @for Packager
+	 *&#x2F;
+	var packagerConfig = {
+		libs: 		{},
+		packages:	{},
+		uris:		[]
+	};
+	
+	&#x2F;**
+	 * 保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象
+	 * 
+	 * @property packageObjects
+	 * @type {Object}
+	 * @private
+	 * @for Packager
+	 *&#x2F;
+	var packageObjects = {};
+	
+	&#x2F;**
+	 * 创建一个确保所有需要的包都加载完成就能执行相应回调方法的事件监听器
+	 * 
+	 * @method createPackageCompleteListener
+	 * @private
+	 * @for Packager
+	 * @param usedPackages {Array&lt;String&gt;} 需要的包名列表
+	 * @param callback {Function} 包都加载完成后的回调方法
+	 * @param scope {Any} 回调方法的作用域
+	 * @return {Function} 生成的事件监听器方法，其输入参数只有一个，为加载成功的包名称
+	 *&#x2F;
+	var createPackageCompleteListener = function(usedPackages, callback, scope) {
+		return function(name) {
+			if (--usedPackages.unavilable &lt;= 0) {
+				&#x2F;&#x2F; 需要的包全部加载完成，可以执行了回调方法了
+				
+				&#x2F;&#x2F; 轮询所有的包，获取包的内容
+				var objects = [];
+				for (var i = 0, il = usedPackages.length; i &lt; il; i++) {
+					var object = Packager._package(usedPackages[i]).entity();
+					
+					&#x2F;&#x2F; 如果存在插件的话，那就生成加入插件的包
+					var plugin = usedPackages[&#x27;_&#x27; + i];
+					if (plugin) {
+						&#x2F;&#x2F; 获取每个插件的实体内容
+						for (var j = 0, jl = plugin.length; j &lt; jl; j++) {
+							plugin[j] = Packager._package(plugin[j]).entity();
+						}
+						
+						&#x2F;&#x2F; 增加基类和methods
+						plugin.unshift(object);	&#x2F;&#x2F; 基类
+						
+						&#x2F;&#x2F; 生成新的类
+						object = newPluginJoinedClass.apply(window, plugin);
+					}
+					
+					objects.push(object);
+				}
+				
+				&#x2F;&#x2F; 调用回调方法
+				callback.apply(scope || window, objects);
+			}
+		};
+	};
+			
+	&#x2F;**
+	 * 把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组
+	 *&#x2F;
+	var parsePackages = function(packages) {
+		var allPlugin = [];
+		for (var i = 0, il = packages.length; i &lt; il; i++) {
+			var name = trimAll(packages[i]);
+			var index = name.indexOf(&#x27;[&#x27;);
+			if (index == -1) continue;
+			
+			&#x2F;&#x2F; 找到插件列表
+			var plugin = name.substring(index + 1, name.length - 1).split(&#x27;,&#x27;);
+			packages[&#x27;_&#x27; + i] = plugin;
+			allPlugin = allPlugin.concat(plugin);
+			
+			&#x2F;&#x2F; 记录下当前包的名称
+			packages[i] = name.substr(0, index);
+		}
+		packages.plugin = allPlugin;
+		return packages;
+	};
+	
+	&#x2F;*********************************************************************
+	 *                         kola方法定义
+	 ********************************************************************&#x2F;
+	
+	&#x2F;&#x2F;	如果存在缓存的kola方法，那就保存之
+	var cachedKolaCall = !!kola &amp;&amp; kola._cache;
+	
+	&#x2F;**
+	 * 定义一个包
+	 * 
+	 * @method kola
+	 * @for window
+	 * @param name {String} 包名
+	 * @param dependence {String | Array&lt;String&gt; | Null} 依赖包列表。
+	 * 	如果是String类型，那就是只依赖一个包，即为依赖的包名
+	 * 	如果是Array类型，那就是依赖的包列表，每项就是一个依赖包的包名
+	 * 	如果为null，那就不依赖任何包
+	 * @param creator {Function} 包内容生成器
+	 *&#x2F;
+	&#x2F;**
+	 * 使用包进行某项操作
+	 * 
+	 * @method kola
+	 * @for window
+	 * @param packages {String | Array&lt;String&gt;} 要使用的包列表。
+	 * 	如果是String类型，那就是只使用一个包，即为包名
+	 * 	如果是Array类型，那就是要使用的包列表，每项就是一个包名
+	 * @param callback {Function} 要执行的方法
+	 * @param [scope] {Any} 被执行方法的作用域
+	 *&#x2F;
+	&#x2F;**
+	 * 加载一个kola设置对象
+	 * 
+	 * @method kola
+	 * @for window
+	 * @param config {Object} 设置对象
+	 *&#x2F;
+	&#x2F;&#x2F; TODO: 还未解决循环依赖问题
+	&#x2F;&#x2F; TODO: 还未增加对lib和版本的支持
+	kola = function() {
+		var args = arguments,
+			scope = this;
+		switch (args.length) {
+			case 3:
+				if (typeof args[1] != &#x27;function&#x27;) {
+					&#x2F;&#x2F; 这是定义包
+					return Packager.define.apply(Packager, args);
+				}
+				
+				&#x2F;&#x2F; 这是使用包执行的方式
+				scope = args[2];
+				
+			case 2:
+				&#x2F;&#x2F; 这是使用包执行的方式
+				return Packager.use(args[0], args[1], scope);
+			
+			case 1:
+				&#x2F;&#x2F; 这是加载配置信息
+				return Packager.config(args[0]);
+		}
+	};
+
+	&#x2F;&#x2F; 声明kola.Packager包
+	Packager.define(&#x27;kola.Packager&#x27;, null, function() {
+		return Packager;
+	});
+	
+	&#x2F;&#x2F; 如果存在之前的kola调用缓存，那就依次执行之
+	if (typeof cachedKolaCall == &#x27;object&#x27; 
+		&amp;&amp; cachedKolaCall !== null 
+		&amp;&amp; cachedKolaCall.shift
+	) {
+		var callArgs;
+		while (callArgs = cachedKolaCall.shift()) {
+			var args = callArgs,
+				scope = callArgs.shift();
+			setTimeout(function() {
+				kola.apply(scope, args);
+			}, 0);
+		}
+	}
+	
+	return kola;
+	
+})(window.kola);
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>
