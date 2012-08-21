@@ -194,7 +194,7 @@ window.kola = (function(kola) {
 							afters: []
 						});
 					}
-					aops[index].afters.push(plugin[item]);
+					aops[index].afters.unshift(plugin[item]);
 				} else {
 					//	只有当当前方法不是切面方法时，才予以添加
 					newClassPrototype[item] = plugin[item];
