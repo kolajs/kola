@@ -131,10 +131,7 @@ window.kola = (function(kola) {
 			args.push(arguments[i]);
 		}
 		return function() {
-			for (var i = 0, il = arguments.length; i &lt; il; i++) {
-				args.push(arguments[i]);
-			}
-			return fn.apply(scope, args);
+			return fn.apply(scope, args.concat(toArray(arguments)));
 		};
 	};
 			
@@ -147,6 +144,17 @@ window.kola = (function(kola) {
 			return string.replace(reg, &#x27;&#x27;);
 		};
 		return trimAll(string);
+	};
+	
+	&#x2F;**
+	 * 把一个类数组变成数组
+	 *&#x2F;
+	var toArray = function(arraible) {
+		var newArray = [];
+		for (var i = 0, il = arraible.length; i &lt; il; i++) {
+			newArray.push(arraible[i]);
+		}
+		return newArray;
 	};
 	
 	&#x2F;**
@@ -189,7 +197,7 @@ window.kola = (function(kola) {
 			} else {
 				
 				&#x2F;&#x2F; 不存在有效的初始化方法，那说明这是直接调用方式
-				me.apply(arguments.callee, arguments);
+				return me.apply(arguments.callee, arguments);
 			}
 		};
 	};
@@ -242,6 +250,14 @@ window.kola = (function(kola) {
 	};
 	
 	&#x2F;**
+	 * Aop方法列表
+	 *&#x2F;
+	var AopMethod = {
+		before: 1,
+		after: 1
+	};
+	
+	&#x2F;**
 	 * 创建一个加入插件的新类
 	 * 
 	 * @param superClass {KolaClass} 父类
@@ -269,36 +285,28 @@ window.kola = (function(kola) {
 		for (var i = 1, il = arguments.length; i &lt; il; i++) {
 			var plugin = arguments[i];
 			for (var item in plugin) {
-				var before = -1,
-					after = -1,
-					index = -1,
-					realName = &#x27;&#x27;;
+				var names = item.split(&#x27;__&#x27;);
+				
+				&#x2F;&#x2F; 判断是否是一个注入
+				if (names.length === 3 
+					&amp;&amp; names[0].length &gt; 0 
+					&amp;&amp; AopMethod[names[1]] === 1
+					&amp;&amp; names[2].length === 0
+				) {
+					var name = names[0];
 					
-				&#x2F;&#x2F;	如果存在前置切面方法，那就处理之
-				if ((before = item.indexOf(&#x27;__before__&#x27;)) != -1) {
-					realName = item.substring(0, before);
-					if (typeof (index = aops[realName]) != &#x27;number&#x27;) {
-						index = aops[realName] = aops.length;
+					&#x2F;&#x2F; 如果不存在包装对象，那就创建之
+					var index = aops[name];
+					if (typeof index != &#x27;number&#x27;) {
+						aops[name] = index = aops.length;
 						aops.push({
-							name: realName,
-							befores: [],
-							afters: []
+							name: 	name,
+							before: [],
+							after:	[]
 						});
 					}
-					aops[index].befores.push(plugin[item]);
 					
-				} else if ((after = item.indexOf(&#x27;__after__&#x27;)) != -1) {
-					&#x2F;&#x2F;	如果存在前置切面方法，那就处理之
-					realName = item.substring(0, after);
-					if (typeof (index = aops[realName]) != &#x27;number&#x27;) {
-						index = aops[realName] = aops.length;
-						aops.push({
-							name: realName,
-							befores: [],
-							afters: []
-						});
-					}
-					aops[index].afters.unshift(plugin[item]);
+					aops[index][names[1]].push(plugin[item]);
 				} else {
 					&#x2F;&#x2F;	只有当当前方法不是切面方法时，才予以添加
 					newClassPrototype[item] = plugin[item];
@@ -328,36 +336,33 @@ window.kola = (function(kola) {
 	 * 生成一个新的Aop方法
 	 * @param fn {Function} 原生的方法
 	 * @param aop {Object} aop配置参数
-	 * 	@param befores {Array&lt;Function&gt;} 之前需要调用的方法
-	 * 	@param afters {Array&lt;Function&gt;} 之后需要调用的方法
+	 * 	@param before {Array&lt;Function&gt;} 之前需要调用的方法
+	 * 	@param after {Array&lt;Function&gt;} 之后需要调用的方法
 	 *&#x2F;
 	var createAopedFunc = function(fn, aop) {
 		return function() {
-			var args = [];
-			for (var i = 0, il = arguments.length; i &lt; il; i++) {
-				args.push(arguments[i]);
-			}
+			var args = toArray(arguments);
 			
 			&#x2F;&#x2F;	如果存在调用前的方法，那就调用之
-			var befores = aop.befores;
-			if (befores.length &gt; 0) {
-				for (var i = 0, il = befores.length; i &lt; il; i++) {
-					var tempResult = befores[i].apply(this, args);
+			var before = aop.before;
+			if (before.length &gt; 0) {
+				for (var i = 0, il = before.length; i &lt; il; i++) {
+					var tempResult = before[i].apply(this, args);
 					if (typeof tempResult != &#x27;undefined&#x27;) {
 						args = tempResult;
 					}
 				}
 			}
 			
-			&#x2F;&#x2F;	调用原来的方法
+			&#x2F;&#x2F; 那就调用原来的方法
 			var result = fn.apply(this, args);
 			
 			&#x2F;&#x2F;	如果存在调用后的方法，那就调用之
-			var afters = aop.afters;
-			if (afters.length &gt; 0) {
+			var after = aop.after;
+			if (after.length &gt; 0) {
 				args.unshift(result);
-				for (var i = 0, il = afters.length; i &lt; il; i++) {
-					var tempResult = afters[i].apply(this, args);
+				for (var i = 0, il = after.length; i &lt; il; i++) {
+					var tempResult = after[i].apply(this, args);
 					if (typeof tempResult != &#x27;undefined&#x27;) {
 						args = tempResult;
 					}

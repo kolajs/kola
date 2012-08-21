@@ -122,87 +122,88 @@ kola(&#x27;kola.lang.Class&#x27;, [
 	 * 
 	 * @author Jady Yang
 	 *&#x2F;
-	
-	var exports = {
-		
-		&#x2F;**
-		 * 创建一个新类
-		 * 
-		 * @method createClass
-		 * @param [superClass] {Class} 父类
-		 * @param methods {Object} 方法列表
-		 * @return {Class}
-		 *&#x2F;
-		create: Packager.createClass,
-	
-		&#x2F;**
-		 * 测试对象是否为函数
-		 * @method isFunction
-		 * @param target {Object} 目标对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isFunction: function (target) {
-			return (eye.call(target) == &quot;[object Function]&quot;);
-		},
-	
-		&#x2F;**
-		 * 测试对象是否为函数
-		 * @method isArray
-		 * @param target {Object} 目标对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isArray: function (target) {
-			return (eye.call(target) == &quot;[object Array]&quot;);
-		},
-	
-		&#x2F;**
-		 * 测试对象是否为字符串
-		 * @method isString
-		 * @param target {Object} 目标对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isString: function (target) {
-			return (eye.call(target) == &quot;[object String]&quot;);
-		},
-	
-		&#x2F;**
-		 * 测试对象是否为正则表达式
-		 * @method isRegExp
-		 * @param target {Object} 目标对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isRegExp: function (target) {
-			return (eye.call(target) == &quot;[object RegExp]&quot;);
-		},
-	
-		&#x2F;**
-		 * 测试对象是否为数字
-		 * @method isNumber
-		 * @param target {Object} 目标对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isNumber: function (target) {
-			return (eye.call(target) == &quot;[object Number]&quot;);
-		},
-	
-		&#x2F;**
-		 * 测试对象是否未定义
-		 * @method isUndefined
-		 * @param target {Object} 目标对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isUndefined: function (target) {
-			return (typeof target == &quot;undefined&quot;);
-		},
-	
-		&#x2F;**
-		 * 测试对象类型的函数
-		 * @property eye
-		 * @type {Function}
-		 * @private
-		 *&#x2F;
-		eye: Object.prototype.toString
-		
+	&#x2F;**
+	 * 创建一个新类
+	 * 
+	 * @method createClass
+	 * @param [superClass] {Class} 父类
+	 * @param methods {Object} 方法列表
+	 * @return {Class}
+	 *&#x2F;
+	var exports = Packager.createClass;
+	&#x2F;**
+	 * 测试对象类型的函数
+	 * @property eye
+	 * @type {Function}
+	 * @private
+	 *&#x2F;
+	var eye = Object.prototype.toString;
+	&#x2F;**
+	 * 测试对象是否为函数
+	 * @method isFunction
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isFunction = function (target) {
+		return (eye.call(target) == &quot;[object Function]&quot;);
+	};
+
+	&#x2F;**
+	 * 测试对象是否为函数
+	 * @method isArray
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isArray = function (target) {
+		return (eye.call(target) == &quot;[object Array]&quot;);
+	};
+	&#x2F;*
+	 * 测试对象是否为对象
+	 * @method isObject
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isObject = function (target) {
+		return (eye.call(target) == &quot;[object Object]&quot;);
+	};
+	&#x2F;**
+	 * 测试对象是否为字符串
+	 * @method isString
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isString = function (target) {
+		return (eye.call(target) == &quot;[object String]&quot;);
+	};
+
+	&#x2F;**
+	 * 测试对象是否为正则表达式
+	 * @method isRegExp
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isRegExp = function (target) {
+		return (eye.call(target) == &quot;[object RegExp]&quot;);
+	};
+
+	&#x2F;**
+	 * 测试对象是否为数字
+	 * @method isNumber
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isNumber = function (target) {
+		return (eye.call(target) == &quot;[object Number]&quot;);
+	};
+
+	&#x2F;**
+	 * 测试对象是否未定义
+	 * @method isUndefined
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 *&#x2F;
+	exports.isUndefined = function (target) {
+		return (typeof target==&quot;undefined&quot;);
 	};
 	
 	return exports;

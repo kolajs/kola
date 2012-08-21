@@ -151,8 +151,15 @@
 
                     <ul class="index-list methods">
                         
-                            <li class="index-item method private">
-                                <a href="#method__each">_each</a>
+                            <li class="index-item method">
+                                <a href="#method_attr">attr</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_attr">attr</a>
 
                                 
                                 
@@ -173,7 +180,7 @@
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_direct">direct</a>
+                                <a href="#method_data">data</a>
 
                                 
                                 
@@ -257,6 +264,13 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_parse">parse</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_reduce">reduce</a>
 
                                 
@@ -264,14 +278,14 @@
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_some">some</a>
+                                <a href="#method_removeData">removeData</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_toArray">toArray</a>
+                                <a href="#method_some">some</a>
 
                                 
                                 
@@ -357,8 +371,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method__each" class="method item private">
-    <h3 class="name"><code>_each</code></h3>
+                    <div id="method_attr" class="method item">
+    <h3 class="name"><code>attr</code></h3>
 
     
         <div class="args">
@@ -366,7 +380,19 @@
             
                 <li class="arg">
                     
-                        <code>callback</code>
+                        <code>targetElement</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>name</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>value</code>
                     
                 </li>
             
@@ -379,15 +405,11 @@
     
 
     
-        <span class="flag private">private</span>
-    
 
     
 
     
 
-    
-        <span class="flag chainable">chainable</span>
     
 
     
@@ -403,7 +425,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_G.js.html#l98"><code>kola\dom\G.js:98</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l87"><code>kola\html\Element.js:87</code></a>
         
         </p>
 
@@ -414,7 +436,7 @@
     </div>
 
     <div class="description">
-        <p>依次迭代内部dom，将内部每一个元素交给callback处理</p>
+        <p>设置某个属性值</p>
     </div>
 
     
@@ -425,14 +447,173 @@
             
                 <li class="param">
                     
-                        <code class="param-name">callback</code>
-                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                        <code class="param-name">targetElement</code>
+                        <span class="type">HTMLElement</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>回调函数</p>
+                        <p>操作的element对象</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>属性名</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">value</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>属性值</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_attr" class="method item">
+    <h3 class="name"><code>attr</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>targetElement</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>name</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>value</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l157"><code>kola\html\Element.js:157</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>设置某个属性值</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">targetElement</code>
+                        <span class="type">HTMLElement</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>操作的element对象</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>属性名</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">value</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>属性值</p>
                     </div>
 
                     
@@ -500,7 +681,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_Operation.js.html#l7"><code>kola\dom\Operation.js:7</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l117"><code>kola\html\Element.js:117</code></a>
         
         </p>
 
@@ -592,18 +773,14 @@
                     
                 </li>
             
-                <li class="arg">
-                    
-                        <code>value</code>
-                    
-                </li>
-            
             </ul><span class="paren">)</span>
         </div>
     
 
     
-
+        <span class="returns-inline">
+            <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+        </span>
     
 
     
@@ -613,7 +790,7 @@
     
 
     
-        <span class="flag chainable">chainable</span>
+
     
 
     
@@ -629,7 +806,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_Operation.js.html#l24"><code>kola\dom\Operation.js:24</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l70"><code>kola\html\Element.js:70</code></a>
         
         </p>
 
@@ -640,7 +817,7 @@
     </div>
 
     <div class="description">
-        <p>设置某个属性值</p>
+        <p>获取某个属性值</p>
     </div>
 
     
@@ -679,33 +856,31 @@
                     
                 </li>
             
-                <li class="param">
-                    
-                        <code class="param-name">value</code>
-                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>属性值</p>
-                    </div>
-
-                    
-                </li>
-            
             </ul>
         </div>
     
 
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>:
+                    
+                    属性值
+                
+            </div>
+        </div>
     
 
     
 </div>
 
                 
-                    <div id="method_direct" class="method item">
-    <h3 class="name"><code>direct</code></h3>
+                    <div id="method_data" class="method item">
+    <h3 class="name"><code>data</code></h3>
 
     
         <div class="args">
@@ -713,7 +888,7 @@
             
                 <li class="arg">
                     
-                        <code>selector</code>
+                        <code>name</code>
                     
                 </li>
             
@@ -723,7 +898,7 @@
 
     
         <span class="returns-inline">
-            <span class="type">KolaElement</span>
+            <span class="type">Any</span>
         </span>
     
 
@@ -750,7 +925,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_G.js.html#l24"><code>kola\dom\G.js:24</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l169"><code>kola\html\Element.js:169</code></a>
         
         </p>
 
@@ -761,7 +936,7 @@
     </div>
 
     <div class="description">
-        <p>将指定的dom转换为KolaElement</p>
+        <p>得到某个元素的附加数据</p>
     </div>
 
     
@@ -772,14 +947,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">selector</code>
-                        <span class="type">Array<HTMLElement> | NodeList | HtmlCollection | HtmlElement | KolaElement</span>
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
                     
 
                     
 
                     <div class="param-description">
-                         
+                        <p>要设置的数据的名称</p>
                     </div>
 
                     
@@ -796,8 +971,9 @@
             <div class="returns-description">
                 
                     
-                        <span class="type">KolaElement</span>:
+                        <span class="type">Any</span>:
                     
+                    dom上name对应的数据
                 
             </div>
         </div>
@@ -853,7 +1029,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_G.js.html#l18"><code>kola\dom\G.js:18</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l388"><code>kola\html\Element.js:388</code></a>
         
         </p>
 
@@ -956,7 +1132,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_G.js.html#l10"><code>kola\dom\G.js:10</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l394"><code>kola\html\Element.js:394</code></a>
         
         </p>
 
@@ -967,7 +1143,7 @@
     </div>
 
     <div class="description">
-        <p>使用选择器选择特定dom</p>
+        <p>将指定的dom转换为KolaElement</p>
     </div>
 
     
@@ -979,7 +1155,7 @@
                 <li class="param">
                     
                         <code class="param-name">selector</code>
-                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                        <span class="type">Array<HTMLElement> | NodeList | HtmlCollection | HtmlElement | KolaElement</span>
                     
 
                     
@@ -1057,7 +1233,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_G.js.html#l46"><code>kola\dom\G.js:46</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l416"><code>kola\html\Element.js:416</code></a>
         
         </p>
 
@@ -2183,6 +2359,109 @@
 </div>
 
                 
+                    <div id="method_parse" class="method item">
+    <h3 class="name"><code>parse</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>source</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Array</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l230"><code>kola\lang\Array.js:230</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>从一个拥有length属性的object生成一个数组</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">source</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>类数组</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Array</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_reduce" class="method item">
     <h3 class="name"><code>reduce</code></h3>
 
@@ -2351,6 +2630,114 @@
 </div>
 
                 
+                    <div id="method_removeData" class="method item">
+    <h3 class="name"><code>removeData</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>name</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>value</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l180"><code>kola\html\Element.js:180</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>设置dom上指定的附加数据</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要删除的数据名称,如果为undefined，则表示删除全部数据</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">value</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>指定数据的名称，如果为undefined，则删除该数据</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_some" class="method item">
     <h3 class="name"><code>some</code></h3>
 
@@ -2497,109 +2884,6 @@
 </div>
 
                 
-                    <div id="method_toArray" class="method item">
-    <h3 class="name"><code>toArray</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>source</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Array</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l230"><code>kola\lang\Array.js:230</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>从一个拥有length属性的object生成一个数组</p>
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">source</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>类数组</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Array</span>:
-                    
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_toElements" class="method item private">
     <h3 class="name"><code>toElements</code></h3>
 
@@ -2648,7 +2932,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_dom_G.js.html#l176"><code>kola\dom\G.js:176</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_Element.js.html#l520"><code>kola\html\Element.js:520</code></a>
         
         </p>
 
