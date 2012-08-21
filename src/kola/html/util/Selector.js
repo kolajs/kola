@@ -4,7 +4,7 @@
  *  Released under the MIT license
  *  http://sizzlejs.com/
  */
-kola("kola.dom.util.Selector",[
+kola("kola.html.util.Selector",[
 ],function() {
 	var cachedruns,
 		dirruns,

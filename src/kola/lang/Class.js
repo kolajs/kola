@@ -119,7 +119,15 @@ kola('kola.lang.Class', [
 	exports.isArray = function (target) {
 		return (eye.call(target) == "[object Array]");
 	};
-
+	/*
+	 * 测试对象是否为对象
+	 * @method isObject
+	 * @param target {Object} 目标对象
+	 * @return {Boolean}
+	 */
+	exports.isObject = function (target) {
+		return (eye.call(target) == "[object Object]");
+	};
 	/**
 	 * 测试对象是否为字符串
 	 * @method isString
