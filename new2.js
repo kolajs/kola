@@ -2,21 +2,20 @@ RichElement
 	getInput(inputControllerName)  ---> 得到对应的object
 
 Element Attribute:
-	style(name, value) ---> 设置值				style(name,value)
-	style(name) ---> 取得值						style(name)
-	style(name, undefined) ---> 删除值			removeStyle(name)
+	style(name, value) ---> 设置值				style(name,value)   OK
+	style(name) ---> 取得值						style(name)			OK
+	style(name, undefined) ---> 删除值			removeStyle(name)	OK
 
-	class(name, true) ---> 设置class			addClass(name)
-	class(name) ---> 取得class					hasClass(name)
-	class(name, undefined) ---> 删除class		removeClass(name)
+	css(name, true) ---> 设置class				addClass(name)		OK
+	css(name) ---> 取得class					hasClass(name)		OK
+	css(name, undefined) ---> 删除class			removeClass(name)	OK
 
-	attr,prop同理
+	attr,prop同理													OK
 
-	data(name) ---> 取得值	
-	data(name, value)  ---> 设置值
-	data(name, undefined) ---> 删除值			removeData(name)
-	data(undefined) ---> 删除所有值				removeAllData()
-	DATA()
+	data(name) ---> 取得值											OK
+	data(name, value)  ---> 设置值									OK
+	data(name, undefined) ---> 删除值			removeData(name)	OK
+	data(undefined, undefined) ---> 删除所有值	removeAllData()		OK
 Element Event:
 	handle on(name, callback, option)
 	off(name, callback, option)  -----buggy
@@ -36,23 +35,23 @@ Tree test
 	contains()
 	index()
 Tree travel:
-	parent()
-	parents(selector)
-	closest(selector)
-	children(selector)
-	find(selector)
-	decendent(selector)
-	prev(selector)
-	next(selector)
-	firstChild(selector)
-	lastChild(selector)
+	parent()														OK
+	parents(selector)												OK
+	closest(selector)												OK
+	children(selector)												OK
+	find(selector)													OK
+	descndent(selector)												OK
+	prev(selector)													OK
+	next(selector)													OK
+	firstChild(selector)											Removed
+	lastChild(selector)												Removed
 
 	?? eachChild(callback)
 
 Tree edit:
-	html
-	text
-	outer
+	html															OK
+	text															OK
+	outer															OK
 	append
 	prepend
 	after

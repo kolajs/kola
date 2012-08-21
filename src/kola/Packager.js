@@ -85,7 +85,7 @@ window.kola = (function(kola) {
 			} else {
 				
 				// 不存在有效的初始化方法，那说明这是直接调用方式
-				me.apply(arguments.callee, arguments);
+				return me.apply(arguments.callee, arguments);
 			}
 		};
 	};
@@ -347,7 +347,7 @@ window.kola = (function(kola) {
 			this.status(PackageStatus.loaded);
 			
 			// 加载完成后的，需要考虑是否自动加载依赖项
-			if (this._wanted) {
+			if (this._wanted || dependence === null) {
 				depending.call(this);
 			}
 		},
@@ -769,7 +769,7 @@ window.kola = (function(kola) {
 					if (value !== null) {
 						// 对于map对象进行深度复制
 						// 注意：这里没有判断是否为数组，因为配置参数中不会出现这种情景
-						toObject[name] = objectExtend(value, {});
+						toObject[name] = objectExtend(value, toObject[name] || {});
 						break;
 					}
 				
@@ -821,39 +821,31 @@ window.kola = (function(kola) {
 			if (--usedPackages.unavilable <= 0) {
 				// 需要的包全部加载完成，可以执行了回调方法了
 				
-				/*
-				// 放到下一个队列的原因是，避免太多JS在一起执行
-				setTimeout(function() {
-				*/
-					// 轮询所有的包，获取包的内容
-					var objects = [];
-					for (var i = 0, il = usedPackages.length; i < il; i++) {
-						var object = Packager._package(usedPackages[i]).entity();
-						
-						// 如果存在插件的话，那就生成加入插件的包
-						var plugin = usedPackages['_' + i];
-						if (plugin) {
-							// 获取每个插件的实体内容
-							for (var j = 0, jl = plugin.length; j < jl; j++) {
-								plugin[j] = Packager._package(plugin[j]).entity();
-							}
-							
-							// 增加基类和methods
-							plugin.unshift(object);	// 基类
-							
-							// 生成新的类
-							object = newPluginJoinedClass.apply(window, plugin);
+				// 轮询所有的包，获取包的内容
+				var objects = [];
+				for (var i = 0, il = usedPackages.length; i < il; i++) {
+					var object = Packager._package(usedPackages[i]).entity();
+					
+					// 如果存在插件的话，那就生成加入插件的包
+					var plugin = usedPackages['_' + i];
+					if (plugin) {
+						// 获取每个插件的实体内容
+						for (var j = 0, jl = plugin.length; j < jl; j++) {
+							plugin[j] = Packager._package(plugin[j]).entity();
 						}
 						
-						objects.push(object);
+						// 增加基类和methods
+						plugin.unshift(object);	// 基类
+						
+						// 生成新的类
+						object = newPluginJoinedClass.apply(window, plugin);
 					}
 					
-					// 调用回调方法
-					callback.apply(scope || window, objects);
+					objects.push(object);
+				}
 				
-				/*
-				}, 0);
-				*/
+				// 调用回调方法
+				callback.apply(scope || window, objects);
 			}
 		};
 	};
@@ -864,12 +856,12 @@ window.kola = (function(kola) {
 	var parsePackages = function(packages) {
 		var allPlugin = [];
 		for (var i = 0, il = packages.length; i < il; i++) {
-			var name = packages[i];
+			var name = trimAll(packages[i]);
 			var index = name.indexOf('[');
 			if (index == -1) continue;
 			
 			// 找到插件列表
-			var plugin = name.substring(index + 1, -1).split(',');
+			var plugin = name.substring(index + 1, name.length - 1).split(',');
 			packages['_' + i] = plugin;
 			allPlugin = allPlugin.concat(plugin);
 			
@@ -917,7 +909,6 @@ window.kola = (function(kola) {
 	 * @for window
 	 * @param config {Object} 设置对象
 	 */
-	// FIXME: 还没有增加插件支持
 	// TODO: 还未解决循环依赖问题
 	// TODO: 还未增加对lib和版本的支持
 	kola = function() {
@@ -944,7 +935,6 @@ window.kola = (function(kola) {
 	};
 
 	// 声明kola.Packager包
-	// FIXME: kola的状态在这时，竟然是2，需要解决。对于所有依赖为null的，都需要考虑
 	Packager.define('kola.Packager', null, function() {
 		return Packager;
 	});
