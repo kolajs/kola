@@ -73,6 +73,7 @@
 		.warpper{
 			cursor: pointer;
 			display: inline-block;
+			position: relative;
 		}
 		.selected>div{
 			box-shadow: 0px 0px 8px black;
@@ -104,7 +105,7 @@
 
 			function newCase(testCase){
 				cases.push(testCase);
-				testCase.dom = $('<div class="warpper"></div>');
+				testCase.dom = $('<p class="warpper"></p>');
 				testCase.dom.click(function(){
 					$(".info").text(testCase.errorMessage);
 					$(".warpper").removeClass("selected");
