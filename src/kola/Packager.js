@@ -12,6 +12,11 @@ window.kola = (function(kola) {
 	 ********************************************************************/
 	
 	/**
+	 * Array原生的slice方法
+	 */
+	var slice = Array.prototype.slice;
+	
+	/**
 	 * 创建一个新的空方法
 	 */
 	var newEmptyFunction = function() {
@@ -22,12 +27,9 @@ window.kola = (function(kola) {
 	 * 给方法绑定一个作用域
 	 */
 	var bindScope = function(fn, scope) {
-		var args = [];
-		for (var i = 2, il = arguments.length; i < il; i++) {
-			args.push(arguments[i]);
-		}
+		var args = slice.call(arguments, 2);
 		return function() {
-			return fn.apply(scope, args.concat(toArray(arguments)));
+			return fn.apply(scope, args.concat(slice.call(arguments)));
 		};
 	};
 			
@@ -45,6 +47,7 @@ window.kola = (function(kola) {
 	/**
 	 * 把一个类数组变成数组
 	 */
+	/*
 	var toArray = function(arraible) {
 		var newArray = [];
 		for (var i = 0, il = arraible.length; i < il; i++) {
@@ -52,6 +55,7 @@ window.kola = (function(kola) {
 		}
 		return newArray;
 	};
+	*/
 	
 	/**
 	 * 抛出一个错误信息
@@ -237,7 +241,7 @@ window.kola = (function(kola) {
 	 */
 	var createAopedFunc = function(fn, aop) {
 		return function() {
-			var args = toArray(arguments);
+			var args = slice.call(arguments);
 			
 			//	如果存在调用前的方法，那就调用之
 			var before = aop.before;
