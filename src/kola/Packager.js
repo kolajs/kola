@@ -45,19 +45,6 @@ window.kola = (function(kola) {
 	};
 	
 	/**
-	 * 把一个类数组变成数组
-	 */
-	/*
-	var toArray = function(arraible) {
-		var newArray = [];
-		for (var i = 0, il = arraible.length; i < il; i++) {
-			newArray.push(arraible[i]);
-		}
-		return newArray;
-	};
-	*/
-	
-	/**
 	 * 抛出一个错误信息
 	 */
 	var throwError = function(message) {
