@@ -17,23 +17,23 @@ Element Attribute:
 	data(name, undefined) ---> 删除值			removeData(name)	OK
 	data(undefined, undefined) ---> 删除所有值	removeAllData()		OK
 Element Event:
-	handle on(name, callback, option)
-	off(name, callback, option)  -----buggy
-	?? off(handle) handle.remove()
-	fire()
-	mouseover, click, mouseenter.....
+	handle on(name, callback, option)								no
+	off(name, callback, option)  -----buggy							no
+	?? off(handle) handle.remove()									no
+	fire()															no
+	mouseover, click, mouseenter.....								no
 
 Element Display
-	position
-	width
-	heigh
-	box
+	position														no
+	width															no
+	heigh															no
+	box																no
 
 //////////////////////////////////////////////////////////////////////////
 Tree test
-	is()
-	contains()
-	index()
+	is()															OK
+	contains()														OK
+	index()															OK
 Tree travel:
 	parent()														OK
 	parents(selector)												OK
@@ -46,17 +46,18 @@ Tree travel:
 	firstChild(selector)											Removed
 	lastChild(selector)												Removed
 
-	?? eachChild(callback)
+	eachChild(callback)												no
 
 Tree edit:
 	html															OK
 	text															OK
 	outer															OK
-	append
-	prepend
-	after
-	before
-	remove	??detach
+	value															OK
+	append															OK
+	prepend															OK
+	after															OK
+	before															OK
+	remove															OK
 
 //////////////////////////////////////////////////////////////////////////
 
