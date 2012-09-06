@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kola\lang\Object.js - kola</title>
+    <title>kola.bom - kola</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -110,122 +110,49 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: kola\lang\Object.js</h1>
+                        <h1>kola.bom Module</h1>
+<div class="box clearfix meta">
+    
 
-<div class="file">
-    <pre class="code prettyprint linenums">
-&#x2F;**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- *&#x2F;
+    
 
-kola(&#x27;kola.lang.Object&#x27;, [
-	&#x27;kola.lang.Class&#x27;
-], function (KolaClass) {
-	&#x2F;**
-	 * kola的Object类
-	 * 
-	 * @class Object
-	 * @static
-	 * 
-	 * @author Jady Yang
-	 *&#x2F;
-	var exports = {
-		&#x2F;**
-		 * 对象的属性继承
-		 * @method extend
-		 * @param [deep] {Boolean} 是否需要深度拷贝，可选项
-		 * @param target {Object} 目标对象
-		 * @param src* {Object} 源对象
-		 * @return {Object} 目标对象
-		 *&#x2F;
-		extend: function(target) {
+    
+        <div class="foundat">
+            Defined in: <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l40"><code>kola\bom\Browser.js:40</code></a>
+        </div>
+    
 
-				var options, name, src, copy, copyIsArray, clone,
-					i = 1,
-					length = arguments.length,
-					deep = false;
-			
-				&#x2F;&#x2F;是否需要深度复制对象
-				if ( typeof target === &quot;boolean&quot; ) {
-					deep = target;
-					target = arguments[1] || {};
-					i = 2;
-				}
-			
-				if ( typeof target !== &quot;object&quot; &amp;&amp; !KolaClass.isFunction(target) ) {
-					target = {};
-				}
-			
-				if ( length === i ) {
-					target = {};
-					--i;
-				}
-			
-				for ( ; i &lt; length; i++ ) {
-					if ( (options = arguments[ i ]) != null ) {
-						for ( name in options ) {
-							src = target[ name ];
-							copy = options[ name ];
+    
+</div>
 
-							if ( target === copy ) {
-								continue;
-							}
-			
-							if ( deep &amp;&amp; copy &amp;&amp; ( isPlainObject(copy) || (copyIsArray = KolaClass.isArray(copy)) ) ) {
-								if ( copyIsArray ) {
-									copyIsArray = false;
-									clone = src &amp;&amp; KolaClass.isArray(src) ? src : [];
-			
-								} else {
-									clone = src &amp;&amp; isPlainObject(src) ? src : {};
-								}
-								target[ name ] = this.extend( deep, clone, copy );
-							} else if ( copy !== undefined ) {
-								target[ name ] = copy;
-							}
-						}
-					}
-				}
-			
-				return target;
-		},
-		&#x2F;**
-		 * 得到对象的属性集合
-		 * @method keys
-		 * @param target {Object} 目标对象
-		 * @return {Array}
-		 *&#x2F;
-		keys: function (target) {
-			var keys = [];
-			for(key in target){
-				if(target.hasOwnProperty(key)){
-					keys.push(key);
-				}
-			}
-			return keys
-		}
-	};
-	var isPlainObject = function( obj ) {
-		if (!obj || !KolaClass.isObject(obj) || obj.nodeType) {
-			return false;
-		}
 
-		if ( obj.constructor &amp;&amp;
-			!obj.hasOwnProperty(&quot;constructor&quot;) &amp;&amp;
-			!obj.constructor.prototype.hasOwnProperty(&quot;isPrototypeOf&quot;) ) {
-			return false;
-		}
 
-		var key;
-		for (key in obj) {}
+<div class="box intro">
+    
+</div>
 
-		return key === undefined || obj.hasOwnProperty(key);
-	}
-	return exports;
-});
-    </pre>
+
+
+<div class="yui3-g">
+    <div class="yui3-u-1-2">
+        
+            <p>This module provides the following classes:</p>
+
+            <ul class="module-classes">
+            
+                <li class="module-class">
+                    <a href="..&#x2F;classes/Browser.html">
+                        Browser
+                    </a>
+                </li>
+            
+            </ul>
+        
+    </div>
+
+    <div class="yui3-u-1-2">
+        
+    </div>
 </div>
 
                     </div>

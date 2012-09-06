@@ -18,10 +18,10 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
-
+	<textarea id="area1" maxlength="30">foobar</textarea>
 	<!-- Test HTML -->
 	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
-		<div id="nothiddendivchild"></div>
+		<div id="nothiddendivchild">123</div>
 	</div>
 	<!-- this iframe is outside the #qunit-fixture so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
@@ -57,7 +57,7 @@
 
 			<button id="button" name="button" type="button">Button</button>
 
-			<textarea id="area1" maxlength="30">foobar</textarea>
+			
 
 			<select name="select1" id="select1">
 				<option id="option1a" class="emptyopt" value="">Nothing</option>
@@ -282,6 +282,10 @@
 				var htmlCollection = document.getElementById("moretests").children;
 				testCase(q($(htmlCollection),["form11","nonnodes","t2037","t6652","no-clone-exception"]),"由HTMLCollection生成kolaElement")
 			});
+			test("使用字符串生成KolaElement",function(testCase){
+				var disDom=$("<div></div>");
+				testCase(disDom.find("div").length,"");
+			});
 			test("add",function(testCase){
 				var org = $("div p");
 				org.add($("#ap"));
@@ -296,6 +300,7 @@
 				org.remove($("p"));
 				testCase(q(org, []),"多个");
 			});
+			//////////////////////////////////////////////////////////////////////////////////////////
 			test("attr",function(testCase){
 				var adom = $(document.getElementById("firstp"));
 				testCase(adom.attr('id') == 'firstp' , 'ID 属性');
@@ -310,11 +315,39 @@
 				testCase($('img').attr('src') == '123.gif', 'img src 属性');
 			});
 			test("prop",function(testCase){
-				var adom = $(document.getElementById("firstp"));
+				var adom = $("#firstp");
 				testCase(adom.prop('id') == 'firstp' , 'ID 属性');
 				testCase(adom.attr('name') == undefined , 'name 属性');
 				adom.attr('name', 'nono')
 			});
+			test("class",function(testCase){
+				var adom = $("#nothiddendiv");
+				testCase(adom.css('nothiddendiv') == true , '取得class');
+				adom.css('nothiddendiv', false);
+				testCase(adom.css('nothiddendiv') == false , '删除class');
+				adom.css('mclsss', true);
+				testCase(adom.css('mclsss') == true , '添加class');
+				adom.css('m2clsss', true);
+				adom.css('mclsss', true);
+				testCase(adom.css('mclsss') == true , '添加class');
+				testCase(adom.css('m2clsss') == true , '添加class');
+			});
+			test("style",function(testCase){
+				var adom = $("#nothiddendiv");
+				testCase(adom.style('display') == 'block' , '取得style');
+				adom.style('display', 'inline');
+				testCase(adom.style('display') == 'inline' , '设置style');
+				adom.style('display', undefined);
+				testCase(adom.style('display') == 'block' , '删除style');
+			});
+			test("data",function(testCase){
+				var adom = $("#nothiddendiv");
+				adom.data('data', 'inline');
+				testCase(adom.data('data') == 'inline' , '设置data');
+				adom.data('data', undefined);
+				testCase(adom.data('data') == undefined , '删除data');
+			});
+			//////////////////////////////////////////////////////////////////////////////////////
 			test("find",function(testCase){
 				testCase(q($("div").find("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
 				testCase(q($("#select1").find("select"), ["select1"]), "包括自己")
@@ -322,6 +355,77 @@
 			test("descendants",function(testCase){
 				testCase(q($("div").descendants("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
 				testCase(q($("#select1").descendants("select"), []), "不包括自己")
+			});
+			test("closest",function(testCase){
+				testCase(q($("#label-for").closest("div"), ["qunit-fixture"]), "")
+			});
+			test("parent",function(testCase){
+				testCase(q($("#firstp").parent(), ["qunit-fixture"]), "")
+			});
+			test("parents",function(testCase){
+				testCase(q($("#label-for").closest("div"), ["qunit-fixture"]), "")
+			});
+			test("prev",function(testCase){
+				testCase(q($("#hidden1").prev(":radio"), ["radio2"]), "")
+			});
+			test("next",function(testCase){
+				testCase(q($("#hidden1").next("object"), ["object1"]), "")
+			});
+			//////////////////////////////////////////////////////////////////////////////////////
+			test("val",function(testCase){
+				$("#area1").val('123');
+				testCase($("#area1").val() == "123", "设置");
+			});
+			test("html",function(testCase){
+				testCase($("#nothiddendivchild").html() == "123", "读取");
+				$("#nothiddendivchild").html('123<a>456</a>78');
+				testCase($("#nothiddendivchild").find('a').length == 1, "设置");
+			});
+			test("text",function(testCase){
+				testCase($("#nothiddendivchild").text() == "12345678", "读取");
+				$("#nothiddendivchild").text("<a>123</a>");
+				testCase($("#nothiddendivchild").text() == "<a>123</a>", "设置");
+			});
+			test("outerHtml",function(testCase){
+				var dom = $("#nothiddendivchild");
+				testCase(dom.outerHtml().toLowerCase() == '<div id="nothiddendivchild">&lt;a&gt;123&lt;/a&gt;</div>', "读取");
+				dom.outerHtml('<h3 id="nothiddendivchild">h3</h3>');
+				testCase(dom.is("h3"));
+			});
+			test("event",function(testCase){
+				var dom = $("#foo");
+				var event = function(){
+					clciked = true;
+					testCase(true, "添加和触发事件");
+				}
+				dom.on("click", event);
+				dom.fire("click");
+				dom.off("click", event);
+				var clciked = false
+				dom.fire("click");
+				testCase(!clciked, "移除事件");
+
+				var scope = {a: '123'}
+				dom.on("click", function(e){
+					testCase(this.a == '123', "绑定作用域");
+					clciked = true;
+					dom.off("click", arguments.callee);
+				}, {scope: scope});
+				dom.fire("click");
+				clciked = false
+				dom.fire("click");
+				testCase(!clciked, "移除带scope事件");
+
+				var fireTimes = 0;
+				var outDom = $("#nothiddendiv");
+				var inDom =$("#nothiddendivchild");
+				outDom.mouseenter(function(){
+					testCase(true, "mouseenter");
+					fireTimes++;
+				})
+				inDom.fire("mouseover");
+				outDom.fire("mouseover");
+				testCase(fireTimes == 1, "mouseenter");
 			});
 		});
 	</script>
