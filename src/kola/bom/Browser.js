@@ -1,7 +1,7 @@
 /**
- * @fileOverview kola.bom.Browser 浏览器支持类
+ * @kola.bom.Browser 浏览器支持类
  * @author Jady Yang
- * @version 2.0.0
+ * @module kola.bom
  */
  
 kola('kola.bom.Browser',[
@@ -37,7 +37,12 @@ kola('kola.bom.Browser',[
 			version = parseInt( agent.substr( agent.indexOf( 'Presto' ) + 7, 3 ) );
 			break;
 	}
-
+	/**
+	 * kola的事件分发器接口
+	 * 
+	 * @class Browser
+	 * @static
+	 */
 	return {
 		/**
 		* 获取渲染内核模式
@@ -81,55 +86,6 @@ kola('kola.bom.Browser',[
 		* @property Gecko
 		* @type {Boolean}
 		*/
-		Gecko : (render=='gecko'),
-		/**
-		* 获取浏览器名称
-		* @method name
-		* @return {String} qq|maxthon|ie|chrome|safari|firefox|opera|unkown(360、遨游)
-		*/
-		name: function() {
-			var agent = navigator.userAgent,
-				value;
-
-			switch ( this.render ) {
-				case 'ie':
-					if ( agent.indexOf( 'QQBrowser' ) != -1 ) {
-						value = 'qq';
-					} else if ( agent.indexOf( 'Maxthon' ) != -1 ) {
-					    value = 'maxthon';
-					} else if ( agent.indexOf( 'SE') != -1 && agent.indexOf( 'MetaSr') != -1 ) {
-						value = 'sogou';
-					} else {
-						//	该模式下无法识别出360
-						value = 'ie';
-					}
-					break;
-				case 'webkit':
-					if ( agent.indexOf( 'Chrome' ) != -1 ) {
-						value = 'chrome';
-					} else if ( agent.indexOf( 'QQBrowser' ) != -1 ) {
-						value = 'qq';
-					} else if ( agent.indexOf( 'Maxthon' ) != -1 ) {
-					    value = 'maxthon';
-					} else if ( agent.indexOf( 'SE') != -1 && agent.indexOf( 'MetaSr') != -1 ) {
-						value = 'sogou';
-					} else if ( agent.indexOf( 'Version') != -1 && agent.indexOf( 'Safari') != -1 ) {
-						value = 'safari';
-					} else {
-						//	该模式下无法识别出360、遨游
-						value = 'unkown';
-					}
-					break;
-				case 'gecko':
-				    value = 'firefox';
-					break;
-				case 'Presto':
-					value = 'opera';
-					break;
-			}
-
-			this.name = KolaFunction.value( value );
-			return value;
-		}
+		Gecko : (render=='gecko')
 	};
 });

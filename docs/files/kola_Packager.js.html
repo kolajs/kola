@@ -43,9 +43,15 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
+                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
+            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
+                <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
+            
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+            
+                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -60,6 +66,12 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.html.html">kola.html</a></li>
             
                 <li><a href="..&#x2F;modules/kola.lang.html">kola.lang</a></li>
             
@@ -116,6 +128,11 @@ window.kola = (function(kola) {
 	 ********************************************************************&#x2F;
 	
 	&#x2F;**
+	 * Array原生的slice方法
+	 *&#x2F;
+	var slice = Array.prototype.slice;
+	
+	&#x2F;**
 	 * 创建一个新的空方法
 	 *&#x2F;
 	var newEmptyFunction = function() {
@@ -126,12 +143,9 @@ window.kola = (function(kola) {
 	 * 给方法绑定一个作用域
 	 *&#x2F;
 	var bindScope = function(fn, scope) {
-		var args = [];
-		for (var i = 2, il = arguments.length; i &lt; il; i++) {
-			args.push(arguments[i]);
-		}
+		var args = slice.call(arguments, 2);
 		return function() {
-			return fn.apply(scope, args.concat(toArray(arguments)));
+			return fn.apply(scope, args.concat(slice.call(arguments)));
 		};
 	};
 			
@@ -144,17 +158,6 @@ window.kola = (function(kola) {
 			return string.replace(reg, &#x27;&#x27;);
 		};
 		return trimAll(string);
-	};
-	
-	&#x2F;**
-	 * 把一个类数组变成数组
-	 *&#x2F;
-	var toArray = function(arraible) {
-		var newArray = [];
-		for (var i = 0, il = arraible.length; i &lt; il; i++) {
-			newArray.push(arraible[i]);
-		}
-		return newArray;
 	};
 	
 	&#x2F;**
@@ -341,7 +344,7 @@ window.kola = (function(kola) {
 	 *&#x2F;
 	var createAopedFunc = function(fn, aop) {
 		return function() {
-			var args = toArray(arguments);
+			var args = slice.call(arguments);
 			
 			&#x2F;&#x2F;	如果存在调用前的方法，那就调用之
 			var before = aop.before;

@@ -43,9 +43,15 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
+                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
+            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
+                <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
+            
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+            
+                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -60,6 +66,12 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.html.html">kola.html</a></li>
             
                 <li><a href="..&#x2F;modules/kola.lang.html">kola.lang</a></li>
             
@@ -103,112 +115,126 @@
 <div class="file">
     <pre class="code prettyprint linenums">
 &#x2F;**
- * @fileOverview kola.event.Dispatcher 事件分发者
+ * kola.event.Dispatcher 包, 事件分发者
  * @author Guan Yuxin
- * @version 2.0.0
+ * @module kola.event
  *&#x2F;
 
 
 kola(&#x27;kola.event.Dispatcher&#x27;,[
-    &#x27;kola.lang.Class&#x27;,
-    &#x27;kola.lang.Object&#x27;,
-    &#x27;kola.lang.Array&#x27;
+	&#x27;kola.lang.Class&#x27;,
+	&#x27;kola.lang.Object&#x27;,
+	&#x27;kola.lang.Array&#x27;
 ],function(KolaClass,KolaObject,A) {
 	&#x2F;********************************************** 类定义 **********************************************&#x2F;
+	&#x2F;**
+	 * kola的事件分发器接口
+	 * 
+	 * @class Dispatcher
+	 * 
+	 *&#x2F;
 	var Dispatcher=KolaClass({
 		_init: function() {
 		},
 
 		&#x2F;**
 		 * 监听某个事件
-		 * @param {String} name 事件名称
-		 * @param {Function} listener 监听者
-         * @param {Object} option
+		 * @method on
+		 * @param name {String} 事件名称
+		 * @param listener {Function} 监听者
+		 * @param [option] {Object}
+		 * 	@param [option.scope] {Object} 回调函数的执行作用域
+		 * 	@param [option.data] {Object} 回调时的额外数据
 		 *&#x2F;
 		on: function(name,listener,option) {
-            if(!this._obverver)
-                this._obverver={};
-            if(!this._obverver[name])
-                this._obverver[name]=[];
-            this._obverver[name].push({listener:listener,option:option||{}});
+			if(!this._obverver)
+				this._obverver={};
+			if(!this._obverver[name])
+				this._obverver[name]=[];
+			this._obverver[name].push({listener:listener,option:option||{}});
 		},
 
 		&#x2F;**
 		 * 取消对某个事件的监听
+		 * @method off
 		 * @param {String} name 事件名称
 		 * @param {Function} listener 监听者
 		 *&#x2F;
 		off: function(name, listener) {
-            if(!this._obverver || !this._obverver[name])    return;
-            if(!listener)
-                this._obverver[name]=[];
-            else{
-                for(var i=0;i&lt;this._obverver[name].length;i++){
-                    if(this._obverver[name][i].listener==listener)
-                        break;
-                }
-                if(i!=this._obverver[name].length)
-                    this._obverver[name].splice(i,1);
-            }
+			if(!this._obverver || !this._obverver[name])    return;
+			if(!listener)
+				this._obverver[name]=[];
+			else{
+				for(var i=0;i&lt;this._obverver[name].length;i++){
+					if(this._obverver[name][i].listener==listener)
+						break;
+				}
+				if(i!=this._obverver[name].length)
+					this._obverver[name].splice(i,1);
+			}
 		},
 
 		&#x2F;**
 		 * 触发某个事件
-		 * @param {String} name 事件名称
-		 * @param {Object} e 事件对象
+		 * @method fire
+		 * @param name {String} 事件名称
+		 *&#x2F;
+		 &#x2F;**
+		 * 触发某个事件
+		 * @method fire
+		 * @param e {Object} 事件对象
 		 *&#x2F;
 		fire: function(e) {
 
-            if(KolaObject.isString(e)){
-                e={
-                    type:e
-                }
-            }
-            e.target=this;
-            
-            if(this._obverver){
-                var instanceObserver=this._obverver[e.type];
-                if(instanceObserver){
-                    for(var i=0;i&lt;instanceObserver.length;i++){
-                        var ob=instanceObserver[i];
-                        ob.listener.call(ob.option.scope||this,e);
-                    }
-                }
-            }
-            if(this.constructor.fire)
-                this.constructor.fire(e)
+			if(KolaObject.isString(e)){
+				e={
+					type:e
+				}
+			}
+			e.target=this;
+			
+			if(this._obverver){
+				var instanceObserver=this._obverver[e.type];
+				if(instanceObserver){
+					for(var i=0;i&lt;instanceObserver.length;i++){
+						var ob=instanceObserver[i];
+						ob.listener.call(ob.option.scope||this,e);
+					}
+				}
+			}
+			if(this.constructor.fire)
+				this.constructor.fire(e)
 		}
 	});
-    Dispatcher._obverver={};
+	Dispatcher._obverver={};
 	Dispatcher.fire=function(e){
-        var instanceObserver=this._obverver[e.type];
-        if(instanceObserver){
-            for(var i=0,il=instanceObserver.length;i&lt;il;i++){
-                var ob=instanceObserver[i];
-                ob.listener.call(ob.option.scope||this,e);
-            }
-        }
-    }
-    Dispatcher.on=function(name,listener,option){
-        if(!this._obverver[name])
-            this._obverver[name]=[];
-        this._obverver[name].push({listener:listener,option:option||{}});
-    }
-    Dispatcher.off=function(name,listener){
-        if(!this._obverver || !this._obverver[name])    return;
-        if(!listener)
-            this._obverver[name]=[];
-        else{
-            for(var i=0;i&lt;this._obverver[name].length;i++){
-                if(this._obverver[name][i].listener==listener)
-                    break;
-            }
-            if(i!=this._obverver[name].length)
-                this._obverver[name].splice(i,1);
-        }
-    }
-    Dispatcher.__GENE=[&quot;_obverver&quot;,&quot;on&quot;,&quot;off&quot;,&quot;fire&quot;];
-    return Dispatcher
+		var instanceObserver=this._obverver[e.type];
+		if(instanceObserver){
+			for(var i=0,il=instanceObserver.length;i&lt;il;i++){
+				var ob=instanceObserver[i];
+				ob.listener.call(ob.option.scope||this,e);
+			}
+		}
+	}
+	Dispatcher.on=function(name,listener,option){
+		if(!this._obverver[name])
+			this._obverver[name]=[];
+		this._obverver[name].push({listener:listener,option:option||{}});
+	}
+	Dispatcher.off=function(name,listener){
+		if(!this._obverver || !this._obverver[name])    return;
+		if(!listener)
+			this._obverver[name]=[];
+		else{
+			for(var i=0;i&lt;this._obverver[name].length;i++){
+				if(this._obverver[name][i].listener==listener)
+					break;
+			}
+			if(i!=this._obverver[name].length)
+				this._obverver[name].splice(i,1);
+		}
+	}
+	return Dispatcher
 });
     </pre>
 </div>

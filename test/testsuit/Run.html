@@ -71,6 +71,7 @@
 			box-shadow: 1px 1px 3px black;
 		}
 		.warpper{
+			margin: 0px;
 			cursor: pointer;
 			display: inline-block;
 			position: relative;
@@ -139,9 +140,6 @@
 			}
 			window.onNewError = function(messageObject){
 				$(".errorMessage").append('<div>' + messageObject.message + '<div class="lineNum">' + messageObject.lineNumber + '</div></div>');
-			}
-			document.body.onresize = function(){
-				console.log("sdsf");
 			}
 			$('button').click(function(){
 				for(var i=0; i<cases.length; i++){

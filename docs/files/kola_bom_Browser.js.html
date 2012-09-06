@@ -43,9 +43,15 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
+                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
+            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
+                <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
+            
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+            
+                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -60,6 +66,12 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.html.html">kola.html</a></li>
             
                 <li><a href="..&#x2F;modules/kola.lang.html">kola.lang</a></li>
             
@@ -103,9 +115,9 @@
 <div class="file">
     <pre class="code prettyprint linenums">
 &#x2F;**
- * @fileOverview kola.bom.Browser 浏览器支持类
+ * @kola.bom.Browser 浏览器支持类
  * @author Jady Yang
- * @version 2.0.0
+ * @module kola.bom
  *&#x2F;
  
 kola(&#x27;kola.bom.Browser&#x27;,[
@@ -141,7 +153,12 @@ kola(&#x27;kola.bom.Browser&#x27;,[
 			version = parseInt( agent.substr( agent.indexOf( &#x27;Presto&#x27; ) + 7, 3 ) );
 			break;
 	}
-
+	&#x2F;**
+	 * kola的事件分发器接口
+	 * 
+	 * @class Browser
+	 * @static
+	 *&#x2F;
 	return {
 		&#x2F;**
 		* 获取渲染内核模式
@@ -232,7 +249,7 @@ kola(&#x27;kola.bom.Browser&#x27;,[
 					break;
 			}
 
-			this.name = KolaFunction.value( value );
+			this.name = KolaFunction.value(value);
 			return value;
 		}
 	};

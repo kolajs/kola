@@ -32,7 +32,7 @@ Element Display
 //////////////////////////////////////////////////////////////////////////
 Tree test
 	is()															OK
-	contains()														OK
+	contains()														OK 
 	index()															OK
 Tree travel:
 	parent()														OK

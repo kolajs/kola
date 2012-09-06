@@ -1,4 +1,5 @@
 (function(){
+	var runningcase = null;
 	function getNewCase(name, _run, asyn){
 		var newCase = function(value, why){
 			test.call(newCase, value, why)
@@ -48,11 +49,11 @@
 			iframe.style.cssText = "margin:0;width:100%;border:1px solid black"
 			iframe.src = src.replace("testSuit.js","Run.html");
 			setTimeout(function(){
-				document.body.appendChild(iframe);
+				document.body.insertBefore(iframe, document.body.firstChild);
 				setTimeout(function(){
 					targetWindow = iframe.contentWindow;
-				});
-			});
+				},10);
+			},10);
 			
 		}
 	}
@@ -63,12 +64,9 @@
 	var run = function(){
 		this.status = 'testing';
 		statusChange.call(this);
-		try{
-			this._run(this);
-		}catch(e){
-			fail.call(this, 'Exception:' + e.message);
-			throw e;
-		}
+		runningcase = this;
+		this._run(this);
+		runningcase = null;
 		if(!this.asyn){
 			this.end()
 		}
@@ -100,6 +98,9 @@
 	}
 	window.testCases.errorBox=[];
 	window.onerror = function(txt,line,no){
+		if(runningcase){
+			fail.call(runningcase, 'Exception:' + txt);
+		}
 		var errorObject = {
 			message:txt,
 			lineNumber:no
