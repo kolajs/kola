@@ -812,7 +812,7 @@ kola('kola.html.Element',[
 		 * @chainable
 		 */
 		hide:function(){
-			return this.addClass("___Kola___Hidden");
+			return this.css("___Kola___Hidden", true);
 		},
 		
 		/**
@@ -821,7 +821,7 @@ kola('kola.html.Element',[
 		 * @chainable
 		 */
 		show:function(){
-			return this.removeClass("___Kola___Hidden");
+			return this.css("___Kola___Hidden", false);
 		},
 
 		outerHtml: function(value){
@@ -884,7 +884,7 @@ kola('kola.html.Element',[
 	//first
 	KolaArray.forEach('bound,height,width,clientPos,pagePos,pos,index,is'.split(','),function(functionName){
 		exports.prototype[functionName] = function(value){
-			if(this.length == 0)
+			if(!this[0] || this[0].nodeType != 1)
 				return;
 			return Operation[functionName].call(this, this[0], value);
 		}
@@ -912,7 +912,11 @@ kola('kola.html.Element',[
 		exports.prototype[functionName] = function(p0, p1){
 			var results = [];
 			for(var i = 0; i < this.length; i++){
-				results = results.concat(Operation[functionName].call(this, this[i], p0, p1));
+				var res = Operation[functionName].call(this, this[i], p0, p1);
+				if(KolaClass.isArray(res))
+					results = results.concat(res);
+				else if(res)
+					results.push(res);
 			}
 			return new exports(unique(results));
 		}
