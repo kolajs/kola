@@ -4,9 +4,7 @@
  * @module kola.bom
  */
  
-kola('kola.bom.Browser',[
-	'kola.lang.Function'
-],function(KolaFunction) {
+kola('kola.bom.Browser', null, function() {
 	var agent = navigator.userAgent,
 		render,version;
 

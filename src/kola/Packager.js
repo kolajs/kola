@@ -887,7 +887,6 @@ window.kola = (function(kola) {
 	 * @for window
 	 * @param config {Object} 设置对象
 	 */
-	// TODO: 还未解决循环依赖问题
 	// TODO: 还未增加对lib和版本的支持
 	kola = function() {
 		var args = arguments,
