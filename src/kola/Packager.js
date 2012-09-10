@@ -415,9 +415,9 @@ window.kola = (function(kola) {
 		 */
 		afterComplete: function(callback) {
 			// 如果已经完成，则直接调用
-			if(this._status == PackageStatus.complete){
+			if (this._status == PackageStatus.complete){
 				callback();
-			}else{//需先完成后再去调用
+			} else {//需先完成后再去调用
 				// 这是监听包的可用状态
 				this._wanted = true;
 				
