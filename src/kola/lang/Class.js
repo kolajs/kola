@@ -59,6 +59,9 @@ kola('kola.lang.Class', [
 	 * @param target {Object} 目标对象
 	 * @return {Boolean}
 	 */
+	// FIXME: isObject需要确定，你认为什么是object？使用者认为什么是object？你跟使用者认为的是否一致？是否会产生歧义？
+	// FIXME: 没有考虑为null的情况，null在ie低版本下会认为是 [object Object]，其他情况会认为是[object Null]
+	// FIXME: 还有很多种情况，比如 document.toString是 [object HTMLDocument]（非IE低版本浏览器）等等，尤其是在对象为dom的情况下
 	exports.isObject = function (target) {
 		return (eye.call(target) == "[object Object]");
 	};

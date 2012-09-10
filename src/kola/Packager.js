@@ -444,8 +444,7 @@ window.kola = (function(kola) {
 			var args = [];
 			var dependence = this._dependence
 			for (var i = 0, il = dependence.length; i < il; i++) {
-				var object = Packager._package(dependence[i]).complete();
-				
+				var object = Packager._package(dependence[i]).complete();				
 				// 如果存在插件的话，那就生成加入插件的包
 				var plugin = dependence['_' + i];
 				if (plugin) {
