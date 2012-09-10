@@ -389,7 +389,7 @@ kola('kola.html.Element',[
 		 * @return {KolaElement} 新的元素集合
 		 */
 		children: traveller(function (targetElement, selector) {
-			return Selector.match(selector, Array.prototype.slice.call(targetElement.children));
+			return Selector.matches(selector, Array.prototype.slice.call(targetElement.children));
 		}),
 		/**
 		 * 得到元素以及元素内部符合条件的元素集合
@@ -768,7 +768,7 @@ kola('kola.html.Element',[
 		each: function (callback) {
 			//	使用迭代器循环每个元素
 			for(var i = 0, il = this.length; i < il; i++){
-				callback.call(this, new exports(this[i]), i);
+				callback.call(this, new exports([this[i]]), i);
 			}
 			return this;
 		},
