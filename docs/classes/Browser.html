@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Function - kola</title>
+    <title>Browser - kola</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -110,7 +110,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Function Class</h1>
+                        <h1>Browser Class</h1>
 <div class="box meta">
     
 
@@ -118,13 +118,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;kola_lang_Function.js.html#l9"><code>kola\lang\Function.js:9</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l40"><code>kola\bom\Browser.js:40</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/kola.lang.html">kola.lang</a>
+            Module: <a href="../modules/kola.bom.html">kola.bom</a>
         
     
 
@@ -134,7 +134,7 @@
 
 
 <div class="box intro">
-    <p>kola的Function类</p>
+    <p>kola的事件分发器接口</p>
 </div>
 
 
@@ -164,14 +164,7 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method">
-                                <a href="#method_bind">bind</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_value">value</a>
+                                <a href="#method_name">name</a>
 
                                 
                                 
@@ -188,7 +181,49 @@
                     <ul class="index-list properties">
                         
                             <li class="index-item property">
-                                <a href="#property_empty">empty</a>
+                                <a href="#property_Gecko">Gecko</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_IE">IE</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_IE6">IE6</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_IEStyle">IEStyle</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_render">render</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_renderVersion">renderVersion</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_Webkit">Webkit</a>
 
                                 
                                 
@@ -208,38 +243,16 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_bind" class="method item">
-    <h3 class="name"><code>bind</code></h3>
+                    <div id="method_name" class="method item">
+    <h3 class="name"><code>name</code></h3>
 
     
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>target</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>scope</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[bindArgs]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
+        <span class="paren">()</span>
     
 
     
         <span class="returns-inline">
-            <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+            <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
         </span>
     
 
@@ -266,7 +279,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Function.js.html#l18"><code>kola\lang\Function.js:18</code></a>
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l90"><code>kola\bom\Browser.js:90</code></a>
         
         </p>
 
@@ -277,65 +290,9 @@
     </div>
 
     <div class="description">
-        <p>给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前</p>
+        <p>获取浏览器名称</p>
     </div>
 
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">target</code>
-                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>被绑定的方法</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">scope</code>
-                        <span class="type">Any</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>方法执行时的this</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[bindArgs]</code>
-                        <span class="type">Any</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
-                    
-
-                    <div class="param-description">
-                        <p>要绑定的参数</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
     
@@ -345,112 +302,9 @@
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>:
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>:
                     
-                    创建的新Function
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_value" class="method item">
-    <h3 class="name"><code>value</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>value</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;kola_lang_Function.js.html#l50"><code>kola\lang\Function.js:50</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>创建一个新方法，返回指定的值</p>
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">value</code>
-                        <span class="type">Any</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>要返回的值</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>:
-                    
+                    qq|maxthon|ie|chrome|safari|firefox|opera|unkown(360、遨游)
                 
             </div>
         </div>
@@ -468,9 +322,9 @@
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_empty" class="property item">
-    <h3 class="name"><code>empty</code></h3>
-    <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                    <div id="property_Gecko" class="property item">
+    <h3 class="name"><code>Gecko</code></h3>
+    <span class="type">Boolean</span>
 
     
 
@@ -491,7 +345,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Function.js.html#l41"><code>kola\lang\Function.js:41</code></a>
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l84"><code>kola\bom\Browser.js:84</code></a>
         
         </p>
 
@@ -501,7 +355,271 @@
     </div>
 
     <div class="description">
-        <p>可被全局使用的空函数</p>
+        <p>浏览器是否为Gecko内核</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_IE" class="property item">
+    <h3 class="name"><code>IE</code></h3>
+    <span class="type">Boolean</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l60"><code>kola\bom\Browser.js:60</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>浏览器是否为ie内核</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_IE6" class="property item">
+    <h3 class="name"><code>IE6</code></h3>
+    <span class="type">Boolean</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l66"><code>kola\bom\Browser.js:66</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>浏览器是否为ie6内核</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_IEStyle" class="property item">
+    <h3 class="name"><code>IEStyle</code></h3>
+    <span class="type">Boolean</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l72"><code>kola\bom\Browser.js:72</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>浏览器是否为ie6~8内核</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_render" class="property item">
+    <h3 class="name"><code>render</code></h3>
+    <span class="type">String ie | Webkit | Gecko | Presto | Unkown</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l47"><code>kola\bom\Browser.js:47</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>获取渲染内核模式</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_renderVersion" class="property item">
+    <h3 class="name"><code>renderVersion</code></h3>
+    <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l53"><code>kola\bom\Browser.js:53</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>获取渲染内核版本</p>
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_Webkit" class="property item">
+    <h3 class="name"><code>Webkit</code></h3>
+    <span class="type">Boolean</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_bom_Browser.js.html#l78"><code>kola\bom\Browser.js:78</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>浏览器是否为Webkit内核</p>
     </div>
 
     
