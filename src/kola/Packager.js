@@ -335,15 +335,13 @@ window.kola = (function(kola) {
 		 */
 		loaded: function(creator, dependence) {
 			this._creator = creator;
-			if (dependence !== null) {
-				this._dependence = dependence;
-			}
+			this._dependence = dependence;
 			
 			// 设置为加载完成状态
 			this.status(PackageStatus.loaded);
 			
 			// 加载完成后的，需要考虑是否自动加载依赖项
-			if (this._wanted || dependence === null) {
+			if (this._wanted) {
 				this.depending();
 			}
 		},
@@ -358,13 +356,78 @@ window.kola = (function(kola) {
 			this.status(PackageStatus.depending);
 
 			var dependence = this._dependence;
-			if (dependence) {
+			if (dependence.length) {
 				// 如果有依赖包，那就加载之
-				Packager.use(dependence, this.complete, this);
+				var following = dependence.concat(dependence.plugin);
+				
+				// 创建一个完成后的回调方法
+				var countdown = CountDown(following.length, this.interactive, this)
+				// 循环每个依赖包，监听其complete事件
+				for (var i = 0, il = following.length; i < il; i++) {
+					Packager._package(following[i]).interactive(countdown);
+				}
 			} else {
 				// 没有依赖包，那就直接进入可用状态
-				this.complete();
+				this.interactive();
 			}
+			return this;
+		},
+		/**
+		 * 其他包需要该包为interactive状态
+		 * 
+		 * @param listener {Function} 包可用后的回调方法
+		 * @chainable
+		 */
+		/**
+		 * 依赖包加载完成
+		 * 
+		 * @private
+		 * @chainable
+		 */
+		interactive: function(listener) {
+			if(arguments.length == 0){
+				// 设置状态为可用状态
+				this.status(PackageStatus.interactive);
+
+				// 如果有等待者的话，那就通知之
+				var demander = this._demander;
+				if (demander) {
+					// 循环每个回调，依次执行之
+					var callback;
+					while (callback = demander.shift()) {
+						callback();
+					}
+					
+					// 清除
+					delete this._demander;
+				}
+				
+				if (this._wanted){
+					this.complete();
+				}
+			}else{
+				// 监听其interactive事件
+				if (this._status >= PackageStatus.interactive) {
+					//如果已经完成，直接成功
+					listener();
+				}else{
+					// 这是监听包的可用状态
+					this._wanted = true;
+					
+					// 把可用后的回调方法放到排队表中
+					(this._demander || (this._demander = [])).push(listener);
+
+					if(this._status == PackageStatus.uninitialized){
+						// 如果是未初始化状态，那就需要开始加载
+						this.loading();	
+					}else if(this._status == PackageStatus.loaded){
+						// 如果处于加载完成状态，那就开始加载依赖包
+						this.depending();
+					}
+					// 其他状态（加载中）则无需其他处理
+				}
+			}
+			return this;	
 		},
 		/**
 		 * 设置当前包为可用状态
@@ -372,74 +435,44 @@ window.kola = (function(kola) {
 		 * @param [package]* {Any} 依赖包
 		 * @return {Function} 生成的可用回调方法
 		 */
-		complete: function() {
-			// 设置当前包为完成状态
-			
-			// FIXME: 临时的输出语句
-			if (this._status == PackageStatus.complete) {
-				throwError('重复将包' + this._name + '置为可用状态');
+		complete: function() {// 设置当前包为完成状态
+			if(this._status == PackageStatus.complete){
+				return this._creator;
 			}
-					
 			// 获取包的实体内容
-			this._creator = this._creator.apply(window, arguments);
+			// 轮询所有的包，获取包的内容
+			var args = [];
+			var dependence = this._dependence
+			for (var i = 0, il = dependence.length; i < il; i++) {
+				var object = Packager._package(dependence[i]).complete();
+				
+				// 如果存在插件的话，那就生成加入插件的包
+				var plugin = dependence['_' + i];
+				if (plugin) {
+					// 获取每个插件的实体内容
+					for (var j = 0, jl = plugin.length; j < jl; j++) {
+						plugin[j] = Packager._package(plugin[j]).complete();
+					}
+					
+					// 增加基类和methods
+					plugin.unshift(object);	// 基类
+					
+					// 生成新的类
+					object = newPluginJoinedClass.apply(window, plugin);
+				}
+				
+				args.push(object);
+			}
+			
+			this._creator = this._creator.apply(this.execScope || window, args);
 			
 			// 设置状态为完成状态
 			this.status(PackageStatus.complete);
-			
-			// 如果有等待者的话，那就通知之
-			var demander = this._demander;
-			if (demander) {
-				// 循环每个回调，依次执行之
-				var callback;
-				while (callback = demander.shift()) {
-					callback();
-				}
-				
-				// 清除
-				delete this._demander;
-			}
-			
-			return this;
-			
 			// 清除不必要的属性
 			delete this._dependence;
 			delete this._wanted;
-			
-			return this;
-		},
-		/**
-		 * 当包处于可用状态时，回调该方法
-		 * 
-		 * @param callback {Function} 包可用后的回调方法
-		 * @chainable
-		 */
-		afterComplete: function(callback) {
-			// 如果已经完成，则直接调用
-			if(this._status == PackageStatus.complete){
-				callback();
-			}else{//需先完成后再去调用
-				// 这是监听包的可用状态
-				this._wanted = true;
-				
-				// 把可用后的回调方法放到排队表中
-				(this._demander || (this._demander = [])).push(callback);
-				
-				// 根据不同的状态，执行不同的操作
-				switch (this._status) {
-					
-					// 如果是未初始化状态，那就需要开始加载
-					case PackageStatus.uninitialized:
-						this.loading();
-						break;
-					
-					// 如果处于加载完成状态，那就开始加载依赖包
-					case PackageStatus.loaded:
-						this.depending();
-						break;	
-					// 其他状态（加载中、待用）则无需其他处理
-				}
-			}			
-			return this;
+
+			return this._creator;
 		},
 		/**
 		 * 获取包的实体内容
@@ -474,7 +507,6 @@ window.kola = (function(kola) {
 		}
 		
 	});	
-
 	/**
 	 * 文件加载失败的调用方法
 	 * 
@@ -538,34 +570,7 @@ window.kola = (function(kola) {
 		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
 		 * @chainable
 		 */
-		define: function(name, dependence, creator) {
-			// 如果包早已加载完成，那则不做处理
-			var packageObj = Packager._package(name);
-			if (packageObj.status() >= PackageStatus.loaded) return;
-			
-			// 把dependence转化为数组或者字符串
-			switch (typeof dependence) {
-				case 'string':
-					// 一个依赖包
-					dependence = [dependence];
-					break;
-				case 'object':
-					if (dependence !== null && dependence.length) {
-						// 一个或多个依赖包
-						break;
-					}
-				default:
-					// 没有依赖包
-					dependence = null;
-			}
-			
-			// 设置当前包加载成功
-			packageObj.loaded(creator, dependence);
-			
-			return Packager;
-		},
-		
-		/**
+		 /**
 		 * 使用某些包执行某个方法
 		 * 
 		 * @method use
@@ -574,20 +579,32 @@ window.kola = (function(kola) {
 		 * @param [scope] {Any} 回调方法的作用域
 		 * @chainable
 		 */
-		use: function(packages, callback, scope) {
-			// packages都变成数组格式
-			packages = typeof packages == 'string' ? [packages] : packages.concat();
-			packages = parsePackages(packages);
-			var following = packages.concat(packages.plugin);
-			packages.unavilable = following.length;	// 无效包的个数
-			
-			// 创建一个完成后的回调方法
-			var completeListener = createPackageCompleteListener(packages, callback, scope);
-			
-			// 循环每个依赖包，监听其complete事件
-			for (var i = 0, il = following.length; i < il; i++) {
-				Packager._package(following[i]).afterComplete(completeListener);
+		define: function(name, dependence, creator, scope, wanted) {
+			// 如果包早已加载完成，那则不做处理
+			var packageObj = Packager._package(name);
+			if (packageObj.status() >= PackageStatus.loaded) return;
+			packageObj.execScope = scope;
+			if(wanted)
+				packageObj._wanted = true;
+			// 把dependence转化为数组或者字符串
+			switch (typeof dependence) {
+				case 'string':
+					// 一个依赖包
+					dependence = parsePackages([dependence]);
+					break;
+				case 'object':
+					if (dependence !== null && dependence.length) {
+						// 一个或多个依赖包
+						dependence = parsePackages(dependence);
+						break;
+					}
+				default:
+					// 没有依赖包
+					dependence = parsePackages([]);
 			}
+			
+			// 设置当前包加载成功
+			packageObj.loaded(creator, dependence);
 			
 			return Packager;
 		},
@@ -733,6 +750,9 @@ window.kola = (function(kola) {
 		 * @param name {String} package名称
 		 */
 		_package: function(name) {
+			if(!name){
+				return packageObjects;
+			}
 			// 没有该package那就创建之
 			return packageObjects[name] || (packageObjects[name] = new Package(name));
 		}
@@ -790,54 +810,29 @@ window.kola = (function(kola) {
 	var packageObjects = {};
 	
 	/**
-	 * 创建一个确保所有需要的包都加载完成就能执行相应回调方法的事件监听器
+	 * 创建一个计数器，计数器被调用指定次数后会调用指定的回调函数
 	 * 
-	 * @method createPackageCompleteListener
+	 * @method CountDown
 	 * @private
 	 * @for Packager
-	 * @param usedPackages {Array<String>} 需要的包名列表
+	 * @param count {int} 需要被调用的次数
 	 * @param callback {Function} 包都加载完成后的回调方法
-	 * @param scope {Any} 回调方法的作用域
-	 * @return {Function} 生成的事件监听器方法，其输入参数只有一个，为加载成功的包名称
+	 * @param callbackScope {Any} 回调方法的作用域
+	 * @return {Function} 生成的事件监听器方法
 	 */
-	var createPackageCompleteListener = function(usedPackages, callback, scope) {
-		return function() {
-			if (--usedPackages.unavilable <= 0) {
-				// 需要的包全部加载完成，可以执行了回调方法了
-				
-				// 轮询所有的包，获取包的内容
-				var objects = [];
-				for (var i = 0, il = usedPackages.length; i < il; i++) {
-					var object = Packager._package(usedPackages[i]).entity();
-					
-					// 如果存在插件的话，那就生成加入插件的包
-					var plugin = usedPackages['_' + i];
-					if (plugin) {
-						// 获取每个插件的实体内容
-						for (var j = 0, jl = plugin.length; j < jl; j++) {
-							plugin[j] = Packager._package(plugin[j]).entity();
-						}
-						
-						// 增加基类和methods
-						plugin.unshift(object);	// 基类
-						
-						// 生成新的类
-						object = newPluginJoinedClass.apply(window, plugin);
-					}
-					
-					objects.push(object);
-				}
-				
-				// 调用回调方法
-				callback.apply(scope || window, objects);
+	var CountDown = function(count, callback, callbackScope){
+		return function(){
+			if (--count <= 0) {
+				callback.call(callbackScope);
 			}
-		};
-	};
+		}
+	}
 			
 	/**
 	 * 把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组
 	 */
 	var parsePackages = function(packages) {
+		packages = packages || [];
 		var allPlugin = [];
 		for (var i = 0, il = packages.length; i < il; i++) {
 			var name = trimAll(packages[i]);
@@ -862,7 +857,7 @@ window.kola = (function(kola) {
 	
 	//	如果存在缓存的kola方法，那就保存之
 	var cachedKolaCall = !!kola && kola._cache;
-	
+	var anonymousCount = 0;
 	/**
 	 * 定义一个包
 	 * 
@@ -902,15 +897,11 @@ window.kola = (function(kola) {
 			case 3:
 				if (typeof args[1] != 'function') {
 					// 这是定义包
-					return Packager.define.apply(Packager, args);
-				}
-				
-				// 这是使用包执行的方式
-				scope = args[2];
-				
+					return Packager.define(args[0], args[1], args[2]);
+				}				
 			case 2:
 				// 这是使用包执行的方式
-				return Packager.use(args[0], args[1], scope);
+				return Packager.define('anonymous' + anonymousCount++, args[0], args[1], args[2], true);
 			
 			case 1:
 				// 这是加载配置信息
