@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="../../../src/kola/Packager.js"></script>
+	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
+	<script>
+		kola(['kola.lang.Class'],function(KolaClass){
+			var newClass = KolaClass({
+				protoA: 1
+			});
+			test('创建类并绑定原型', function(test){
+				var instance = new newClass();
+				test(instance.protoA == 1, '原型');
+			});
+			var subClass = KolaClass(newClass, {
+				protoB: 2
+			});
+			test('创建类并绑定原型', function(test){
+				var instance = new subClass();
+				test(instance.protoA == 1, '继承');
+				test(instance.protoB == 2, '继承');
+			});
+		})
+	</script>
+</head>
+<body>
+	
+</body>
+</html>

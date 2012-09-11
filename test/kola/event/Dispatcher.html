@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="../../../src/kola/Packager.js"></script>
+	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
+	<script>
+		kola(['kola.event.Dispatcher','kola.lang.Class'],function(Dispatcher, KolaClass){
+			test('绑定和触发事件', function(test){
+				var dispatcher = new Dispatcher();
+				dispatcher.on('evt', function(){
+					test(true, '触发事件');
+				})
+				dispatcher.fire('evt');
+			});
+			test('解除绑定和事件', function(test){
+				var dispatcher = new Dispatcher();
+				var counter = 0;
+				var handler = function(){
+					counter++;
+				}
+				dispatcher.on('evt', handler);
+				dispatcher.on('evt', function(){
+					counter++;
+				});
+				dispatcher.off('evt', handler);
+				dispatcher.fire('evt');
+				test(counter = 1, '解绑指定事件');
+				dispatcher.off('evt');
+				dispatcher.fire('evt');
+				test(counter = 1, '解绑全部事件');
+			});
+			test('使用继承绑定和触发事件', function(test){
+				var newClass = KolaClass(Dispatcher,{});
+				var dispatcher = new newClass();
+				dispatcher.on('evt', function(){
+					test(true, '触发事件');
+				})
+				dispatcher.fire('evt');
+			});
+		})
+	</script>
+</head>
+<body>
+	
+</body>
+</html>

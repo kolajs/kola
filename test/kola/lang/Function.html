@@ -27,6 +27,37 @@
 			test("value",function(testCase){
 				testCase(valueFunction() == "fb", "value");
 			});
+			test("overload",function(testCase){
+				var overloaded = KolaFunction.overload(
+					function(a){
+						return 1;
+					},
+					function(a, b){
+						return 2;
+					}
+				);
+				testCase(overloaded(1) == 1, "简单重载");
+				testCase(overloaded(1, 1) == 2, "简单重载");
+				var overloaded = KolaFunction.overload(
+					"String,Any",
+					function(a, b){
+						return 1;
+					},
+					"Number,Number",
+					function(a, b){
+						return 2;
+					},
+					function(a, b){
+						return 2.5;
+					},
+					function(a, b, c){
+						return 3;
+					}
+				);
+				testCase(overloaded("1",function(){}) == 1, "描述性重载");
+				testCase(overloaded(1, 1) == 2, "描述性重载");
+				testCase(overloaded(1, 1, 1) == 3, "描述性重载");
+			});
 		});
 	</script>
 </body>

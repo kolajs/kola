@@ -5,8 +5,7 @@
  */
 
 kola('kola.lang.Array', [
-	'kola.bom.Browser'
-], function (KolaBrowser) {
+], function () {
 	/**
 	 * kola的Array类
 	 * 
@@ -15,7 +14,7 @@ kola('kola.lang.Array', [
 	 * 
 	 * @author Jady Yang
 	 */
-	if(KolaBrowser.IEStyle){
+	if (navigator.userAgent.indexOf('MSIE') != -1 && parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf('MSIE') + 5, 3 )) < 9) {
 		var exports = {
 			/**
 			 * 获取指定元素在数组中的位置

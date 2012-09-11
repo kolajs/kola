@@ -9,10 +9,10 @@ kola('kola.html.Element',[
 	'kola.lang.Array',
 	'kola.lang.Function',
 	'kola.lang.String',
-	'kola.bom.Browser',
 	'kola.html.util.Selector',
 	'kola.event.Dispatcher'
-],function(KolaClass, KolaArray, KolaFunction, KolaString, Browser, Selector, Dispatcher){
+],function(KolaClass, KolaArray, KolaFunction, KolaString, Selector, Dispatcher){
+	var IEStyle = (navigator.userAgent.indexOf('MSIE') != -1 && parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( 'MSIE' ) + 5, 3)) < 9);
 	//用于element.data的存储
 	var cache = {};
 	//使用随机名称，防止冲突
@@ -26,7 +26,7 @@ kola('kola.html.Element',[
 	 * 
 	 */
 	var Operation = {
-		attr: overload(
+		attr: getSet(
 			/**
 			 * 获取某个属性值
 			 * @method attr
@@ -46,7 +46,7 @@ kola('kola.html.Element',[
 						if(value == null){
 							value = targetElement[name];
 						}
-						if (Browser.IEStyle){
+						if (IEStyle){
 							if(typeof(value) == 'object' && value != null) {
 								value = targetElement.attributes.getNamedItem(name);
 								return !!value ? value.value : null;
@@ -80,7 +80,7 @@ kola('kola.html.Element',[
 						break;
 					default:
 						//	如果是设置一个事件，而且是ie下的话，需要采用.on...的形式，setAttribute的形式是有问题的
-						if (Browser.IEStyle && name.indexOf('on') == 0) {
+						if (IEStyle && name.indexOf('on') == 0) {
 							//	如果是字符串，需要转换成一个方法，ie下只能接受方法
 							if (typeof(value) == 'string') {
 								value = new Function(value);
@@ -92,7 +92,7 @@ kola('kola.html.Element',[
 				}
 			}
 		),
-		prop: overload(
+		prop: getSet(
 			/**
 			 * 获取某个原生属性值
 			 * @method prop
@@ -143,7 +143,7 @@ kola('kola.html.Element',[
 				targetElement[name] = value;
 			}
 		),
-		data: overload(
+		data: getSet(
 			/**
 			* 得到某个元素的附加数据
 			* @method data
@@ -180,7 +180,7 @@ kola('kola.html.Element',[
 				}
 			}
 		),
-		css: overload(
+		css: getSet(
 			/**
 			* 查询一个元素的类名
 			* @method css
@@ -209,7 +209,7 @@ kola('kola.html.Element',[
 				}
 			}
 		),
-		style: overload(
+		style: getSet(
 			/**
 			* 查询一个元素的样式
 			* @method style
@@ -220,7 +220,7 @@ kola('kola.html.Element',[
 				var st = targetElement.style;
 				if(name == 'opacity'){
 					var filter;
-					if(Browser.IEStyle){
+					if(IEStyle){
 						return st.filter.indexOf('opacity=') >= 0 ? parseFloat(st.filter.match(/opacity=([^)]*)/)[1]) / 100 : 1;
 					}else{
 						return (filter = st.opacity) ? parseFloat(filter) : 1;
@@ -252,7 +252,7 @@ kola('kola.html.Element',[
 					return;
 				}//要修改一个样式
 				if(name == 'opacity'){
-					if(Browser.IEStyle){
+					if(IEStyle){
 						elementStyle.filter = 'Alpha(Opacity=' + value*100 + ')'; 
 					}else{
 						elementStyle.opacity = (value == 1 ? '' : '' + value);
@@ -266,7 +266,7 @@ kola('kola.html.Element',[
 				}
 			}
 		),
-		val: overload(
+		val: getSet(
 			/**
 			* 查询一个表单的值
 			* @method val
@@ -285,7 +285,7 @@ kola('kola.html.Element',[
 				targetElement.value = value;
 			}
 		),
-		html: overload(
+		html: getSet(
 			/**
 			* 查询一个元素的内部html
 			* @method html
@@ -301,7 +301,7 @@ kola('kola.html.Element',[
 			* @chainable
 			*/
 			function (targetElement, value) {
-				if (Browser.IEStyle) {
+				if (IEStyle) {
 					//	ie下直接调用替代方法
 					innerHtml(targetElement, value);
 				} else {
@@ -312,10 +312,10 @@ kola('kola.html.Element',[
 						innerHtml(targetElement, value);
 					}
 				}
-				Dispatcher.global.fire({type: 'DOMNodeInserted', data: targetElement.childNodes});
+				//Dispatcher.global.fire({type: 'DOMNodeInserted', data: targetElement.childNodes});
 			}
 		),
-		text: overload(
+		text: getSet(
 			/**
 			* 查询一个元素的内部文本
 			* @method text
@@ -860,14 +860,14 @@ kola('kola.html.Element',[
 		splice:[].splice
 	});
 	//定义一个针对节点读取属性或设置属性的操作
-	function overload(get, set){
+	function getSet(get, set){
 		var lengthGroup = [];
 		get.isGet = true;
 		lengthGroup[get.length - 1] = get;
 		lengthGroup[set.length - 1] = set;
 		return lengthGroup;
 	}
-	//overload
+	//getSet
 	KolaArray.forEach('attr,prop,data,css,style,val,html,text'.split(','),function(functionName){
 		exports.prototype[functionName] = function(name, value){
 			var operater = Operation[functionName][arguments.length];
@@ -939,39 +939,6 @@ kola('kola.html.Element',[
 			return this;
 		}
 	});
-	/*
-	===========================
-	exports.prototype.click=function(listenerfn,option){
-		for(var i = 0; i < this.length; i++){
-				if(!listenerfn){
-					KolaDomEvent.fire(this[i], click);
-				}else{
-					KolaDomEvent.on(this[i], click, listenerfn, option);
-				}
-		}
-		return this;
-	}
-	exports.prototype.mouseover=function(listenerfn,option){
-		for(var i = 0; i < this.length; i++){
-				if(!listenerfn){
-					KolaDomEvent.fire(this[i], mouseover);
-				}else{
-					KolaDomEvent.on(this[i], mouseover, listenerfn, option);
-				}
-		}
-		return this;
-	}
-	exports.prototype.mouseout=function(listenerfn,option){
-		for(var i = 0; i < this.length; i++){
-				if(!listenerfn){
-					KolaDomEvent.fire(this[i], mouseout);
-				}else{
-					KolaDomEvent.on(this[i], mouseout, listenerfn, option);
-				}
-		}
-		return this;
-	}
-	*/
 	//数组排重
 	var unique = function(array){
 		var flag = false;
@@ -1015,7 +982,7 @@ kola('kola.html.Element',[
 			for(var i = newDom.children.length-1; i >= 0; i --){
 				arr[i] = newDom.children[i];
 			}
-			Dispatcher.global.fire({type: 'DOMNodeInserted',data: arr});
+			//Dispatcher.global.fire({type: 'DOMNodeInserted',data: arr});
 			return arr;
 		}
 		// 如果是window
@@ -1151,7 +1118,7 @@ kola('kola.html.Element',[
 			}
 
 			//	如果是ie9以前的版本，并且设置的是select，那就默认聚焦到第一个。这主要是解决ie9之前的版本都是默认设置到最后一个，而别的浏览器级版本都是聚焦到第一个
-			if (tagName == 'select' && Browser.IEStyle) {
+			if (tagName == 'select' && IEStyle) {
 				el.selectedIndex = 0;
 			}
 		}else{
@@ -1192,7 +1159,7 @@ kola('kola.html.Element',[
 		 * @method stopPropagation: w3c兼容
 		 * @method stop: preventDefault & stopPropagation
 		 */
-		if(Browser.IEStyle){
+		if(IEStyle){
 			var DomEvent = KolaClass({
 				_init :function(e){
 					this.event=e;
@@ -1240,7 +1207,7 @@ kola('kola.html.Element',[
 		}
 		
 		var eventAgent = function(listenerfn, option, e) {
-			if (Browser.IEStyle) {
+			if (IEStyle) {
 				e = new DomEvent(window.event);
 			}else{
 				e = new DomEvent(e);
@@ -1289,7 +1256,7 @@ kola('kola.html.Element',[
 		//删除指定的事件
 		var remove = function(element, name, listenerfn, observer) {
 			//	删除listener
-			if (!Browser.IEStyle) {
+			if (!IEStyle) {
 				if(observer.option.out)
 					document.removeEventListener(name, listenerfn, false);
 				else
@@ -1329,7 +1296,7 @@ kola('kola.html.Element',[
 				if (!element || !name || !listenerfn) return this;
 				option = option || {};
 				//	如果是IE7下触发unload事件，那就直接设置方法
-				if (name == 'unload' && element == window && Browser.IE67) {
+				if (name == 'unload' && element == window && IEStyle) {
 					element.onunload = listenerfn;
 					return this;
 				}
@@ -1359,7 +1326,7 @@ kola('kola.html.Element',[
 				eventType.push(observer);
 						
 				//	绑定事件
-				if (!Browser.IEStyle) {
+				if (!IEStyle) {
 					if(option.out){
 						document.addEventListener(name, observer.handler, false);
 					}else{
@@ -1465,7 +1432,7 @@ kola('kola.html.Element',[
 			 * @param event
 			 */
 			fire: function(element, name, event) {
-				if(Browser.IEStyle) {  
+				if(IEStyle) {  
 					element.fireEvent("on"+name);  
 				}else{  
 					var evt = document.createEvent('HTMLEvents');  

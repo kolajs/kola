@@ -5,7 +5,8 @@
  */
 
 kola('kola.lang.Function', [
-], function () {
+	'kola.lang.Class'
+], function (KolaClass) {
 	/**
 	 * kola的Function类
 	 * 
@@ -37,7 +38,33 @@ kola('kola.lang.Function', [
 				return target.apply(scope, newArgs);
 			};
 		},
-
+		/**
+		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前
+		 * 
+		 * @method overload
+		 * @param [description] {String} 函数的参数描述如"String,Any,Function,Object"
+		 * @param handler {Function} 重载函数
+		 * @param [description] {String} 函数的参数描述如"String,Any,Function,Object"
+		 * @param handler {Function} 重载函数
+		 * *****
+		 * ***
+		 * *
+		 * @return {Function} 重载后的函数
+		 */
+		overload: function(){
+			var handlers = initOverloadArguments(arguments);
+			return function(){
+				var handler = handlers[arguments.length];
+				if(handler){
+					for(i = 0; i < handler.length; i++){
+						if(!handler[i].description || compareArguments(handler[i].description, arguments)){
+							return handler[i].handler.apply(this, arguments)
+						}
+					}
+				}
+				throw("No matched arguments in overload function!")
+			}
+		},
 		/**
 		 * 可被全局使用的空函数
 		 * 
@@ -60,6 +87,35 @@ kola('kola.lang.Function', [
 			};
 		}
 	};
-
+	/*
+	 * 比较描述与函数参数实际是否相符
+	 * 
+	 * @method compareArguments
+	 * @private
+	 * @param description {Array<String>} 参数的描述
+	 * @param arguments {Object} 函数的实际参数
+	 * @return {Boolean}
+	 */
+	function compareArguments(description, arguments){
+		for(var i = 0; i < description.length; i++){
+			if(description[i] != "Any" && Object.prototype.toString.call(arguments[i]).indexOf(description[i]) == -1)
+				return false;
+		}
+		return true;
+	}
+	function initOverloadArguments(arg){
+		var handlers = [];
+		for(var i = 0; i < arg.length; i++){
+			if(KolaClass.isString(arg[i])){//带描述的处理函数
+				var description = arg[i++].split(",");
+				var handler = handlers[description.length] || (handlers[description.length] = []);
+				handler.push({description: description, handler: arg[i]});
+			}else{//不带描述，直接以处理函数参数长度作为重载依据
+				var handler = handlers[arg[i].length] || (handlers[arg[i].length] = []);
+				handler.push({handler: arg[i]});
+			}
+		}
+		return handlers;
+	}
 	return exports;	
 });

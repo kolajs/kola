@@ -18,13 +18,6 @@ kola('kola.event.Dispatcher',[
 		},
 		/**
 		 * 监听某个事件
-		 * @property _dispatcherparent_
-		 * @private
-		 * @type {Dispatcher}
-		 */
-		//_dispatcherparent_: , //global Dispatcher
-		/**
-		 * 监听某个事件
 		 * @method on
 		 * @param name {String} 事件名称
 		 * @param listener {Function} 监听者
@@ -34,24 +27,21 @@ kola('kola.event.Dispatcher',[
 		 * @chainable
 		 */
 		on: function(name, listener, option) {
-			if(!this._obverver_)
-				this._obverver_ = {};
-			if(!this._obverver_[name])
-				this._obverver_[name] = [];
-			this._obverver_[name].push({listener: listener, option: option || {}});
+			((this._obverver_ || (this._obverver_ = {}))[name] || (this._obverver_[name] = [])
+			).push({listener: listener, option: option || {}});
 			return this;
 		},
 
 		/**
 		 * 取消对某个事件的监听
 		 * @method off
-		 * @param {String} name 事件名称
-		 * @param {Function} listener 监听者
+		 * @param name {String} 事件名称
+		 * @param [listener] {Function} 监听者
 		 * @chainable
 		 */
 		off: function(name, listener) {
 			if(!this._obverver_ || !this._obverver_[name])    return;
-			if(!listener)
+			if(arguments.length == 1)
 				this._obverver_[name] = [];
 			else{
 				for(var i = 0; i < this._obverver_[name].length; i++){
@@ -63,17 +53,7 @@ kola('kola.event.Dispatcher',[
 			}
 			return this;
 		},
-		/**
-		 * 代理另一个事件对象的所有事件
-		 * @method delegate
-		 * @param dispatcher {Dispatcher} 被代理的事件对象
-		 * @chainable
-		 */
-		delegate: function(dispatcher){
-			this._dispatcherparent_ = dispatcher._dispatcherparent_
-			dispatcher._dispatcherparent_ = this;
-			return this;
-		},
+
 		/**
 		 * 触发某个事件
 		 * @method fire
@@ -87,7 +67,6 @@ kola('kola.event.Dispatcher',[
 		 * @chainable
 		 */
 		fire: function(e) {
-
 			if(KolaClass.isString(e)){
 				e = {
 					type:e
@@ -111,15 +90,6 @@ kola('kola.event.Dispatcher',[
 			return this;
 		}
 	});
-	var global = new Dispatcher();
-	global._dispatcherparent_ = null;
-	/**
-	 * 全局监听器
-	 * @property global
-	 * @static
-	 * @type {Dispatcher}
-	 */
-	Dispatcher.global = global;
-	Dispatcher.prototype._dispatcherparent_ = global;
+	Dispatcher.prototype._dispatcherparent_ = null;
 	return Dispatcher
 });
