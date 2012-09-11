@@ -3,8 +3,8 @@
  * @author Jady Yang
  * @module kola.bom
  */
-kola('kola.bom.Browser',[
-],function(KolaFunction) {
+
+kola('kola.bom.Browser', null, function() {
 	var agent = navigator.userAgent,
 		render,version;
 
