@@ -269,20 +269,20 @@ window.kola = (function(kola) {
 	 * Package加载状态枚举类
 	 */
 	var PackageStatus = {
-		uninitialized:	0,		// 未初始化
-		loading:		1,		// 正在加载
-		loaded:			2,		// 加载完成
-		failed:			-1,		// 加载失败
-		depending:		3,		// 正在加载依赖包
-		interactive:	4,		// 所有直接或间接依赖包已经加载完成，处于待用状态
-		complete:		5		// 完全可用
+		UNINITIALIZED:	0,		// 未初始化
+		LOADING:		1,		// 加载中
+		LOADED:			2,		// 加载完成
+		FAILED:			-1,		// 加载失败
+		DEPENDING:		3,		// 依赖包正在加载中
+		INACTIVE:		4,		// 待用（所有直接或间接依赖包已经加载完成）
+		ACTIVE:			5		// 可用
 	};
 	
 	/*********************************************************************
 	 *                        Package类
 	 ********************************************************************/
 	
-	var Package = newKolaClass(null, {
+	var Package = newKolaClass({
 		
 		/**
 		 * 每个kola包的对应控制类
@@ -293,7 +293,16 @@ window.kola = (function(kola) {
 			this._name = name;
 			
 			// 设置为默认状态
-			this._status = PackageStatus.uninitialized;
+			this._status = PackageStatus.UNINITIALIZED;
+		},
+		
+		/**
+		 * 获取包的状态
+		 * 
+		 * @return {Number}
+		 */
+		status: function(status) {
+			return this._status;
 		},
 		
 		/**
@@ -301,9 +310,11 @@ window.kola = (function(kola) {
 		 * 
 		 * @chainable
 		 */
-		loading: function() {
+		_load: function() {
+			var name = this._name;
+			
 			// 获取路径信息
-			var path = Packager.path(this._name);
+			var path = Packager.path(name);
 			
 			// 创建用于加载的script节点，并设置相关信息
 			var script = document.createElement('script');
@@ -313,13 +324,13 @@ window.kola = (function(kola) {
 			}
 			
 			// 跟踪error事件，用于发现链接错误或包名笔误的包
-			script.onerror = bindScope(scriptFail, this, this._name, script);
+			script.onerror = bindScope(scriptFail, this, name, script);
 			
 			// 跟踪加载完成事件，用于发现包执行错误或者期望与实际包名不同的包
-			script.onload = bindScope(scriptSucc, this, this._name, script);
+			script.onload = bindScope(scriptSucc, this, name, script);
 			
 			// 设置加载状态为加载中
-			this.status(PackageStatus.loading);
+			this._status = PackageStatus.LOADING;
 			
 			// 开始加载
 			(document.head || document.getElementsByTagName('head')[0]).appendChild(script);
@@ -328,129 +339,94 @@ window.kola = (function(kola) {
 		},
 		
 		/**
-		 * 当前包已经加载成功，并设置依赖包信息
+		 * 注册包的实体信息
 		 * 
 		 * @param creator {Function} 包内容生成器
 		 * @param dependence {Array<String> | Null} 依赖包的列表
+		 * @chainable
 		 */
-		loaded: function(creator, dependence) {
+		register: function(creator, dependence) {
+			// 如果状态不对，则不进行处理
+			if (this._status >= PackageStatus.LOADED) return this;
+			
+			// 保留相关配置信息
 			this._creator = creator;
 			this._dependence = dependence;
 			
 			// 设置为加载完成状态
-			this.status(PackageStatus.loaded);
+			this._status = PackageStatus.LOADED;
 			
-			// 加载完成后的，需要考虑是否自动加载依赖项
-			if (this._wanted) {
-				this.depending();
+			// 如果存在可用状态的事件监听者或者不存在依赖者的话，都可以直接开始依赖的加载
+			if (this._activateListeners || !this._dependence) {
+				this._depend();
 			}
+			
+			return this;
 		},
+		
 		/**
 		 * 开始加载依赖包
 		 * 
-		 * @private
 		 * @chainable
 		 */
-		depending: function() {
+		_depend: function() {
 			// 设置状态为完成状态
-			this.status(PackageStatus.depending);
-
+			this._status = PackageStatus.DEPENDING;
+			
 			var dependence = this._dependence;
-			if (dependence.length) {
+			if (dependence) {
 				// 如果有依赖包，那就加载之
 				var following = dependence.concat(dependence.plugin);
 				
 				// 创建一个完成后的回调方法
-				var countdown = CountDown(following.length, this.interactive, this)
-				// 循环每个依赖包，监听其complete事件
+				var callback = callTimes(following.length, this.inactivate, this);
+				
+				// 循环每个依赖包，监听其active事件
 				for (var i = 0, il = following.length; i < il; i++) {
-					Packager._package(following[i]).interactive(countdown);
+					Packager.get(following[i]).activate(callback);
 				}
 			} else {
-				// 没有依赖包，那就直接进入可用状态
-				this.interactive();
+				// 没有依赖包，那就直接进入待用状态
+				this._inactivate();
 			}
+			
 			return this;
 		},
+		
 		/**
-		 * 其他包需要该包为interactive状态
+		 * 设置为待用状态
 		 * 
-		 * @param listener {Function} 包可用后的回调方法
 		 * @chainable
 		 */
-		/**
-		 * 依赖包加载完成
-		 * 
-		 * @private
-		 * @chainable
-		 */
-		interactive: function(listener) {
-			if(arguments.length == 0){
-				// 设置状态为可用状态
-				this.status(PackageStatus.interactive);
-
-				// 如果有等待者的话，那就通知之
-				var demander = this._demander;
-				if (demander) {
-					// 循环每个回调，依次执行之
-					var callback;
-					while (callback = demander.shift()) {
-						callback();
-					}
-					
-					// 清除
-					delete this._demander;
-				}
+		_inactivate: function() {
+			this._status = PackageStatus.INACTIVE;
 				
-				if (this._wanted){
-					this.complete();
-				}
-			}else{
-				// 监听其interactive事件
-				if (this._status >= PackageStatus.interactive) {
-					//如果已经完成，直接成功
-					listener();
-				}else{
-					// 这是监听包的可用状态
-					this._wanted = true;
-					
-					// 把可用后的回调方法放到排队表中
-					(this._demander || (this._demander = [])).push(listener);
-
-					if(this._status == PackageStatus.uninitialized){
-						// 如果是未初始化状态，那就需要开始加载
-						this.loading();	
-					}else if(this._status == PackageStatus.loaded){
-						// 如果处于加载完成状态，那就开始加载依赖包
-						this.depending();
-					}
-					// 其他状态（加载中）则无需其他处理
-				}
+			// 如果存在可用状态的事件监听者，那就进入下一个状态
+			if (this._activateListeners) {
+				this._activate();
 			}
-			return this;	
+			
+			return this;
 		},
+		
 		/**
-		 * 设置当前包为可用状态
+		 * 设置为可用状态
 		 * 
-		 * @param [package]* {Any} 依赖包
-		 * @return {Function} 生成的可用回调方法
+		 * @chainable
 		 */
-		complete: function() {// 设置当前包为完成状态
-			if(this._status == PackageStatus.complete){
-				return this._creator;
-			}
-			// 获取包的实体内容
+		_activate: function() {
 			// 轮询所有的包，获取包的内容
 			var args = [];
-			var dependence = this._dependence
+			var dependence = this._dependence;
 			for (var i = 0, il = dependence.length; i < il; i++) {
-				var object = Packager._package(dependence[i]).complete();				
+				var object = Packager.get(dependence[i]).entity();	
+							
 				// 如果存在插件的话，那就生成加入插件的包
 				var plugin = dependence['_' + i];
 				if (plugin) {
 					// 获取每个插件的实体内容
 					for (var j = 0, jl = plugin.length; j < jl; j++) {
-						plugin[j] = Packager._package(plugin[j]).complete();
+						plugin[j] = Packager.get(plugin[j]).entity();
 					}
 					
 					// 增加基类和methods
@@ -463,86 +439,140 @@ window.kola = (function(kola) {
 				args.push(object);
 			}
 			
-			this._creator = this._creator.apply(this.execScope || window, args);
+			// 获得实体内容
+			this._creator = this._creator.apply(window, args);
 			
-			// 设置状态为完成状态
-			this.status(PackageStatus.complete);
 			// 清除不必要的属性
 			delete this._dependence;
-			delete this._wanted;
+			
+			// 设置状态为完成状态
+			this._status = PackageStatus.ACTIVE;
+			
+			// 如果有监听activated事件的监听器，那就处理之
+			var listeners = this._activateListeners;
+			if (listeners) {
+				var entity = this._creator;
+				// 循环每个回调，依次执行之
+				while (listener = listeners.shift()) {
+					listener(entity);
+				}
+				
+				// 清除
+				delete this._activateListeners;
+			}
 
-			return this._creator;
-		},
-		/**
-		 * 获取包的实体内容
-		 * 
-		 * @return {Any}
-		 */
-		entity: function() {
-			return this._creator;
+			return this;
 		},
 		
 		/**
-		 * 获取包的状态
+		 * 监听可用状态事件
 		 * 
-		 * @return {Number}
-		 */
-		/**
-		 * 设置包的状态
-		 * 
-		 * @param status {Number} 包的新状态码
+		 * @param listener {Function} 包处于可用状态后的回调方法
 		 * @chainable
 		 */
-		status: function(status) {
-			if (arguments.length == 0) {
-				// 获取状态
-				return this._status;
+		activate: function(listener) {
+			// 根据不同的状态，进行不同的处理
+			if (status == PackageStatus.ACTIVE) {
+				// 处于可用状态
+				listener(this._creator);
 			} else {
-				// 设置状态
-				this._status = status;
+				// 保存到方法列表
+				(this._activateListeners || (this._activateListeners = [])).push(listener);
 				
-				return this;
+				switch (status) {
+					case PackageStatus.INACTIVE:
+						// 处于待用状态
+						this._activate();
+						break;
+					
+					case PackageStatus.FAILED:
+					case PackageStatus.UNINITIALIZED:
+						// 需要加载
+						this._load();
+						break;
+					
+					case PackageStatus.LOADED:
+						// 需要加载依赖
+						this._depend();
+						break;
+					
+					// 其他情况不需要处理
+				}
 			}
+			return this;
+		},
+		
+		/**
+		 * 获取包的实体内容
+		 */
+		entity: function() {
+			// 如果状态不对，那就提示之
+			if (this._status != PackageStatus.ACTIVE) throw new Error('package ' + this._name + " is not ready");
+			
+			return this._creator;
 		}
 		
 	});	
+	
 	/**
 	 * 文件加载失败的调用方法
 	 * 
-	 * @param packageName {String} 对应的包名称
+	 * @param name {String} 对应的包名称
 	 * @param node {HTMLElement} 对应的script节点
 	 */
-	var scriptFail = function(packageName, node) {
+	var scriptFail = function(name, node) {
 		// 设置为错误状态
-		this._status = PackageStatus.failed;
+		this._status = PackageStatus.FAILED;
 		
 		// 显示错误
-		throwError("can't load package " + packageName + " in uri: " + node.src);
+		throwError("can't load package " + name + " in uri: " + node.src);
 		
+		clearScript(node);
+	};
+	
+	/**
+	 * 文件加载成功后的调用方法
+	 * 
+	 * @param name {String} 包名称
+	 * @param node {HTMLElement} 对应的script节点
+	 */
+	var scriptSucc = function(name, node) {
+		setTimeout(bindScope(function() {
+			// 如果该包还处于未加载完成状态，那就报错
+			if (this._status < PackageStatus.LOADED) {
+				// 显示错误
+				throwError("can't register package " + name);
+			}
+		}, this), 0);
+		
+		clearScript(node);
+	};
+	
+	/**
+	 * 清除script节点的相关绑定
+	 * 
+	 * @param node {HTMLElement} script节点
+	 */
+	var clearScript = function(node) {
 		// 去除事件绑定
 		node.onerror = null;
 		node.onload = null;
 	};
 	
 	/**
-	 * 文件加载成功后的调用方法
+	 * 创建一个计数器，计数器被调用指定次数后会调用指定的回调函数
 	 * 
-	 * @param packageName {String} 对应的包名称
-	 * @param node {HTMLElement} 对应的script节点
+	 * @param count {Number} 需要被调用的次数
+	 * @param callback {Function} 包都加载完成后的回调方法
+	 * @param scope {Any} 回调方法的作用域
+	 * @return {Function} 生成新方法
 	 */
-	var scriptSucc = function(packageName, node) {
-		var scope = this;
-		setTimeout(function() {
-			// 如果该包还处于未加载完成状态，那就报错
-			if (scope._status < PackageStatus.loaded) {
-				// 显示错误
-				throwError("can't define package " + packageName);
+	var callTimes = function(number, callback, scope) {
+		return function() {
+			if (--number <= 0) {
+				callback.call(scope);
 			}
-		}, 0);
-		
-		// 去除事件绑定
-		node.onerror = null;
-		node.onload = null;
+		};
 	};
 	
 	/*********************************************************************
@@ -558,27 +588,43 @@ window.kola = (function(kola) {
 	var Packager = {
 		
 		/**
-		 * 定义一个包
-		 * 
-		 * @method define
-		 * @param name {String} 包全名
-		 * @param dependence {Array<String> | Null | String} 依赖包列表
-		 * 	如果为null，即没有依赖包；
-		 * 	如果为String类型，说明只有一个依赖包
-		 * 	如果是Array类型，那就是依赖包的列表
-		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
-		 * @chainable
-		 */
-		 /**
 		 * 使用某些包执行某个方法
 		 * 
 		 * @method use
 		 * @param packages {String | Array<String>} 要使用的包，如果是string也就是一个包的包名，如果是Array，那可能就是依赖的包列表
 		 * @param callback {Function} 包可用之后的回调方法
-		 * @param [scope] {Any} 回调方法的作用域
+		 * @param [scope] {Any} 回调方法的作用域，没有的话就为Packager
 		 * @chainable
 		 */
-		define: function(name, dependence, creator, scope, wanted) {
+		use: function(packages, callbck, scope) {
+			if (packages === null) throw new Error('wrong packages');
+			packages = parsePackages(packages);
+			
+			// TODO: 需要改一下
+			var allPackages = packages.concat(packages.plugins);
+			var fn = callTimes(allPackages.length, function() {
+				Package
+			});
+			
+			// 监听所有的包
+			for (var i = allPackages.length - 1; i >= 0; i--) {
+				packages[i].activate(fn);
+			}
+		},
+		
+		/**
+		 * 定义一个包
+		 * 
+		 * @method define
+		 * @param name {String} 包全名
+		 * @param dependence {Array<String> | String | Null} 依赖包列表
+		 * 	如果为String类型，说明只有一个依赖包
+		 * 	如果是Array类型，那就是依赖包的列表
+		 * 	如果为null，即没有依赖包
+		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
+		 * @chainable
+		 */
+		define: function(name, dependence, creator) {
 			// 如果包早已加载完成，那则不做处理
 			var packageObj = Packager._package(name);
 			if (packageObj.status() >= PackageStatus.loaded) return;
@@ -744,11 +790,11 @@ window.kola = (function(kola) {
 		/**
 		 * 获取某个package的控制对象
 		 * 
-		 * @method _package
+		 * @method get
 		 * @protected
 		 * @param name {String} package名称
 		 */
-		_package: function(name) {
+		get: function(name) {
 			if(!name){
 				return packageObjects;
 			}
@@ -807,25 +853,6 @@ window.kola = (function(kola) {
 	 * @for Packager
 	 */
 	var packageObjects = {};
-	
-	/**
-	 * 创建一个计数器，计数器被调用指定次数后会调用指定的回调函数
-	 * 
-	 * @method CountDown
-	 * @private
-	 * @for Packager
-	 * @param count {int} 需要被调用的次数
-	 * @param callback {Function} 包都加载完成后的回调方法
-	 * @param callbackScope {Any} 回调方法的作用域
-	 * @return {Function} 生成的事件监听器方法
-	 */
-	var CountDown = function(count, callback, callbackScope){
-		return function(){
-			if (--count <= 0) {
-				callback.call(callbackScope);
-			}
-		}
-	}
 			
 	/**
 	 * 把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组
