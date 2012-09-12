@@ -373,18 +373,9 @@ window.kola = (function(kola) {
 			// 设置状态为完成状态
 			this._status = PackageStatus.DEPENDING;
 			
-			var dependence = this._dependence;
-			if (dependence) {
-				// 如果有依赖包，那就加载之
-				var following = dependence.concat(dependence.plugin);
-				
-				// 创建一个完成后的回调方法
-				var callback = callTimes(following.length, this.inactivate, this);
-				
-				// 循环每个依赖包，监听其active事件
-				for (var i = 0, il = following.length; i < il; i++) {
-					Packager.get(following[i]).activate(callback);
-				}
+			if (this._dependence) {
+				// 有依赖包
+				Packager.use(this._dependence, this._inactivate, this);
 			} else {
 				// 没有依赖包，那就直接进入待用状态
 				this._inactivate();
@@ -415,32 +406,8 @@ window.kola = (function(kola) {
 		 * @chainable
 		 */
 		_activate: function() {
-			// 轮询所有的包，获取包的内容
-			var args = [];
-			var dependence = this._dependence;
-			for (var i = 0, il = dependence.length; i < il; i++) {
-				var object = Packager.get(dependence[i]).entity();	
-							
-				// 如果存在插件的话，那就生成加入插件的包
-				var plugin = dependence['_' + i];
-				if (plugin) {
-					// 获取每个插件的实体内容
-					for (var j = 0, jl = plugin.length; j < jl; j++) {
-						plugin[j] = Packager.get(plugin[j]).entity();
-					}
-					
-					// 增加基类和methods
-					plugin.unshift(object);	// 基类
-					
-					// 生成新的类
-					object = newPluginJoinedClass.apply(window, plugin);
-				}
-				
-				args.push(object);
-			}
-			
 			// 获得实体内容
-			this._creator = this._creator.apply(window, args);
+			this._creator = this._creator.apply(window, entities(this._dependence));
 			
 			// 清除不必要的属性
 			delete this._dependence;
@@ -481,7 +448,7 @@ window.kola = (function(kola) {
 				
 				switch (status) {
 					case PackageStatus.INACTIVE:
-						// 处于待用状态
+						// 处于待用状态，切换到可用状态
 						this._activate();
 						break;
 					
@@ -507,7 +474,7 @@ window.kola = (function(kola) {
 		 */
 		entity: function() {
 			// 如果状态不对，那就提示之
-			if (this._status != PackageStatus.ACTIVE) throw new Error('package ' + this._name + " is not ready");
+			if (this._status != PackageStatus.ACTIVE) throwError('package ' + this._name + " is not ready");
 			
 			return this._creator;
 		}
@@ -575,6 +542,34 @@ window.kola = (function(kola) {
 		};
 	};
 	
+	/**
+	 * 获得一系列包的实体内容
+	 */
+	var entities = function(packages) {
+		var values = [];
+		for (var i = 0, il = packages.length; i < il; i++) {
+			var object = getPackage(packages[i]).entity();	
+						
+			// 如果存在插件的话，那就生成加入插件的包
+			var plugin = packages['_' + i];
+			if (plugin) {
+				// 获取每个插件的实体内容
+				for (var j = 0, jl = plugin.length; j < jl; j++) {
+					plugin[j] = getPackage(plugin[j]).entity();
+				}
+				
+				// 增加基类和methods
+				plugin.unshift(object);	// 基类
+				
+				// 生成新的类
+				object = newPluginJoinedClass.apply(window, plugin);
+			}
+			
+			values.push(object);
+		}
+		return values;
+	};
+	
 	/*********************************************************************
 	 *                        Packager类
 	 ********************************************************************/
@@ -596,19 +591,19 @@ window.kola = (function(kola) {
 		 * @param [scope] {Any} 回调方法的作用域，没有的话就为Packager
 		 * @chainable
 		 */
-		use: function(packages, callbck, scope) {
-			if (packages === null) throw new Error('wrong packages');
+		use: function(packages, callback, scope) {
+			if (packages === null) throwError('wrong packages');
 			packages = parsePackages(packages);
 			
-			// TODO: 需要改一下
-			var allPackages = packages.concat(packages.plugins);
+			// 创建一个依赖包可用后的回调方法
+			var allPackages = packages.concat(packages.plugin);
 			var fn = callTimes(allPackages.length, function() {
-				Package
+				callback.apply(scope || window, entities(packages));
 			});
 			
-			// 监听所有的包
+			// 监听所有包的activate事件
 			for (var i = allPackages.length - 1; i >= 0; i--) {
-				packages[i].activate(fn);
+				allPackages[i].activate(fn);
 			}
 		},
 		
@@ -618,40 +613,14 @@ window.kola = (function(kola) {
 		 * @method define
 		 * @param name {String} 包全名
 		 * @param dependence {Array<String> | String | Null} 依赖包列表
-		 * 	如果为String类型，说明只有一个依赖包
-		 * 	如果是Array类型，那就是依赖包的列表
-		 * 	如果为null，即没有依赖包
+		 * 		如果为String类型，说明只有一个依赖包
+		 * 		如果是Array类型，那就是依赖包的列表
+		 * 		如果为null，即没有依赖包
 		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
 		 * @chainable
 		 */
 		define: function(name, dependence, creator) {
-			// 如果包早已加载完成，那则不做处理
-			var packageObj = Packager._package(name);
-			if (packageObj.status() >= PackageStatus.loaded) return;
-			packageObj.execScope = scope;
-			if(wanted)
-				packageObj._wanted = true;
-			// 把dependence转化为数组或者字符串
-			switch (typeof dependence) {
-				case 'string':
-					// 一个依赖包
-					dependence = parsePackages([dependence]);
-					break;
-				case 'object':
-					if (dependence !== null && dependence.length) {
-						// 一个或多个依赖包
-						dependence = parsePackages(dependence);
-						break;
-					}
-				default:
-					// 没有依赖包
-					dependence = parsePackages([]);
-			}
-			
-			// 设置当前包加载成功
-			packageObj.loaded(creator, dependence);
-			
-			return Packager;
+			getPackage(name).register(creator, parsePackages(dependence));
 		},
 		
 		/**
@@ -785,22 +754,19 @@ window.kola = (function(kola) {
 		 * @param methods {Object} 方法列表
 		 * @return {KolaClass}
 		 */
-		createClass: newKolaClass,
-		
-		/**
-		 * 获取某个package的控制对象
-		 * 
-		 * @method get
-		 * @protected
-		 * @param name {String} package名称
-		 */
-		get: function(name) {
-			if(!name){
-				return packageObjects;
-			}
-			// 没有该package那就创建之
-			return packageObjects[name] || (packageObjects[name] = new Package(name));
-		}
+		createClass: newKolaClass
+	};
+	
+	/**
+	 * 获取某个package的控制对象
+	 * 
+	 * @method get
+	 * @param name {String} package名称
+	 * @return {Package} package信息
+	 */
+	var getPackage = function(name) {
+		// 没有该package那就创建之
+		return packageObjects[name] || (packageObjects[name] = new Package(name));
 	};
 	
 	/**
@@ -858,23 +824,38 @@ window.kola = (function(kola) {
 	 * 把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组
 	 */
 	var parsePackages = function(packages) {
-		packages = packages || [];
-		var allPlugin = [];
-		for (var i = 0, il = packages.length; i < il; i++) {
-			var name = trimAll(packages[i]);
-			var index = name.indexOf('[');
-			if (index == -1) continue;
-			
-			// 找到插件列表
-			var plugin = name.substring(index + 1, name.length - 1).split(',');
-			packages['_' + i] = plugin;
-			allPlugin = allPlugin.concat(plugin);
-			
-			// 记录下当前包的名称
-			packages[i] = name.substr(0, index);
+		// 先转化为数组
+		switch (typeof packages) {
+			case 'string':
+				packages = [packages];
+			case 'object':
+				// 如果是数组格式，那就分析出各种类型的package
+				if (packages !== null && packages.length) {
+					// 如果已经是解析过的对象，那就不做处理
+					if (packages.plugin) return packages;
+					
+					packages = packages.concat();
+					var allPlugin = [];
+					for (var i = 0, il = packages.length; i < il; i++) {
+						var name = trimAll(packages[i]);
+						var index = name.indexOf('[');
+						if (index == -1) continue;
+						
+						// 找到插件列表
+						var plugin = name.substring(index + 1, name.length - 1).split(',');
+						packages['_' + i] = plugin;
+						allPlugin = allPlugin.concat(plugin);
+						
+						// 记录下当前包的名称
+						packages[i] = name.substr(0, index);
+					}
+					packages.plugin = allPlugin;
+					
+					return packages;
+				}
+			default:
+				return null;
 		}
-		packages.plugin = allPlugin;
-		return packages;
 	};
 	
 	/*********************************************************************
@@ -883,7 +864,6 @@ window.kola = (function(kola) {
 	
 	//	如果存在缓存的kola方法，那就保存之
 	var cachedKolaCall = !!kola && kola._cache;
-	var anonymousCount = 0;
 	/**
 	 * 定义一个包
 	 * 
@@ -922,15 +902,15 @@ window.kola = (function(kola) {
 			case 3:
 				if (typeof args[1] != 'function') {
 					// 这是定义包
-					return Packager.define(args[0], args[1], args[2]);
+					return Packager.define.apply(Packager, args);
 				}				
 			case 2:
 				// 这是使用包执行的方式
-				return Packager.define('anonymous' + anonymousCount++, args[0], args[1], args[2], true);
+				return Packager.use.apply(Packager, args);
 			
 			case 1:
 				// 这是加载配置信息
-				return Packager.config(args[0]);
+				return Packager.config.apply(Packager, args);
 		}
 	};
 
