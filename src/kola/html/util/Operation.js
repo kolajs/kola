@@ -1,8 +1,10 @@
 kola('kola.html.util.Operation',[
+	'kola.html.util.Selector',
 	'kola.lang.Class',
 	'kola.lang.Function',
-	'kola.lang.String'
-],function(KolaClass, KolaFunction, KolaString){
+	'kola.lang.String',
+	'kola.html.util.Event'
+],function(Selector, KolaClass, KolaFunction, KolaString, KolaDomEvent){
 	var IEStyle = (navigator.userAgent.indexOf('MSIE') != -1 && parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( 'MSIE' ) + 5, 3)) < 9);
 	//用于element.data的存储
 	var cache = {};
@@ -292,11 +294,8 @@ kola('kola.html.util.Operation',[
 		 * @method outerHtml
 		 * @return {String}
 		 */
-		getoutrtHtml: function(){
-			if(arguments.length == 0){
-				return this[0].outerHTML;
-			}
-			return "";
+		getouterHtml: function(element){
+			return element.outerHTML;
 		},
 		/**
 		 * 设置一个元素的html(包含元素自身)
@@ -304,13 +303,10 @@ kola('kola.html.util.Operation',[
 		 * @param value {String} 要设置的html
 		 * @chainable
 		*/
-		setouterHtml: function(){
-			for(var i = this.length - 1; i>=0 ; i--){
-				targetElement = this[i]
-				var newElements = toElements(value)
-				Operation.before(this[i], newElements);
-				Operation.detach(this[i]);
-			}
+		setouterHtml: function(element, value){
+			var newElements = toElements(value)
+			exports.before(element, newElements);
+			exports.detach(element);
 			return newElements;
 		},
 		/**
@@ -718,29 +714,6 @@ kola('kola.html.util.Operation',[
 		},
 		toElements: toElements
 	}
-	//数组排重
-	var unique = function(array){
-		var flag = false;
-		var le = array.length;
-		for(var i = 0; i < le; i++){
-			for(j = i + 1; j < le; j++){
-				if(array[i] === array[j]){
-					array[j] = null;
-					flag = true;
-				}
-			}
-		}
-		if (flag) {
-			var top=0;
-			for (var i=0; i < le; i++) {
-				if(array[i]!==null)
-					array[top++]=array[i];
-			}
-			array.splice(top,le-top);
-			array.length = top;
-		}
-		return array;
-	}
 	/*
 	 * 得到元素数组
 	 * @method toElements
@@ -748,7 +721,7 @@ kola('kola.html.util.Operation',[
 	 * @param selector {Array<HTMLElement>|HTMLElement|String} 
 	 * @return {Array<HTMLElement>}
 	 */
-	var toElements = function(selector){
+	function toElements(selector){
 		//	如果为html字符串
 		if(typeof selector === "string"){
 			var newDom = document.createElement('div');
@@ -759,10 +732,6 @@ kola('kola.html.util.Operation',[
 			}
 			//Dispatcher.global.fire({type: 'DOMNodeInserted',data: arr});
 			return arr;
-		}
-		//	如果为html数组
-		if(selector.length && selector[0].nodeType){
-			return selector;
 		}
 		// 如果是window
 		if(selector == window)
@@ -776,6 +745,10 @@ kola('kola.html.util.Operation',[
 				selector = selector.documentElement;
 			return [selector];
 		}
+		//	如果为html数组
+		//if(selector.length && selector[0].nodeType){
+		//	return selector;
+		//}
 		//	如果为HTMLCollection的话，那就返回之
 		if (selector.length != undefined) {
 			var array = [];

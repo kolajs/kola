@@ -8,9 +8,8 @@ kola('kola.html.Element',[
 	'kola.lang.Class',
 	'kola.lang.Array',
 	'kola.html.util.Selector',
-	'kola.html.util.Event',
 	'kola.html.util.Operation'
-],function(KolaClass, KolaArray, Selector, KolaBomEvent, Operation){
+],function(KolaClass, KolaArray, Selector, Operation){
 	/**
 	 * kola的KolaElement类
 	 * 
@@ -81,7 +80,7 @@ kola('kola.html.Element',[
 		 * @chainable
 		 */
 		add: function(sets){
-			var elements = toElements(sets);
+			var elements = Operation.toElements(sets);
 			for(var i = 0, il = elements.length; i < il ; i ++){
 				this[this.length] = elements[i];
 			}
@@ -97,7 +96,7 @@ kola('kola.html.Element',[
 		 * @chainable
 		 */
 		remove: function(sets){
-			var elements = toElements(sets);
+			var elements = Operation.toElements(sets);
 			for(var i=0, il = elements.length; i < il; i++){
 				for(var j=0, jl = this.length; j < jl; j++){
 					if(this[j] == elements[i]){
@@ -126,43 +125,29 @@ kola('kola.html.Element',[
 		},
 
 		outerHtml: function(value){
-			/**
-			* 查询一个元素的html(包含元素自身)
-			* @method outerHtml
-			* @return {String}
-			*/
-			if(arguments.length == 0){
-				return this[0].outerHTML;
+			if (arguments.length == 0) {
+				return Operation.getouterHtml(this[0])
+			}else{
+				for(var i = 0; i < this.length; i++){
+					this[i] = Operation.setouterHtml(this[i], value)[0]
+				}
+				return this;
 			}
-			/**
-			* 设置一个元素的html(包含元素自身)
-			* @method outerHtml
-			* @param value {String} 要设置的html
-			* @chainable
-			*/
-			for(var i = this.length - 1; i>=0 ; i--){
-				targetElement = this[i]
-				var newElements = toElements(value)
-				Operation.before(this[i], newElements);
-				Operation.detach(this[i]);
-				this[i] = newElements[0];
-			}
-			return this;
 		},
 		//使得浏览器认为实例是一个数组，方便调试
 		splice:[].splice
 	});
 	//定义一个针对节点读取属性或设置属性的操作
-	function getSet(get, set){
-		var lengthGroup = [];
-		get.isGet = true;
-		lengthGroup[get.length - 1] = get;
-		lengthGroup[set.length - 1] = set;
-		return lengthGroup;
+	function getSet(getFunction, setFunction){
+		var functionGroup = [];
+		getFunction.isGet = true;
+		functionGroup[getFunction.length - 1] = getFunction;
+		functionGroup[setFunction.length - 1] = setFunction;
+		return functionGroup;
 	}
 	//getSet
 	KolaArray.forEach('attr,prop,data,css,style,val,html,text'.split(','),function(functionName){
-		var getSetFunction = getSet(Operation['get' + functionName], Operation['set' + functionName][1]);
+		var getSetFunction = getSet(Operation['get' + functionName], Operation['set' + functionName]);
 		exports.prototype[functionName] = function(name, value){
 			var operater = getSetFunction[arguments.length];
 			if(operater.isGet){
@@ -224,6 +209,28 @@ kola('kola.html.Element',[
 			return this;
 		}
 	});
-	
+	//数组排重
+	function unique(array){
+		var flag = false;
+		var le = array.length;
+		for(var i = 0; i < le; i++){
+			for(j = i + 1; j < le; j++){
+				if(array[i] === array[j]){
+					array[j] = null;
+					flag = true;
+				}
+			}
+		}
+		if (flag) {
+			var top=0;
+			for (var i=0; i < le; i++) {
+				if(array[i]!==null)
+					array[top++]=array[i];
+			}
+			array.splice(top,le-top);
+			array.length = top;
+		}
+		return array;
+	}
 	return exports;
 });
