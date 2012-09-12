@@ -120,9 +120,7 @@
  * @module kola.bom
  *&#x2F;
  
-kola(&#x27;kola.bom.Browser&#x27;,[
-	&#x27;kola.lang.Function&#x27;
-],function(KolaFunction) {
+kola(&#x27;kola.bom.Browser&#x27;, null, function() {
 	var agent = navigator.userAgent,
 		render,version;
 
@@ -202,56 +200,7 @@ kola(&#x27;kola.bom.Browser&#x27;,[
 		* @property Gecko
 		* @type {Boolean}
 		*&#x2F;
-		Gecko : (render==&#x27;gecko&#x27;),
-		&#x2F;**
-		* 获取浏览器名称
-		* @method name
-		* @return {String} qq|maxthon|ie|chrome|safari|firefox|opera|unkown(360、遨游)
-		*&#x2F;
-		name: function() {
-			var agent = navigator.userAgent,
-				value;
-
-			switch ( this.render ) {
-				case &#x27;ie&#x27;:
-					if ( agent.indexOf( &#x27;QQBrowser&#x27; ) != -1 ) {
-						value = &#x27;qq&#x27;;
-					} else if ( agent.indexOf( &#x27;Maxthon&#x27; ) != -1 ) {
-					    value = &#x27;maxthon&#x27;;
-					} else if ( agent.indexOf( &#x27;SE&#x27;) != -1 &amp;&amp; agent.indexOf( &#x27;MetaSr&#x27;) != -1 ) {
-						value = &#x27;sogou&#x27;;
-					} else {
-						&#x2F;&#x2F;	该模式下无法识别出360
-						value = &#x27;ie&#x27;;
-					}
-					break;
-				case &#x27;webkit&#x27;:
-					if ( agent.indexOf( &#x27;Chrome&#x27; ) != -1 ) {
-						value = &#x27;chrome&#x27;;
-					} else if ( agent.indexOf( &#x27;QQBrowser&#x27; ) != -1 ) {
-						value = &#x27;qq&#x27;;
-					} else if ( agent.indexOf( &#x27;Maxthon&#x27; ) != -1 ) {
-					    value = &#x27;maxthon&#x27;;
-					} else if ( agent.indexOf( &#x27;SE&#x27;) != -1 &amp;&amp; agent.indexOf( &#x27;MetaSr&#x27;) != -1 ) {
-						value = &#x27;sogou&#x27;;
-					} else if ( agent.indexOf( &#x27;Version&#x27;) != -1 &amp;&amp; agent.indexOf( &#x27;Safari&#x27;) != -1 ) {
-						value = &#x27;safari&#x27;;
-					} else {
-						&#x2F;&#x2F;	该模式下无法识别出360、遨游
-						value = &#x27;unkown&#x27;;
-					}
-					break;
-				case &#x27;gecko&#x27;:
-				    value = &#x27;firefox&#x27;;
-					break;
-				case &#x27;Presto&#x27;:
-					value = &#x27;opera&#x27;;
-					break;
-			}
-
-			this.name = KolaFunction.value(value);
-			return value;
-		}
+		Gecko : (render==&#x27;gecko&#x27;)
 	};
 });
     </pre>
