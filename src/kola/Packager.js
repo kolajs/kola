@@ -3,6 +3,8 @@
  * 
  * @module kola
  * @main kola
+ * 
+ * @author Jady Yang
  */
 
 window.kola = (function(kola) {

@@ -1,9 +1,3 @@
-/**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- */
-
 kola('kola.lang.Function', [
 	'kola.lang.Class'
 ], function (KolaClass) {
@@ -16,6 +10,7 @@ kola('kola.lang.Function', [
 	 * @author Jady Yang
 	 */
 	var exports = {
+		
 		/**
 		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前
 		 * 
@@ -38,6 +33,7 @@ kola('kola.lang.Function', [
 				return target.apply(scope, newArgs);
 			};
 		},
+		
 		/**
 		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前
 		 * 
@@ -65,6 +61,7 @@ kola('kola.lang.Function', [
 				throw("No matched arguments in overload function!")
 			}
 		},
+		
 		/**
 		 * 可被全局使用的空函数
 		 * 
@@ -87,6 +84,7 @@ kola('kola.lang.Function', [
 			};
 		}
 	};
+	
 	/*
 	 * 比较描述与函数参数实际是否相符
 	 * 

@@ -1,11 +1,6 @@
-/**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- */
 
-kola('kola.lang.String', [
-], function () {
+kola('kola.lang.String', null, function() {
+	
 	/**
 	 * kola的String类
 	 * 
@@ -15,22 +10,44 @@ kola('kola.lang.String', [
 	 * @author Jady Yang
 	 */
 	var exports = {
+		
 		/**
-		 * 去除掉字符串左右两侧的空格
+		 * 去除掉字符串左右两侧、连续的空格
 		 * 
 		 * @method trim
 		 * @param string {String} 要过滤空格的字符串
-		 * @return {String}
+		 * @return {String} 
 		 */
 		trim: function(string) {
 			return string.replace(trimLeft, '').replace(trimRight, '');
+		},
+		
+		/**
+		 * 去除掉字符串左侧开始的、连续的空格
+		 * 
+		 * @method trimLeft
+		 * @param string {String} 要过滤空格的字符串
+		 * @return {String}
+		 */
+		trimLeft: function(string) {
+			return string.replace(trimLeft, '');
+		},
+		
+		/**
+		 * 去除掉字符串右侧开始的、连续的空格
+		 * 
+		 * @method trimRight
+		 * @param string {String} 要过滤空格的字符串
+		 * @return {String}
+		 */
+		trimRight: function(string) {
+			return string.replace(trimRight, '');
 		}
 	};
-	/**
-	 * @private
-	 * @proprety trimLeft
-	 */
+	
+	// 使用这种正则的原因参考：http://blog.stevenlevithan.com/archives/faster-trim-javascript
 	var trimLeft = /^\s\s*/;
 	var trimRight = /\s\s*$/;
+	
 	return exports;
 });

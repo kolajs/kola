@@ -1,9 +1,3 @@
-/**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- */
-
 kola('kola.lang.Object', [
 	'kola.lang.Class'
 ], function (KolaClass) {
@@ -91,6 +85,7 @@ kola('kola.lang.Object', [
 			return keys
 		}
 	};
+	
 	var isPlainObject = function( obj ) {
 		if (!obj || !KolaClass.isObject(obj) || obj.nodeType) {
 			return false;
@@ -106,6 +101,7 @@ kola('kola.lang.Object', [
 		for (key in obj) {}
 
 		return key === undefined || obj.hasOwnProperty(key);
-	}
+	};
+	
 	return exports;
 });

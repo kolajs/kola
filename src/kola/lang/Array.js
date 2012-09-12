@@ -1,11 +1,11 @@
 /**
- * kola language 包，提供JS语言中常见数据类型的常用方法
+ * 增强JS基本数据类型的功能
  * 
  * @module kola.lang
  */
 
-kola('kola.lang.Array', [
-], function () {
+kola('kola.lang.Array', null, function() {
+	
 	/**
 	 * kola的Array类
 	 * 
@@ -14,8 +14,13 @@ kola('kola.lang.Array', [
 	 * 
 	 * @author Jady Yang
 	 */
-	if (navigator.userAgent.indexOf('MSIE') != -1 && parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf('MSIE') + 5, 3 )) < 9) {
+	var userAgent = navigator.userAgent;
+	if (userAgent.indexOf('MSIE') != -1 
+		&& parseInt(userAgent.substr(userAgent.indexOf('MSIE') + 5, 3 )) < 9
+	) {
+		
 		var exports = {
+			
 			/**
 			 * 获取指定元素在数组中的位置
 			 * 
@@ -25,7 +30,7 @@ kola('kola.lang.Array', [
 			 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
 			 * @return {Number} 搜索到的位置，如果没有则返回-1
 			 */
-			indexOf: function (target, searchElement, fromIndex) {	
+			indexOf: function(target, searchElement, fromIndex) {	
 				//	如果数组长度为0，那就返回-1
 				var length = target.length;
 				
@@ -37,6 +42,7 @@ kola('kola.lang.Array', [
 				for (var i = absStart, il = target.length; i < il; i ++) {
 					if (target[i] === searchElement) return i;
 				}
+				
 				return -1;
 			},
 			
@@ -49,12 +55,13 @@ kola('kola.lang.Array', [
 			 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
 			 * @return {Number} 搜索到的位置，如果没有则返回-1
 			 */
-			lastIndexOf: function (target, searchElement, fromIndex) {
-
+			lastIndexOf: function(target, searchElement, fromIndex) {
 				//	如果数组长度为0，那就返回-1
 				var length = target.length;
-				if(arguments.length == 2)
+				if (arguments.length == 2) {
 					fromIndex = length -1;
+				}
+				
 				//	拿到起始位置
 				var start = typeof(fromIndex) == 'number' ? fromIndex : 0,
 					absStart = start >= 0 ? start : Math.max(length + start, 0);
@@ -75,7 +82,7 @@ kola('kola.lang.Array', [
 			 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 			 * @return {Boolean} 返回值
 			 */
-			every: function (target, callback, scope) {
+			every: function(target, callback, scope) {
 				return each(target, 'every', function(item, i, target) {
 					return callback.call(scope, item, i, target)
 				});
@@ -90,7 +97,7 @@ kola('kola.lang.Array', [
 			 * @param scope {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 			 * @return {Boolean} 返回值
 			 */
-			some: function (target, callback, scope) {
+			some: function(target, callback, scope) {
 				return !each(target, 'some', function(item, i, target) {
 					return !callback.call(scope, item, i, target);
 				});
@@ -104,7 +111,7 @@ kola('kola.lang.Array', [
 			 * @param callback {callback | Function} 迭代器
 			 * @param scope {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 			 */
-			forEach: function (target, callback, scope) {
+			forEach: function(target, callback, scope) {
 				each(target, 'forEach', function(item, i, target) {
 					callback.call(scope, item, i, target);
 				});
@@ -119,7 +126,7 @@ kola('kola.lang.Array', [
 			 * @param scope {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 			 * @return {Array} 包含每次迭代结果的新数组
 			 */
-			map: function (target, callback, scope) {
+			map: function(target, callback, scope) {
 				var values = [];
 				each(target, 'some', function(item, i, target) {
 					values.push(callback.call(scope, item, i, target));
@@ -136,10 +143,10 @@ kola('kola.lang.Array', [
 			 * @param scope {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 			 * @return {Array} 过滤后的新数组
 			 */
-			filter: function (target, callback, scope) {
+			filter: function(target, callback, scope) {
 				var values = [];
 				each(target, 'filter', function(item, i, target) {
-					if(callback.call(scope, item, i, target) == true) {
+					if (callback.call(scope, item, i, target) == true) {
 						values.push(item);
 					}
 				});
@@ -156,18 +163,17 @@ kola('kola.lang.Array', [
 			 * @param scope {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 			 * @return {Any} 最后一次处理函数的调用结果
 			 */
-			 /*
+			/*
 			 * reduce的回调函数
 			 * 
 			 * @callback 
-			 * @for Array.reduce
 			 * @param previous {Any} 之前的处结果，如果是第一次调用，则为initialValue
 			 * @param current {Any} 当item前的值
 			 * @param index {Any} 当前的index
 			 * @param target {Any} 被处理的数组
 			 * @return {Any} 当前item的处理结果
 			 */
-			reduce: function (target, callback, initialValue, scope) {
+			reduce: function(target, callback, initialValue, scope) {
 				initialValue = initialValue || 0;
 				each(target, 'reduce', function(item, i, target){
 					initialValue = callback.call(scope, initialValue, item, i, target);
@@ -187,7 +193,7 @@ kola('kola.lang.Array', [
 		 * @param callback {Function} 迭代器
 		 * @return {Boolean} 返回值
 		 */
-		var each = function (target, fn, callback) {		
+		var each = function(target, fn, callback) {		
 			//	循环数组中的每个项，依次传给迭代器
 			for (var i = 0, il = target.length; i < il; i ++) {
 				if (target.hasOwnProperty(i.toString())) {
@@ -198,30 +204,30 @@ kola('kola.lang.Array', [
 		};
 	}else{
 		var exports = {
-			indexOf: function (target, searchElement, fromIndex) {
+			indexOf: function(target, searchElement, fromIndex) {
 				return target.indexOf(searchElement, fromIndex);
 			},
-			lastIndexOf: function (target, searchElement, fromIndex) {
-				if(arguments.length == 3)
+			lastIndexOf: function(target, searchElement, fromIndex) {
+				if (arguments.length == 3)
 					return target.lastIndexOf(searchElement, fromIndex);
 				else
 					return target.lastIndexOf(searchElement);
 			}
 		};
-		['every', 'some', 'forEach', 'map', 'filter'].forEach(function (item){
-			exports[item] = function (target, callback, scope){
-				if(!scope){
+		['every', 'some', 'forEach', 'map', 'filter'].forEach(function(item){
+			exports[item] = function(target, callback, scope){
+				if (!scope){
 					return target[item](callback);
 				}else{
-					return target[item](function (item, i, target){
+					return target[item](function(item, i, target){
 						return callback.call(scope, item, i, target)
 					});
 				}
 			}
 		});
-		exports.reduce = function (target, callback, initialValue, scope) {
+		exports.reduce = function(target, callback, initialValue, scope) {
 			initialValue = initialValue || 0;
-			return target.reduce(function (prev, item, i, target){
+			return target.reduce(function(prev, item, i, target){
 				return callback.call(scope, prev, item, i, target)
 			}, initialValue);
 		}
@@ -232,10 +238,10 @@ kola('kola.lang.Array', [
 	 * @param source {Object} 类数组
 	 * @return {Array}
 	 */
-	exports.parse = function (source) {
+	exports.parse = function(source) {
 		var sourceLength = source.length
 		var result = [];
-		if( !sourceLength )
+		if (!sourceLength)
 			return []
 		for(var i = 0; i < sourceLength; i++){
 			result.push(source[i]);
