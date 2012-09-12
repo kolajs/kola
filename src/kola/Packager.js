@@ -93,13 +93,13 @@ window.kola = (function(kola) {
 	 * 创建一个新的类
 	 * 
 	 * @param [superClass] {KolaClass} 父类
-	 * @param methods {Object} 方法列表
+	 * @param prototypes {Object} 方法列表
 	 * @return {KolaClass}
 	 */
-	var newKolaClass = function(superClass, methods) {
+	var newKolaClass = function(superClass, prototypes) {
 		// 判断是否指定了父类
 		if (arguments.length == 1) {
-			methods = superClass;
+			prototypes = superClass;
 			superClass = null;
 		}
 		
@@ -107,7 +107,7 @@ window.kola = (function(kola) {
 		var prototypeInstance;
 		if (superClass === null) {
 			// 这时候methods一定不为null
-			prototypeInstance = methods;
+			prototypeInstance = prototypes;
 		} else {
 			// 需要建立一个中间类，用于生成一个原型对象
 			var prototypeClass = newEmptyFunction();
@@ -116,8 +116,8 @@ window.kola = (function(kola) {
 			prototypeInstance = new prototypeClass();
 							
 			// 复制方法列表到原型对象上
-			for (var name in methods) {
-				prototypeInstance[name] = methods[name];
+			for (var name in prototypes) {
+				prototypeInstance[name] = prototypes[name];
 			}
 		}
 		
@@ -307,8 +307,6 @@ window.kola = (function(kola) {
 		
 		/**
 		 * 加载当前包
-		 * 
-		 * @chainable
 		 */
 		_load: function() {
 			var name = this._name;
@@ -334,8 +332,6 @@ window.kola = (function(kola) {
 			
 			// 开始加载
 			(document.head || document.getElementsByTagName('head')[0]).appendChild(script);
-			
-			return this;
 		},
 		
 		/**
@@ -366,8 +362,6 @@ window.kola = (function(kola) {
 		
 		/**
 		 * 开始加载依赖包
-		 * 
-		 * @chainable
 		 */
 		_depend: function() {
 			// 设置状态为完成状态
@@ -380,14 +374,10 @@ window.kola = (function(kola) {
 				// 没有依赖包，那就直接进入待用状态
 				this._inactivate();
 			}
-			
-			return this;
 		},
 		
 		/**
 		 * 设置为待用状态
-		 * 
-		 * @chainable
 		 */
 		_inactivate: function() {
 			this._status = PackageStatus.INACTIVE;
@@ -396,18 +386,14 @@ window.kola = (function(kola) {
 			if (this._activateListeners) {
 				this._activate();
 			}
-			
-			return this;
 		},
 		
 		/**
 		 * 设置为可用状态
-		 * 
-		 * @chainable
 		 */
 		_activate: function() {
 			// 获得实体内容
-			this._creator = this._creator.apply(window, entities(this._dependence));
+			this._creator = this._creator.apply(window, this._dependence ? entities(this._dependence) : []);
 			
 			// 清除不必要的属性
 			delete this._dependence;
@@ -427,8 +413,6 @@ window.kola = (function(kola) {
 				// 清除
 				delete this._activateListeners;
 			}
-
-			return this;
 		},
 		
 		/**
@@ -438,6 +422,7 @@ window.kola = (function(kola) {
 		 * @chainable
 		 */
 		activate: function(listener) {
+			var status = this._status;
 			// 根据不同的状态，进行不同的处理
 			if (status == PackageStatus.ACTIVE) {
 				// 处于可用状态
@@ -471,6 +456,8 @@ window.kola = (function(kola) {
 		
 		/**
 		 * 获取包的实体内容
+		 * 
+		 * @return {Any} 包的实体内容
 		 */
 		entity: function() {
 			// 如果状态不对，那就提示之
@@ -589,7 +576,6 @@ window.kola = (function(kola) {
 		 * @param packages {String | Array<String>} 要使用的包，如果是string也就是一个包的包名，如果是Array，那可能就是依赖的包列表
 		 * @param callback {Function} 包可用之后的回调方法
 		 * @param [scope] {Any} 回调方法的作用域，没有的话就为Packager
-		 * @chainable
 		 */
 		use: function(packages, callback, scope) {
 			if (packages === null) throwError('wrong packages');
@@ -598,12 +584,12 @@ window.kola = (function(kola) {
 			// 创建一个依赖包可用后的回调方法
 			var allPackages = packages.concat(packages.plugin);
 			var fn = callTimes(allPackages.length, function() {
-				callback.apply(scope || window, entities(packages));
+				callback.apply(scope || Packager, entities(packages));
 			});
 			
 			// 监听所有包的activate事件
 			for (var i = allPackages.length - 1; i >= 0; i--) {
-				allPackages[i].activate(fn);
+				getPackage(allPackages[i]).activate(fn);
 			}
 		},
 		
@@ -612,12 +598,11 @@ window.kola = (function(kola) {
 		 * 
 		 * @method define
 		 * @param name {String} 包全名
-		 * @param dependence {Array<String> | String | Null} 依赖包列表
-		 * 		如果为String类型，说明只有一个依赖包
-		 * 		如果是Array类型，那就是依赖包的列表
-		 * 		如果为null，即没有依赖包
+		 * @param dependence {Array<String> | String | Null} 依赖包列表。
+		 * 		如果为String类型，说明只有一个依赖包；
+		 * 		如果是Array类型，那就是依赖包的列表；
+		 * 		如果为null，即没有依赖包；
 		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
-		 * @chainable
 		 */
 		define: function(name, dependence, creator) {
 			getPackage(name).register(creator, parsePackages(dependence));
@@ -628,7 +613,6 @@ window.kola = (function(kola) {
 		 * 
 		 * @method config
 		 * @param config {Object} 增量设置对象
-		 * @chainable
 		 * 
 		 * @example
 		 * 	{
@@ -669,8 +653,6 @@ window.kola = (function(kola) {
 		 */
 		config: function(config) {
 			objectExtend(config, packagerConfig);
-			
-			return Packager;
 		},
 		
 		/**
@@ -751,8 +733,8 @@ window.kola = (function(kola) {
 		 * 
 		 * @method createClass
 		 * @param [superClass] {Function} 父类
-		 * @param methods {Object} 方法列表
-		 * @return {KolaClass}
+		 * @param prototypes {Object} 属性和方法列表
+		 * @return {KolaClass} 创建的新类
 		 */
 		createClass: newKolaClass
 	};
@@ -760,9 +742,8 @@ window.kola = (function(kola) {
 	/**
 	 * 获取某个package的控制对象
 	 * 
-	 * @method get
 	 * @param name {String} package名称
-	 * @return {Package} package信息
+	 * @return {Package} package控制对象
 	 */
 	var getPackage = function(name) {
 		// 没有该package那就创建之
@@ -823,6 +804,7 @@ window.kola = (function(kola) {
 	/**
 	 * 把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组
 	 */
+	// TODO: 还未增加对lib和版本的支持
 	var parsePackages = function(packages) {
 		// 先转化为数组
 		switch (typeof packages) {
@@ -864,6 +846,7 @@ window.kola = (function(kola) {
 	
 	//	如果存在缓存的kola方法，那就保存之
 	var cachedKolaCall = !!kola && kola._cache;
+	
 	/**
 	 * 定义一个包
 	 * 
@@ -871,10 +854,11 @@ window.kola = (function(kola) {
 	 * @for window
 	 * @param name {String} 包名
 	 * @param dependence {String | Array<String> | Null} 依赖包列表。
-	 * 	如果是String类型，那就是只依赖一个包，即为依赖的包名
-	 * 	如果是Array类型，那就是依赖的包列表，每项就是一个依赖包的包名
-	 * 	如果为null，那就不依赖任何包
+	 * 		如果是String类型，那就是只依赖一个包，即为依赖的包名；
+	 * 		如果是Array类型，那就是依赖的包列表，每项就是一个依赖包的包名；
+	 * 		如果为null，那就不依赖任何包；
 	 * @param creator {Function} 包内容生成器
+	 * @chainable
 	 */
 	/**
 	 * 使用包进行某项操作
@@ -882,10 +866,11 @@ window.kola = (function(kola) {
 	 * @method kola
 	 * @for window
 	 * @param packages {String | Array<String>} 要使用的包列表。
-	 * 	如果是String类型，那就是只使用一个包，即为包名
-	 * 	如果是Array类型，那就是要使用的包列表，每项就是一个包名
+	 * 		如果是String类型，那就是只使用一个包，即为包名；
+	 * 		如果是Array类型，那就是要使用的包列表，每项就是一个包名；
 	 * @param callback {Function} 要执行的方法
-	 * @param [scope] {Any} 被执行方法的作用域
+	 * @param [scope] {Any} 被执行方法的作用域，如果没有设置那就是当前kola的作用域
+	 * @chainable
 	 */
 	/**
 	 * 加载一个kola设置对象
@@ -893,8 +878,8 @@ window.kola = (function(kola) {
 	 * @method kola
 	 * @for window
 	 * @param config {Object} 设置对象
+	 * @chainable
 	 */
-	// TODO: 还未增加对lib和版本的支持
 	kola = function() {
 		var args = arguments,
 			scope = this;
@@ -902,16 +887,21 @@ window.kola = (function(kola) {
 			case 3:
 				if (typeof args[1] != 'function') {
 					// 这是定义包
-					return Packager.define.apply(Packager, args);
+					Packager.define.apply(Packager, args);
+					break;
 				}				
+				// 这是包执行的方式，并且设置了scope
 			case 2:
 				// 这是使用包执行的方式
-				return Packager.use.apply(Packager, args);
-			
+				
+				Packager.use.call(Packager, args[0], args[1], args.length > 2 ? args[2] : this);
+				break;
 			case 1:
 				// 这是加载配置信息
-				return Packager.config.apply(Packager, args);
+				Packager.config.apply(Packager, args);
 		}
+		
+		return kola;
 	};
 
 	// 声明kola.Packager包

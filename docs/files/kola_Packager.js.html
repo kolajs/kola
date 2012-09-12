@@ -209,13 +209,13 @@ window.kola = (function(kola) {
 	 * 创建一个新的类
 	 * 
 	 * @param [superClass] {KolaClass} 父类
-	 * @param methods {Object} 方法列表
+	 * @param prototypes {Object} 方法列表
 	 * @return {KolaClass}
 	 *&#x2F;
-	var newKolaClass = function(superClass, methods) {
+	var newKolaClass = function(superClass, prototypes) {
 		&#x2F;&#x2F; 判断是否指定了父类
 		if (arguments.length == 1) {
-			methods = superClass;
+			prototypes = superClass;
 			superClass = null;
 		}
 		
@@ -223,7 +223,7 @@ window.kola = (function(kola) {
 		var prototypeInstance;
 		if (superClass === null) {
 			&#x2F;&#x2F; 这时候methods一定不为null
-			prototypeInstance = methods;
+			prototypeInstance = prototypes;
 		} else {
 			&#x2F;&#x2F; 需要建立一个中间类，用于生成一个原型对象
 			var prototypeClass = newEmptyFunction();
@@ -232,8 +232,8 @@ window.kola = (function(kola) {
 			prototypeInstance = new prototypeClass();
 							
 			&#x2F;&#x2F; 复制方法列表到原型对象上
-			for (var name in methods) {
-				prototypeInstance[name] = methods[name];
+			for (var name in prototypes) {
+				prototypeInstance[name] = prototypes[name];
 			}
 		}
 		
@@ -385,20 +385,20 @@ window.kola = (function(kola) {
 	 * Package加载状态枚举类
 	 *&#x2F;
 	var PackageStatus = {
-		uninitialized:	0,		&#x2F;&#x2F; 未初始化
-		loading:		1,		&#x2F;&#x2F; 正在加载
-		loaded:			2,		&#x2F;&#x2F; 加载完成
-		failed:			-1,		&#x2F;&#x2F; 加载失败
-		depending:		3,		&#x2F;&#x2F; 正在加载依赖包
-		interactive:	4,		&#x2F;&#x2F; 所有直接或间接依赖包已经加载完成，处于待用状态
-		complete:		5		&#x2F;&#x2F; 完全可用
+		UNINITIALIZED:	0,		&#x2F;&#x2F; 未初始化
+		LOADING:		1,		&#x2F;&#x2F; 加载中
+		LOADED:			2,		&#x2F;&#x2F; 加载完成
+		FAILED:			-1,		&#x2F;&#x2F; 加载失败
+		DEPENDING:		3,		&#x2F;&#x2F; 依赖包正在加载中
+		INACTIVE:		4,		&#x2F;&#x2F; 待用（所有直接或间接依赖包已经加载完成）
+		ACTIVE:			5		&#x2F;&#x2F; 可用
 	};
 	
 	&#x2F;*********************************************************************
 	 *                        Package类
 	 ********************************************************************&#x2F;
 	
-	var Package = newKolaClass(null, {
+	var Package = newKolaClass({
 		
 		&#x2F;**
 		 * 每个kola包的对应控制类
@@ -409,17 +409,26 @@ window.kola = (function(kola) {
 			this._name = name;
 			
 			&#x2F;&#x2F; 设置为默认状态
-			this._status = PackageStatus.uninitialized;
+			this._status = PackageStatus.UNINITIALIZED;
+		},
+		
+		&#x2F;**
+		 * 获取包的状态
+		 * 
+		 * @return {Number}
+		 *&#x2F;
+		status: function(status) {
+			return this._status;
 		},
 		
 		&#x2F;**
 		 * 加载当前包
-		 * 
-		 * @chainable
 		 *&#x2F;
-		load: function() {
+		_load: function() {
+			var name = this._name;
+			
 			&#x2F;&#x2F; 获取路径信息
-			var path = Packager.path(this._name);
+			var path = Packager.path(name);
 			
 			&#x2F;&#x2F; 创建用于加载的script节点，并设置相关信息
 			var script = document.createElement(&#x27;script&#x27;);
@@ -429,217 +438,239 @@ window.kola = (function(kola) {
 			}
 			
 			&#x2F;&#x2F; 跟踪error事件，用于发现链接错误或包名笔误的包
-			script.onerror = bindScope(scriptFail, this, this._name, script);
+			script.onerror = bindScope(scriptFail, this, name, script);
 			
 			&#x2F;&#x2F; 跟踪加载完成事件，用于发现包执行错误或者期望与实际包名不同的包
-			script.onload = bindScope(scriptSucc, this, this._name, script);
+			script.onload = bindScope(scriptSucc, this, name, script);
 			
 			&#x2F;&#x2F; 设置加载状态为加载中
-			this.status(PackageStatus.loading);
+			this._status = PackageStatus.LOADING;
 			
 			&#x2F;&#x2F; 开始加载
 			(document.head || document.getElementsByTagName(&#x27;head&#x27;)[0]).appendChild(script);
+		},
+		
+		&#x2F;**
+		 * 注册包的实体信息
+		 * 
+		 * @param creator {Function} 包内容生成器
+		 * @param dependence {Array&lt;String&gt; | Null} 依赖包的列表
+		 * @chainable
+		 *&#x2F;
+		register: function(creator, dependence) {
+			&#x2F;&#x2F; 如果状态不对，则不进行处理
+			if (this._status &gt;= PackageStatus.LOADED) return this;
+			
+			&#x2F;&#x2F; 保留相关配置信息
+			this._creator = creator;
+			this._dependence = dependence;
+			
+			&#x2F;&#x2F; 设置为加载完成状态
+			this._status = PackageStatus.LOADED;
+			
+			&#x2F;&#x2F; 如果存在可用状态的事件监听者或者不存在依赖者的话，都可以直接开始依赖的加载
+			if (this._activateListeners || !this._dependence) {
+				this._depend();
+			}
 			
 			return this;
 		},
 		
 		&#x2F;**
-		 * 当前包已经加载成功，并设置依赖包信息
-		 * 
-		 * @param creator {Function} 包内容生成器
-		 * @param dependence {Array&lt;String&gt; | Null} 依赖包的列表
+		 * 开始加载依赖包
 		 *&#x2F;
-		loaded: function(creator, dependence) {
-			this._creator = creator;
-			if (dependence !== null) {
-				this._dependence = dependence;
-			}
+		_depend: function() {
+			&#x2F;&#x2F; 设置状态为完成状态
+			this._status = PackageStatus.DEPENDING;
 			
-			&#x2F;&#x2F; 设置为加载完成状态
-			this.status(PackageStatus.loaded);
-			
-			&#x2F;&#x2F; 加载完成后的，需要考虑是否自动加载依赖项
-			if (this._wanted || dependence === null) {
-				depending.call(this);
+			if (this._dependence) {
+				&#x2F;&#x2F; 有依赖包
+				Packager.use(this._dependence, this._inactivate, this);
+			} else {
+				&#x2F;&#x2F; 没有依赖包，那就直接进入待用状态
+				this._inactivate();
 			}
 		},
 		
 		&#x2F;**
-		 * 当包处于可用状态时，回调该方法
+		 * 设置为待用状态
+		 *&#x2F;
+		_inactivate: function() {
+			this._status = PackageStatus.INACTIVE;
+				
+			&#x2F;&#x2F; 如果存在可用状态的事件监听者，那就进入下一个状态
+			if (this._activateListeners) {
+				this._activate();
+			}
+		},
+		
+		&#x2F;**
+		 * 设置为可用状态
+		 *&#x2F;
+		_activate: function() {
+			&#x2F;&#x2F; 获得实体内容
+			this._creator = this._creator.apply(window, this._dependence ? entities(this._dependence) : []);
+			
+			&#x2F;&#x2F; 清除不必要的属性
+			delete this._dependence;
+			
+			&#x2F;&#x2F; 设置状态为完成状态
+			this._status = PackageStatus.ACTIVE;
+			
+			&#x2F;&#x2F; 如果有监听activated事件的监听器，那就处理之
+			var listeners = this._activateListeners;
+			if (listeners) {
+				var entity = this._creator;
+				&#x2F;&#x2F; 循环每个回调，依次执行之
+				while (listener = listeners.shift()) {
+					listener(entity);
+				}
+				
+				&#x2F;&#x2F; 清除
+				delete this._activateListeners;
+			}
+		},
+		
+		&#x2F;**
+		 * 监听可用状态事件
 		 * 
-		 * @param callback {Function} 包可用后的回调方法
+		 * @param listener {Function} 包处于可用状态后的回调方法
 		 * @chainable
 		 *&#x2F;
-		complete: function(callback) {
-			&#x2F;&#x2F; 这是监听包的可用状态
-			this._wanted = true;
-			
-			&#x2F;&#x2F; 把可用后的回调方法放到排队表中
-			(this._demander || (this._demander = [])).push(callback);
-			
-			&#x2F;&#x2F; 根据不同的状态，执行不同的操作
-			switch (this._status) {
+		activate: function(listener) {
+			var status = this._status;
+			&#x2F;&#x2F; 根据不同的状态，进行不同的处理
+			if (status == PackageStatus.ACTIVE) {
+				&#x2F;&#x2F; 处于可用状态
+				listener(this._creator);
+			} else {
+				&#x2F;&#x2F; 保存到方法列表
+				(this._activateListeners || (this._activateListeners = [])).push(listener);
 				
-				&#x2F;&#x2F; 如果是未初始化状态，那就需要开始加载
-				case PackageStatus.uninitialized:
-					this.load();
-					break;
-				
-				&#x2F;&#x2F; 如果处于加载完成状态，那就开始加载依赖包
-				case PackageStatus.loaded:
-					depending.call(this);
-					break;
-				
-				&#x2F;&#x2F; 如果处于可用状态，那就在下一个队列中执行之
-				case PackageStatus.complete:
-					fireComplete.call(this);
-					break;
-				
-				&#x2F;&#x2F; 其他状态（加载中、待用）则无需其他处理
+				switch (status) {
+					case PackageStatus.INACTIVE:
+						&#x2F;&#x2F; 处于待用状态，切换到可用状态
+						this._activate();
+						break;
+					
+					case PackageStatus.FAILED:
+					case PackageStatus.UNINITIALIZED:
+						&#x2F;&#x2F; 需要加载
+						this._load();
+						break;
+					
+					case PackageStatus.LOADED:
+						&#x2F;&#x2F; 需要加载依赖
+						this._depend();
+						break;
+					
+					&#x2F;&#x2F; 其他情况不需要处理
+				}
 			}
-			
 			return this;
 		},
 		
 		&#x2F;**
 		 * 获取包的实体内容
 		 * 
-		 * @return {Any}
+		 * @return {Any} 包的实体内容
 		 *&#x2F;
 		entity: function() {
-			return this._creator;
-		},
-		
-		&#x2F;**
-		 * 获取包的状态
-		 * 
-		 * @return {Number}
-		 *&#x2F;
-		&#x2F;**
-		 * 设置包的状态
-		 * 
-		 * @param status {Number} 包的新状态码
-		 * @chainable
-		 *&#x2F;
-		status: function(status) {
-			if (arguments.length == 0) {
-				&#x2F;&#x2F; 获取状态
-				return this._status;
-			} else {
-				&#x2F;&#x2F; 设置状态
-				this._status = status;
-				
-				return this;
-			}
-		}
-		
-	});
-	
-	&#x2F;**
-	 * 开始加载依赖包
-	 * 
-	 * @private
-	 * @chainable
-	 *&#x2F;
-	var depending = function() {
-		var dependence = this._dependence;
-		if (dependence) {
-			&#x2F;&#x2F; 如果有依赖包，那就加载之
-			Packager.use(dependence, toComplete, this);
-		} else {
-			&#x2F;&#x2F; 没有依赖包，那就直接进入可用状态
-			toComplete.call(this);
-		}
-	};
-	
-	&#x2F;**
-	 * 设置当前包为可用状态
-	 * 
-	 * @param [package]* {Any} 依赖包
-	 * @return {Function} 生成的可用回调方法
-	 *&#x2F;
-	var toComplete = function() {
-		&#x2F;&#x2F; 设置当前包为完成状态
-		
-		&#x2F;&#x2F; FIXME: 临时的输出语句
-		if (this._status == PackageStatus.complete) {
-			throwError(&#x27;重复将包&#x27; + this._name + &#x27;置为可用状态&#x27;);
-		}
-				
-		&#x2F;&#x2F; 获取包的实体内容
-		this._creator = this._creator.apply(window, arguments);
-		
-		&#x2F;&#x2F; 设置状态为完成状态
-		this.status(PackageStatus.complete);
-		
-		&#x2F;&#x2F; 触发complete事件
-		fireComplete.call(this);
-		
-		&#x2F;&#x2F; 清除不必要的属性
-		delete this._dependence;
-		delete this._wanted;
-		
-		return this;
-	};
-	
-	&#x2F;**
-	 * 触发complete事件
-	 *&#x2F;
-	var fireComplete = function() {
-		&#x2F;&#x2F; 如果有等待者的话，那就通知之
-		var demander = this._demander,
-			name = this._name;
-		if (demander) {
-			&#x2F;&#x2F; 循环每个回调，依次执行之
-			var callback;
-			while (callback = demander.shift()) {
-				callback(name);
-			}
+			&#x2F;&#x2F; 如果状态不对，那就提示之
+			if (this._status != PackageStatus.ACTIVE) throwError(&#x27;package &#x27; + this._name + &quot; is not ready&quot;);
 			
-			&#x2F;&#x2F; 清除
-			delete this._demander;
+			return this._creator;
 		}
 		
-		return this;
-	};
+	});	
 	
 	&#x2F;**
 	 * 文件加载失败的调用方法
 	 * 
-	 * @param packageName {String} 对应的包名称
+	 * @param name {String} 对应的包名称
 	 * @param node {HTMLElement} 对应的script节点
 	 *&#x2F;
-	var scriptFail = function(packageName, node) {
+	var scriptFail = function(name, node) {
 		&#x2F;&#x2F; 设置为错误状态
-		this._status = PackageStatus.failed;
+		this._status = PackageStatus.FAILED;
 		
 		&#x2F;&#x2F; 显示错误
-		throwError(&quot;can&#x27;t load package &quot; + packageName + &quot; in uri: &quot; + node.src);
+		throwError(&quot;can&#x27;t load package &quot; + name + &quot; in uri: &quot; + node.src);
 		
-		&#x2F;&#x2F; 去除事件绑定
-		node.onerror = null;
-		node.onload = null;
+		clearScript(node);
 	};
 	
 	&#x2F;**
 	 * 文件加载成功后的调用方法
 	 * 
-	 * @param packageName {String} 对应的包名称
+	 * @param name {String} 包名称
 	 * @param node {HTMLElement} 对应的script节点
 	 *&#x2F;
-	var scriptSucc = function(packageName, node) {
-		var scope = this;
-		setTimeout(function() {
+	var scriptSucc = function(name, node) {
+		setTimeout(bindScope(function() {
 			&#x2F;&#x2F; 如果该包还处于未加载完成状态，那就报错
-			if (scope._status &lt; PackageStatus.loaded) {
+			if (this._status &lt; PackageStatus.LOADED) {
 				&#x2F;&#x2F; 显示错误
-				throwError(&quot;can&#x27;t define package &quot; + packageName);
+				throwError(&quot;can&#x27;t register package &quot; + name);
 			}
-		}, 0);
+		}, this), 0);
 		
+		clearScript(node);
+	};
+	
+	&#x2F;**
+	 * 清除script节点的相关绑定
+	 * 
+	 * @param node {HTMLElement} script节点
+	 *&#x2F;
+	var clearScript = function(node) {
 		&#x2F;&#x2F; 去除事件绑定
 		node.onerror = null;
 		node.onload = null;
+	};
+	
+	&#x2F;**
+	 * 创建一个计数器，计数器被调用指定次数后会调用指定的回调函数
+	 * 
+	 * @param count {Number} 需要被调用的次数
+	 * @param callback {Function} 包都加载完成后的回调方法
+	 * @param scope {Any} 回调方法的作用域
+	 * @return {Function} 生成新方法
+	 *&#x2F;
+	var callTimes = function(number, callback, scope) {
+		return function() {
+			if (--number &lt;= 0) {
+				callback.call(scope);
+			}
+		};
+	};
+	
+	&#x2F;**
+	 * 获得一系列包的实体内容
+	 *&#x2F;
+	var entities = function(packages) {
+		var values = [];
+		for (var i = 0, il = packages.length; i &lt; il; i++) {
+			var object = getPackage(packages[i]).entity();	
+						
+			&#x2F;&#x2F; 如果存在插件的话，那就生成加入插件的包
+			var plugin = packages[&#x27;_&#x27; + i];
+			if (plugin) {
+				&#x2F;&#x2F; 获取每个插件的实体内容
+				for (var j = 0, jl = plugin.length; j &lt; jl; j++) {
+					plugin[j] = getPackage(plugin[j]).entity();
+				}
+				
+				&#x2F;&#x2F; 增加基类和methods
+				plugin.unshift(object);	&#x2F;&#x2F; 基类
+				
+				&#x2F;&#x2F; 生成新的类
+				object = newPluginJoinedClass.apply(window, plugin);
+			}
+			
+			values.push(object);
+		}
+		return values;
 	};
 	
 	&#x2F;*********************************************************************
@@ -655,69 +686,42 @@ window.kola = (function(kola) {
 	var Packager = {
 		
 		&#x2F;**
-		 * 定义一个包
-		 * 
-		 * @method define
-		 * @param name {String} 包全名
-		 * @param dependence {Array&lt;String&gt; | Null | String} 依赖包列表
-		 * 	如果为null，即没有依赖包；
-		 * 	如果为String类型，说明只有一个依赖包
-		 * 	如果是Array类型，那就是依赖包的列表
-		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
-		 * @chainable
-		 *&#x2F;
-		define: function(name, dependence, creator) {
-			&#x2F;&#x2F; 如果包早已加载完成，那则不做处理
-			var packageObj = Packager._package(name);
-			if (packageObj.status() &gt;= PackageStatus.loaded) return;
-			
-			&#x2F;&#x2F; 把dependence转化为数组或者字符串
-			switch (typeof dependence) {
-				case &#x27;string&#x27;:
-					&#x2F;&#x2F; 一个依赖包
-					dependence = [dependence];
-					break;
-				case &#x27;object&#x27;:
-					if (dependence !== null &amp;&amp; dependence.length) {
-						&#x2F;&#x2F; 一个或多个依赖包
-						break;
-					}
-				default:
-					&#x2F;&#x2F; 没有依赖包
-					dependence = null;
-			}
-			
-			&#x2F;&#x2F; 设置当前包加载成功
-			packageObj.loaded(creator, dependence);
-			
-			return Packager;
-		},
-		
-		&#x2F;**
 		 * 使用某些包执行某个方法
 		 * 
 		 * @method use
 		 * @param packages {String | Array&lt;String&gt;} 要使用的包，如果是string也就是一个包的包名，如果是Array，那可能就是依赖的包列表
 		 * @param callback {Function} 包可用之后的回调方法
-		 * @param [scope] {Any} 回调方法的作用域
-		 * @chainable
+		 * @param [scope] {Any} 回调方法的作用域，没有的话就为Packager
 		 *&#x2F;
 		use: function(packages, callback, scope) {
-			&#x2F;&#x2F; packages都变成数组格式
-			packages = typeof packages == &#x27;string&#x27; ? [packages] : packages.concat();
+			if (packages === null) throwError(&#x27;wrong packages&#x27;);
 			packages = parsePackages(packages);
-			var following = packages.concat(packages.plugin);
-			packages.unavilable = following.length;	&#x2F;&#x2F; 无效包的个数
 			
-			&#x2F;&#x2F; 创建一个完成后的回调方法
-			var completeListener = createPackageCompleteListener(packages, callback, scope);
+			&#x2F;&#x2F; 创建一个依赖包可用后的回调方法
+			var allPackages = packages.concat(packages.plugin);
+			var fn = callTimes(allPackages.length, function() {
+				callback.apply(scope || Packager, entities(packages));
+			});
 			
-			&#x2F;&#x2F; 循环每个依赖包，监听其complete事件
-			for (var i = 0, il = following.length; i &lt; il; i++) {
-				Packager._package(following[i]).complete(completeListener);
+			&#x2F;&#x2F; 监听所有包的activate事件
+			for (var i = allPackages.length - 1; i &gt;= 0; i--) {
+				getPackage(allPackages[i]).activate(fn);
 			}
-			
-			return Packager;
+		},
+		
+		&#x2F;**
+		 * 定义一个包
+		 * 
+		 * @method define
+		 * @param name {String} 包全名
+		 * @param dependence {Array&lt;String&gt; | String | Null} 依赖包列表。
+		 * 		如果为String类型，说明只有一个依赖包；
+		 * 		如果是Array类型，那就是依赖包的列表；
+		 * 		如果为null，即没有依赖包；
+		 * @param creator {Function} 创造包内容的方法，其返回值就是包内容
+		 *&#x2F;
+		define: function(name, dependence, creator) {
+			getPackage(name).register(creator, parsePackages(dependence));
 		},
 		
 		&#x2F;**
@@ -725,7 +729,6 @@ window.kola = (function(kola) {
 		 * 
 		 * @method config
 		 * @param config {Object} 增量设置对象
-		 * @chainable
 		 * 
 		 * @example
 		 * 	{
@@ -766,8 +769,6 @@ window.kola = (function(kola) {
 		 *&#x2F;
 		config: function(config) {
 			objectExtend(config, packagerConfig);
-			
-			return Packager;
 		},
 		
 		&#x2F;**
@@ -848,22 +849,21 @@ window.kola = (function(kola) {
 		 * 
 		 * @method createClass
 		 * @param [superClass] {Function} 父类
-		 * @param methods {Object} 方法列表
-		 * @return {KolaClass}
+		 * @param prototypes {Object} 属性和方法列表
+		 * @return {KolaClass} 创建的新类
 		 *&#x2F;
-		createClass: newKolaClass,
-		
-		&#x2F;**
-		 * 获取某个package的控制对象
-		 * 
-		 * @method _package
-		 * @protected
-		 * @param name {String} package名称
-		 *&#x2F;
-		_package: function(name) {
-			&#x2F;&#x2F; 没有该package那就创建之
-			return packageObjects[name] || (packageObjects[name] = new Package(name));
-		}
+		createClass: newKolaClass
+	};
+	
+	&#x2F;**
+	 * 获取某个package的控制对象
+	 * 
+	 * @param name {String} package名称
+	 * @return {Package} package控制对象
+	 *&#x2F;
+	var getPackage = function(name) {
+		&#x2F;&#x2F; 没有该package那就创建之
+		return packageObjects[name] || (packageObjects[name] = new Package(name));
 	};
 	
 	&#x2F;**
@@ -916,72 +916,44 @@ window.kola = (function(kola) {
 	 * @for Packager
 	 *&#x2F;
 	var packageObjects = {};
-	
-	&#x2F;**
-	 * 创建一个确保所有需要的包都加载完成就能执行相应回调方法的事件监听器
-	 * 
-	 * @method createPackageCompleteListener
-	 * @private
-	 * @for Packager
-	 * @param usedPackages {Array&lt;String&gt;} 需要的包名列表
-	 * @param callback {Function} 包都加载完成后的回调方法
-	 * @param scope {Any} 回调方法的作用域
-	 * @return {Function} 生成的事件监听器方法，其输入参数只有一个，为加载成功的包名称
-	 *&#x2F;
-	var createPackageCompleteListener = function(usedPackages, callback, scope) {
-		return function(name) {
-			if (--usedPackages.unavilable &lt;= 0) {
-				&#x2F;&#x2F; 需要的包全部加载完成，可以执行了回调方法了
-				
-				&#x2F;&#x2F; 轮询所有的包，获取包的内容
-				var objects = [];
-				for (var i = 0, il = usedPackages.length; i &lt; il; i++) {
-					var object = Packager._package(usedPackages[i]).entity();
-					
-					&#x2F;&#x2F; 如果存在插件的话，那就生成加入插件的包
-					var plugin = usedPackages[&#x27;_&#x27; + i];
-					if (plugin) {
-						&#x2F;&#x2F; 获取每个插件的实体内容
-						for (var j = 0, jl = plugin.length; j &lt; jl; j++) {
-							plugin[j] = Packager._package(plugin[j]).entity();
-						}
-						
-						&#x2F;&#x2F; 增加基类和methods
-						plugin.unshift(object);	&#x2F;&#x2F; 基类
-						
-						&#x2F;&#x2F; 生成新的类
-						object = newPluginJoinedClass.apply(window, plugin);
-					}
-					
-					objects.push(object);
-				}
-				
-				&#x2F;&#x2F; 调用回调方法
-				callback.apply(scope || window, objects);
-			}
-		};
-	};
 			
 	&#x2F;**
 	 * 把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组
 	 *&#x2F;
+	&#x2F;&#x2F; TODO: 还未增加对lib和版本的支持
 	var parsePackages = function(packages) {
-		var allPlugin = [];
-		for (var i = 0, il = packages.length; i &lt; il; i++) {
-			var name = trimAll(packages[i]);
-			var index = name.indexOf(&#x27;[&#x27;);
-			if (index == -1) continue;
-			
-			&#x2F;&#x2F; 找到插件列表
-			var plugin = name.substring(index + 1, name.length - 1).split(&#x27;,&#x27;);
-			packages[&#x27;_&#x27; + i] = plugin;
-			allPlugin = allPlugin.concat(plugin);
-			
-			&#x2F;&#x2F; 记录下当前包的名称
-			packages[i] = name.substr(0, index);
+		&#x2F;&#x2F; 先转化为数组
+		switch (typeof packages) {
+			case &#x27;string&#x27;:
+				packages = [packages];
+			case &#x27;object&#x27;:
+				&#x2F;&#x2F; 如果是数组格式，那就分析出各种类型的package
+				if (packages !== null &amp;&amp; packages.length) {
+					&#x2F;&#x2F; 如果已经是解析过的对象，那就不做处理
+					if (packages.plugin) return packages;
+					
+					packages = packages.concat();
+					var allPlugin = [];
+					for (var i = 0, il = packages.length; i &lt; il; i++) {
+						var name = trimAll(packages[i]);
+						var index = name.indexOf(&#x27;[&#x27;);
+						if (index == -1) continue;
+						
+						&#x2F;&#x2F; 找到插件列表
+						var plugin = name.substring(index + 1, name.length - 1).split(&#x27;,&#x27;);
+						packages[&#x27;_&#x27; + i] = plugin;
+						allPlugin = allPlugin.concat(plugin);
+						
+						&#x2F;&#x2F; 记录下当前包的名称
+						packages[i] = name.substr(0, index);
+					}
+					packages.plugin = allPlugin;
+					
+					return packages;
+				}
+			default:
+				return null;
 		}
-		packages.plugin = allPlugin;
-		return packages;
 	};
 	
 	&#x2F;*********************************************************************
@@ -1002,6 +974,7 @@ window.kola = (function(kola) {
 	 * 	如果是Array类型，那就是依赖的包列表，每项就是一个依赖包的包名
 	 * 	如果为null，那就不依赖任何包
 	 * @param creator {Function} 包内容生成器
+	 * @chainable
 	 *&#x2F;
 	&#x2F;**
 	 * 使用包进行某项操作
@@ -1012,7 +985,8 @@ window.kola = (function(kola) {
 	 * 	如果是String类型，那就是只使用一个包，即为包名
 	 * 	如果是Array类型，那就是要使用的包列表，每项就是一个包名
 	 * @param callback {Function} 要执行的方法
-	 * @param [scope] {Any} 被执行方法的作用域
+	 * @param [scope] {Any} 被执行方法的作用域，如果没有设置那就是当前kola的作用域
+	 * @chainable
 	 *&#x2F;
 	&#x2F;**
 	 * 加载一个kola设置对象
@@ -1020,9 +994,8 @@ window.kola = (function(kola) {
 	 * @method kola
 	 * @for window
 	 * @param config {Object} 设置对象
+	 * @chainable
 	 *&#x2F;
-	&#x2F;&#x2F; TODO: 还未解决循环依赖问题
-	&#x2F;&#x2F; TODO: 还未增加对lib和版本的支持
 	kola = function() {
 		var args = arguments,
 			scope = this;
@@ -1030,20 +1003,21 @@ window.kola = (function(kola) {
 			case 3:
 				if (typeof args[1] != &#x27;function&#x27;) {
 					&#x2F;&#x2F; 这是定义包
-					return Packager.define.apply(Packager, args);
-				}
-				
-				&#x2F;&#x2F; 这是使用包执行的方式
-				scope = args[2];
-				
+					Packager.define.apply(Packager, args);
+					break;
+				}				
+				&#x2F;&#x2F; 这是包执行的方式，并且设置了scope
 			case 2:
 				&#x2F;&#x2F; 这是使用包执行的方式
-				return Packager.use(args[0], args[1], scope);
-			
+				
+				Packager.use.call(Packager, args[0], args[1], args.length &gt; 2 ? args[2] : this);
+				break;
 			case 1:
 				&#x2F;&#x2F; 这是加载配置信息
-				return Packager.config(args[0]);
+				Packager.config.apply(Packager, args);
 		}
+		
+		return kola;
 	};
 
 	&#x2F;&#x2F; 声明kola.Packager包
@@ -1060,9 +1034,7 @@ window.kola = (function(kola) {
 		while (callArgs = cachedKolaCall.shift()) {
 			var args = callArgs,
 				scope = callArgs.shift();
-			setTimeout(function() {
-				kola.apply(scope, args);
-			}, 0);
+			kola.apply(scope, args);
 		}
 	}
 	
