@@ -21,13 +21,17 @@ kola('kola.lang.Class', [
 		 * 
 		 * @method createClass
 		 * @param [superClass] {Function} 父类
-		 * @param prototypes {Object} 原形
+		 * @param prototypes {Object} 原形对象
 		 * @return {Class} 创建的新类
 		 */
 		create: Packager.createClass,
 		
 		/**
 		 * 获得指定对象的类型
+		 * 
+		 * @method type
+		 * @param target {Any} 要判断的对象
+		 * @retrun {String} 类似于这样的值：undefined、null、Object、String、Boolean、Array、HTMLElement...
 		 */
 		type: function(target) {
 			if (target == null) return String(target);

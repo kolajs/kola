@@ -43,8 +43,6 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
-                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
-            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
@@ -66,8 +64,6 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
-            
-                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
             
                 <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
             
@@ -114,14 +110,10 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- *&#x2F;
-
-kola(&#x27;kola.lang.Function&#x27;, [
-], function () {
+kola(&#x27;kola.lang.Function&#x27;, null, function() {
+	
+	var slice = Array.prototype.slice;
+	
 	&#x2F;**
 	 * kola的Function类
 	 * 
@@ -131,52 +123,79 @@ kola(&#x27;kola.lang.Function&#x27;, [
 	 * @author Jady Yang
 	 *&#x2F;
 	var exports = {
+		
 		&#x2F;**
 		 * 给方法绑定this和参数，而且这些参数排在方法被调用时所传入的参数之前
 		 * 
 		 * @method bind
 		 * @param target {Function} 被绑定的方法
 		 * @param scope {Any} 方法执行时的this
-		 * @param [bindArgs]* {Any} 要绑定的参数
+		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 *&#x2F;
-		bind: function (target, scope) {
-			var bindArgs = [];
-			for (var i = 2, il = arguments.length; i &lt; il; i ++) {
-				bindArgs.push(arguments[i]); 
-			}
-			return function () {
-				var newArgs = bindArgs.concat();
-				for (var i = 0, il = arguments.length; i &lt; il; i ++) {
-					newArgs.push(arguments[i]);
-				}
-				return target.apply(scope, newArgs);
+		bind: function(target, scope) {
+			var args = slice.call(arguments, 2);
+			return function() {
+				return target.apply(scope, args.concat(slice.call(arguments)));
 			};
 		},
-
+		
+		&#x2F;**
+		 * 设置方法在多少秒之后执行，并可以绑定执行时的this和参数
+		 * 
+		 * @method timeout
+		 * @param target {Function} 被绑定的方法
+		 * @param second {Number} 秒数
+		 * @param scope {Any} 方法执行时的this
+		 * @param [argument]* {Any} 要绑定的参数
+		 * @return {Function} 创建的新Function
+		 *&#x2F;
+		timeout: function(target, second, scope) {
+			var args = slice.call(arguments, 3);
+			return window.setTimeout(function() {
+				target.apply(scope, args)
+			}, second);
+		},
+		
+		&#x2F;**
+		 * 设置方法在多少秒循环执行一次，并可以绑定执行时的this和参数
+		 * 
+		 * @method timeout
+		 * @param target {Function} 被绑定的方法
+		 * @param second {Number} 秒数
+		 * @param scope {Any} 方法执行时的this
+		 * @param [argument]* {Any} 要绑定的参数
+		 * @return {Function} 创建的新Function
+		 *&#x2F;
+		interval: function(target, second, scope) {
+			var args = slice.call(arguments, 3);
+			return window.setInterval(function() {
+				target.apply(scope, args)
+			}, second);
+		},
+		
 		&#x2F;**
 		 * 可被全局使用的空函数
 		 * 
 		 * @property empty
 		 * @type {Function}
-		 *		@return {Undefined}
 		 *&#x2F;
-		empty: function () {},
+		empty: function() {},
 
 		&#x2F;**
 		 * 创建一个新方法，返回指定的值
 		 * 
 		 * @method value
-		 * @param value {Any} 要返回的值
+		 * @param value {Any} 要被返回的值
 		 * @return {Function}
 		 *&#x2F;
-		value: function (value) {
+		value: function(value) {
 			return function() {
 				return value;
 			};
 		}
 	};
-
+	
 	return exports;	
 });
     </pre>

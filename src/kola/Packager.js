@@ -292,7 +292,6 @@ window.kola = (function(kola) {
 		/**
 		 * 保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象
 		 * 
-		 * @property packageObjects
 		 * @type {Object}
 		 */
 		var packageObjects = {};

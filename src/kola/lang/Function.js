@@ -34,7 +34,7 @@ kola('kola.lang.Function', null, function() {
 		 * @method timeout
 		 * @param target {Function} 被绑定的方法
 		 * @param second {Number} 秒数
-		 * @param scope {Any} 方法执行时的this
+		 * @param [scope] {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 */
@@ -48,10 +48,10 @@ kola('kola.lang.Function', null, function() {
 		/**
 		 * 设置方法在多少秒循环执行一次，并可以绑定执行时的this和参数
 		 * 
-		 * @method timeout
+		 * @method interval
 		 * @param target {Function} 被绑定的方法
 		 * @param second {Number} 秒数
-		 * @param scope {Any} 方法执行时的this
+		 * @param [scope] {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 */

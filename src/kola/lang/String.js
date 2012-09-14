@@ -15,33 +15,33 @@ kola('kola.lang.String', null, function() {
 		 * 去除掉字符串左右两侧、连续的空格
 		 * 
 		 * @method trim
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String} 
 		 */
-		trim: function(string) {
-			return string.replace(trimLeft, '').replace(trimRight, '');
+		trim: function(target) {
+			return target.replace(trimLeft, '').replace(trimRight, '');
 		},
 		
 		/**
 		 * 去除掉字符串左侧开始的、连续的空格
 		 * 
 		 * @method trimLeft
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String}
 		 */
-		trimLeft: function(string) {
-			return string.replace(trimLeft, '');
+		trimLeft: function(target) {
+			return target.replace(trimLeft, '');
 		},
 		
 		/**
 		 * 去除掉字符串右侧开始的、连续的空格
 		 * 
 		 * @method trimRight
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String}
 		 */
-		trimRight: function(string) {
-			return string.replace(trimRight, '');
+		trimRight: function(target) {
+			return target.replace(trimRight, '');
 		}
 	};
 	

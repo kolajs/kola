@@ -43,8 +43,6 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
-                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
-            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
@@ -66,8 +64,6 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
-            
-                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
             
                 <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
             
@@ -114,15 +110,12 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- *&#x2F;
-
-kola(&#x27;kola.lang.Object&#x27;, [
-	&#x27;kola.lang.Class&#x27;
-], function (KolaClass) {
+kola(&#x27;kola.lang.Object&#x27;, null, function() {
+	
+	var slice = Array.prototype.slice;
+	var toString = Object.prototype.toString;
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	
 	&#x2F;**
 	 * kola的Object类
 	 * 
@@ -132,97 +125,154 @@ kola(&#x27;kola.lang.Object&#x27;, [
 	 * @author Jady Yang
 	 *&#x2F;
 	var exports = {
+		
 		&#x2F;**
-		 * 对象的属性继承
+		 * 把源对象上的属性都复制到目标对象上，如果没有源对象，那就是要把目标对象复制一份
+		 * 
 		 * @method extend
 		 * @param [deep] {Boolean} 是否需要深度拷贝，可选项
 		 * @param target {Object} 目标对象
-		 * @param src* {Object} 源对象
+		 * @param [src]* {Object} 源对象
 		 * @return {Object} 目标对象
 		 *&#x2F;
-		extend: function(target) {
-
-				var options, name, src, copy, copyIsArray, clone,
-					i = 1,
-					length = arguments.length,
-					deep = false;
+		extend: function() {
+			&#x2F;&#x2F; 实现参考自jQuery 1.8.0，thanks
+			var options, name, src, copy, copyIsArray, clone,
+				args = slice.call(arguments),
+				target = args[0],
+				i = 1,
+				length = args.length,
+				deep = false;
+		
+			&#x2F;&#x2F; 判断是否是深度复制
+			if (typeof target === &quot;boolean&quot;) {
+				deep = target;
+				target = args[1];
+				i = 2;
+			}
 			
-				&#x2F;&#x2F;是否需要深度复制对象
-				if ( typeof target === &quot;boolean&quot; ) {
-					deep = target;
-					target = arguments[1] || {};
-					i = 2;
-				}
-			
-				if ( typeof target !== &quot;object&quot; &amp;&amp; !KolaClass.isFunction(target) ) {
+			&#x2F;&#x2F; 如果没有要复制的对象，那就是要把自己复制一份
+			&#x2F;&#x2F; 这里跟jQuery的实现是不同的
+			if (length === i) {
+				args[length++] = target;
+				
+				if (exports.isPlainObject(copy)) {
+					&#x2F;&#x2F; 是PlainObject就创建一个空的Object对象
 					target = {};
+				} else if (copyIsArray = toString.call(copy) == &#x27;[Object Array]&#x27;) {
+					&#x2F;&#x2F; 是Array，那就创建空的Array对象
+					target = [];
+				} else {
+					&#x2F;&#x2F; 其他情况直接返回
+					return target;
 				}
-			
-				if ( length === i ) {
-					target = {};
-					--i;
-				}
-			
-				for ( ; i &lt; length; i++ ) {
-					if ( (options = arguments[ i ]) != null ) {
-						for ( name in options ) {
-							src = target[ name ];
-							copy = options[ name ];
-
-							if ( target === copy ) {
-								continue;
-							}
-			
-							if ( deep &amp;&amp; copy &amp;&amp; ( isPlainObject(copy) || (copyIsArray = KolaClass.isArray(copy)) ) ) {
-								if ( copyIsArray ) {
-									copyIsArray = false;
-									clone = src &amp;&amp; KolaClass.isArray(src) ? src : [];
-			
-								} else {
-									clone = src &amp;&amp; isPlainObject(src) ? src : {};
-								}
-								target[ name ] = this.extend( deep, clone, copy );
-							} else if ( copy !== undefined ) {
-								target[ name ] = copy;
-							}
+			}
+		
+			&#x2F;&#x2F; 循环每个对象，进行复制
+			for (; i &lt; length; i++) {
+				&#x2F;&#x2F; 如果是null或undefined则不处理
+				if ((options = args[i]) == null) continue;
+				
+				&#x2F;&#x2F; Extend the base object
+				for (name in options) {
+					src = target[name];
+					copy = options[name];
+	
+					&#x2F;&#x2F; 放置在同一对象上做无谓循环
+					if (target === copy) continue;
+	
+					&#x2F;&#x2F; 判断是否需要深度复制
+					if (deep &amp;&amp; copy 
+						&amp;&amp; (exports.isPlainObject(copy) 
+							|| (copyIsArray = toString.call(copy) == &#x27;[Object Array]&#x27;))
+					) {
+						&#x2F;&#x2F; 对PlainObject和Array类型进行深度复制
+						
+						if (copyIsArray) {
+							clone = src &amp;&amp; toString.call(src) == &#x27;[Object Array]&#x27; ? src : [];
+						} else {
+							clone = src &amp;&amp; exports.isPlainObject(src) ? src : {};
 						}
+	
+						&#x2F;&#x2F; 进行深度复制
+						target[name] = exports.extend(deep, clone, copy);
+	
+					} else {
+						&#x2F;&#x2F; 这里与jQuery不同
+						&#x2F;&#x2F; jQuery中，如果是undefined就不复制，但在这里是复制的
+						&#x2F;&#x2F; 这里针对undefined也会复制，主要是基于复制与否对或者这个值没有影响，但是对于调用hasOwnProperty是有差别的，因此尽量保持一致
+						target[name] = copy;
 					}
 				}
-			
-				return target;
+			}
+		
+			return target;
 		},
+		
 		&#x2F;**
-		 * 得到对象的属性集合
+		 * 得到对象的属性名集合
 		 * @method keys
 		 * @param target {Object} 目标对象
 		 * @return {Array}
 		 *&#x2F;
-		keys: function (target) {
+		keys: function(target) {
 			var keys = [];
-			for(key in target){
-				if(target.hasOwnProperty(key)){
+			for (var key in target) {
+				if (target.hasOwnProperty(key)) {
 					keys.push(key);
 				}
 			}
-			return keys
+			return keys;
+		},
+		
+		&#x2F;**
+		 * 判断给定的对象是Object类型，并且不是null
+		 *&#x2F;
+		notNull: function(target) {
+			return typeof target == &#x27;object&#x27; &amp;&amp; target !== null;
+		},
+		
+		&#x2F;**
+		 * 判断指定对象是不是一个PlainObject。
+		 * PlainObject就是采用new Object()或者{}方式产生的Object。
+		 * 
+		 * @method isPlainObject
+		 * @param target {Any} 判断是否是PlainObject
+		 * @return {Boolean}
+		 *&#x2F;
+		isPlainObject: function(target) {
+			&#x2F;&#x2F; 实现参考自jQuery 1.8.0， thanks
+			
+			&#x2F;&#x2F; 先判断基本数据类型
+			if (!target || Class.type(target) !== &#x27;Object&#x27; 
+				|| target.nodeType 	&#x2F;&#x2F; IE旧版本下，Class.type(element) == &#x27;[object Object]&#x27;
+				|| target == target.window  &#x2F;&#x2F; 刨除掉window
+			) {
+				return false;
+			}
+			
+			&#x2F;&#x2F; 判断是否是继承过来的
+			try {
+				&#x2F;&#x2F; Not own constructor property must be Object
+				if (target.constructor &amp;&amp;
+					!hasOwnProperty.call(target, &quot;constructor&quot;) &amp;&amp;
+					!hasOwnProperty.call(target.constructor.prototype, &quot;isPrototypeOf&quot;)
+				) {
+					return false;
+				}
+			} catch (e) {
+				&#x2F;&#x2F; IE8,9 Will throw exceptions on certain host objects #9897
+				return false;
+			}
+			
+			&#x2F;&#x2F; 通过第一个属性快速校验
+			var key;
+			for (key in target) {}
+
+			return key === undefined || hasOwnProperty.call(target, key);
 		}
 	};
-	var isPlainObject = function( obj ) {
-		if (!obj || !KolaClass.isObject(obj) || obj.nodeType) {
-			return false;
-		}
-
-		if ( obj.constructor &amp;&amp;
-			!obj.hasOwnProperty(&quot;constructor&quot;) &amp;&amp;
-			!obj.constructor.prototype.hasOwnProperty(&quot;isPrototypeOf&quot;) ) {
-			return false;
-		}
-
-		var key;
-		for (key in obj) {}
-
-		return key === undefined || obj.hasOwnProperty(key);
-	}
+	
 	return exports;
 });
     </pre>
