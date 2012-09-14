@@ -33,28 +33,26 @@
 				testCase(KolaArray.lastIndexOf(testArrNum, 4, -6) == 3, "数字数组不存在+(-fromIndex)");
 				testCase(KolaArray.lastIndexOf(testArrString, "gamma", 4) == 4, "字符串数组+fromIndex");
 				testCase(KolaArray.lastIndexOf(testArrString, 'gamma', -6) == -1, "字符串数组+(-fromIndex)");
-
-				testCase(KolaArray.lastIndexOf(testArrString, 'gamma', "wrong start") == -1, "lastindexof start类型不对应该认为从第0个开始，而非最后一个");
 			});
 
 			test("every",function(testCase){
 				var scope = {scopeName : "alpha"};
 				testCase(KolaArray.every(testArrNum, function(item, i, target){
-					return(item > 3);
+					return (item > 3);
 				}) == false, "部分成立");
 
 				testCase(KolaArray.every(testArrNum, function(item, i, target){
-					return(item > 0);
+					return (item > 0);
 				}), "全部成立");
 
 				var index=0;
 				testCase(KolaArray.every(testArrNum, function(item, i, target){
-					return(index++ == i);
+					return (index++ == i);
 				}), "index");
 
 				testCase(KolaArray.every(testArrNum, function(item, i, target){
-					return(this.scopeName.length);
-				}, scope), "scope");
+					return this.scopeName.length;
+				}, scope), "设置了scope，但是不能被");
 
 				testCase(KolaArray.every([1,1,undefined,1,1], function(item, i, target){
 					return(item == 1);
@@ -88,7 +86,10 @@
 			test("reduce",function(testCase){
 				testCase(KolaArray.reduce(testArrNum, function(prev, item, i, target){
 					return prev + item;
-				}) == 31, "和");
+				}, 1) == 32, "指定了初始化值时，计算结果不对");
+				testCase(KolaArray.reduce(testArrNum, function(prev, item, i, target){
+					return prev + item;
+				}) == 31, "未指定初始值时，计算结果不对");
 			});
 
 			test("map",function(testCase){
@@ -99,11 +100,11 @@
 					return newArray[i] == item + i;
 				}), "和");
 			});
-			test("parse",function(testCase){
+			test("toArray",function(testCase){
 				var likeArray = {}
 				likeArray[0] = 0;
 				likeArray.length = 1;
-				var testArray = KolaArray.parse(likeArray);
+				var testArray = KolaArray.toArray(likeArray);
 				testCase(testArray.length == 1 && testArray[0] == 0, "object转数组");
 			});
 		});

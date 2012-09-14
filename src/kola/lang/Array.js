@@ -16,14 +16,14 @@ kola('kola.lang.Array', null, function() {
 	 */
 	var bindScope = function(fn, scope) {
 		return function() {
-			fn.apply(scope, arguments);
+			return fn.apply(scope, arguments);
 		};
 	};
 	
 	// 仅在IE9一下不支持这些方法，剩余的浏览器和版本都已经部分支持
 	var userAgent = navigator.userAgent;
-	var partialSupport = userAgent.indexOf('MSIE') != -1 
-		|| parseInt(userAgent.substr(userAgent.indexOf('MSIE') + 5, 3 )) < 9;
+	var partialSupport = userAgent.indexOf('MSIE') == -1 
+		|| parseInt(userAgent.substr(userAgent.indexOf('MSIE') + 5, 3 )) >= 9;
 	
 	/**
 	 * 获得指定名称的完全替代方法
@@ -287,7 +287,7 @@ kola('kola.lang.Array', null, function() {
 				for (var i = 0, il = target.length; i < il; i++) {
 					if (target.hasOwnProperty(i.toString())) {
 						if (noInitialValue) {
-							noInitiaValue = false;
+							noInitialValue = false;
 							initialValue = target[i];
 						} else {
 							initialValue = callback(initialValue, target[i], i, target);
@@ -361,6 +361,15 @@ kola('kola.lang.Array', null, function() {
 		 * @return {Boolean}
 		 */
 		like: likeArray,
+		
+		/**
+		 * 把指定的对象转化为数组格式
+		 * 
+		 * @method toArray
+		 * @param target {Any} 要判断的对象
+		 * @return {Array}
+		 */
+		toArray: asArray,
 		
 		/**
 		 * 把指定的对象转化为数组格式
