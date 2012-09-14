@@ -31,7 +31,7 @@ kola('kola.lang.Class', [
 		 * 
 		 * @method type
 		 * @param target {Any} 要判断的对象
-		 * @retrun {String} 类似于这样的值：undefined、null、Object、String、Boolean、Array、HTMLElement...
+		 * @return {String} 类似于这样的值：undefined、null、Object、String、Boolean、Array、HTMLElement...
 		 */
 		type: function(target) {
 			if (target == null) return String(target);

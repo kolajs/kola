@@ -127,33 +127,33 @@ kola(&#x27;kola.lang.String&#x27;, null, function() {
 		 * 去除掉字符串左右两侧、连续的空格
 		 * 
 		 * @method trim
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String} 
 		 *&#x2F;
-		trim: function(string) {
-			return string.replace(trimLeft, &#x27;&#x27;).replace(trimRight, &#x27;&#x27;);
+		trim: function(target) {
+			return target.replace(trimLeft, &#x27;&#x27;).replace(trimRight, &#x27;&#x27;);
 		},
 		
 		&#x2F;**
 		 * 去除掉字符串左侧开始的、连续的空格
 		 * 
 		 * @method trimLeft
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String}
 		 *&#x2F;
-		trimLeft: function(string) {
-			return string.replace(trimLeft, &#x27;&#x27;);
+		trimLeft: function(target) {
+			return target.replace(trimLeft, &#x27;&#x27;);
 		},
 		
 		&#x2F;**
 		 * 去除掉字符串右侧开始的、连续的空格
 		 * 
 		 * @method trimRight
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String}
 		 *&#x2F;
-		trimRight: function(string) {
-			return string.replace(trimRight, &#x27;&#x27;);
+		trimRight: function(target) {
+			return target.replace(trimRight, &#x27;&#x27;);
 		}
 	};
 	

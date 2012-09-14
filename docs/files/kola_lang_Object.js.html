@@ -227,6 +227,10 @@ kola(&#x27;kola.lang.Object&#x27;, null, function() {
 		
 		&#x2F;**
 		 * 判断给定的对象是Object类型，并且不是null
+		 * 
+		 * @method notNull
+		 * @param target {Any} 要判断的对象
+		 * @return {Boolean}
 		 *&#x2F;
 		notNull: function(target) {
 			return typeof target == &#x27;object&#x27; &amp;&amp; target !== null;
@@ -237,7 +241,7 @@ kola(&#x27;kola.lang.Object&#x27;, null, function() {
 		 * PlainObject就是采用new Object()或者{}方式产生的Object。
 		 * 
 		 * @method isPlainObject
-		 * @param target {Any} 判断是否是PlainObject
+		 * @param target {Any} 要判断的对象
 		 * @return {Boolean}
 		 *&#x2F;
 		isPlainObject: function(target) {

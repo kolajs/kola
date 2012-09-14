@@ -158,7 +158,7 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method">
-                                <a href="#method_asArray">asArray</a>
+                                <a href="#method_as">as</a>
 
                                 
                                 
@@ -292,8 +292,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_asArray" class="method item">
-    <h3 class="name"><code>asArray</code></h3>
+                    <div id="method_as" class="method item">
+    <h3 class="name"><code>as</code></h3>
 
     
         <div class="args">
@@ -338,7 +338,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l383"><code>kola\lang\Array.js:383</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l401"><code>kola\lang\Array.js:401</code></a>
         
         </p>
 
@@ -367,7 +367,7 @@
                     
 
                     <div class="param-description">
-                        <p>要判断的对象</p>
+                        <p>要被转化的对象</p>
                     </div>
 
                     
@@ -441,7 +441,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l374"><code>kola\lang\Array.js:374</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l392"><code>kola\lang\Array.js:392</code></a>
         
         </p>
 
@@ -470,7 +470,7 @@
                     
 
                     <div class="param-description">
-                        <p>要判断的对象</p>
+                        <p>要被转化的对象</p>
                     </div>
 
                     
@@ -552,7 +552,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l208"><code>kola\lang\Array.js:208</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l217"><code>kola\lang\Array.js:217</code></a>
         
         </p>
 
@@ -563,9 +563,9 @@
     </div>
 
     <div class="description">
-        <p>从前往后迭代数组中的每一项，并可以设置迭代器的scope。
-当迭代器的返回值必须完全等于false时，就会停止执行。
-当有中断时，最终false（包括最后一个中断），没有中断就返回true。</p>
+        <p>从前往后迭代数组中的每一项，交给迭代器执行。
+当迭代器的返回值完全等于false时，就会停止循环。
+最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。</p>
     </div>
 
     
@@ -598,7 +598,10 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -699,7 +702,7 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器，确认所有的返回值都是true，才会返回true，其他情况返回false</p>
+        <p>循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false</p>
     </div>
 
     
@@ -732,7 +735,10 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -835,7 +841,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l249"><code>kola\lang\Array.js:249</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l264"><code>kola\lang\Array.js:264</code></a>
         
         </p>
 
@@ -846,7 +852,7 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器，如果返回值为true，那就将该项存储到一个新数组中</p>
+        <p>循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中</p>
     </div>
 
     
@@ -879,7 +885,10 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -978,7 +987,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l192"><code>kola\lang\Array.js:192</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l198"><code>kola\lang\Array.js:198</code></a>
         
         </p>
 
@@ -1022,7 +1031,10 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -1247,7 +1259,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l338"><code>kola\lang\Array.js:338</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l356"><code>kola\lang\Array.js:356</code></a>
         
         </p>
 
@@ -1350,7 +1362,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l329"><code>kola\lang\Array.js:329</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l347"><code>kola\lang\Array.js:347</code></a>
         
         </p>
 
@@ -1600,7 +1612,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l356"><code>kola\lang\Array.js:356</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l374"><code>kola\lang\Array.js:374</code></a>
         
         </p>
 
@@ -1629,7 +1641,7 @@
                     
 
                     <div class="param-description">
-                        <p>要判断的对象</p>
+                        <p>要被转化的对象</p>
                     </div>
 
                     
@@ -1703,7 +1715,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l347"><code>kola\lang\Array.js:347</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l365"><code>kola\lang\Array.js:365</code></a>
         
         </p>
 
@@ -1732,7 +1744,7 @@
                     
 
                     <div class="param-description">
-                        <p>要判断的对象</p>
+                        <p>要被转化的对象</p>
                     </div>
 
                     
@@ -1818,7 +1830,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l229"><code>kola\lang\Array.js:229</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l241"><code>kola\lang\Array.js:241</code></a>
         
         </p>
 
@@ -1862,7 +1874,10 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -1965,7 +1980,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l271"><code>kola\lang\Array.js:271</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l289"><code>kola\lang\Array.js:289</code></a>
         
         </p>
 
@@ -2116,7 +2131,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l300"><code>kola\lang\Array.js:300</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l318"><code>kola\lang\Array.js:318</code></a>
         
         </p>
 
@@ -2267,7 +2282,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l171"><code>kola\lang\Array.js:171</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l174"><code>kola\lang\Array.js:174</code></a>
         
         </p>
 
@@ -2278,7 +2293,7 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器，如果存在返回值为true，那就返回true，其他情况返回false</p>
+        <p>循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false</p>
     </div>
 
     
@@ -2311,7 +2326,10 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -2402,7 +2420,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l365"><code>kola\lang\Array.js:365</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l383"><code>kola\lang\Array.js:383</code></a>
         
         </p>
 
@@ -2431,7 +2449,7 @@
                     
 
                     <div class="param-description">
-                        <p>要判断的对象</p>
+                        <p>要被转化的对象</p>
                     </div>
 
                     
