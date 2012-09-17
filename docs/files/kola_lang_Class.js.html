@@ -116,8 +116,6 @@ kola(&#x27;kola.lang.Class&#x27;, [
 
 	&#x2F;********************************************** 类定义 **********************************************&#x2F;
 	
-	var toString = Object.prototype.toString;
-
 	&#x2F;**
 	 * kola的Class类，用于类的创建和检测等
 	 * 
@@ -136,26 +134,7 @@ kola(&#x27;kola.lang.Class&#x27;, [
 		 * @param prototypes {Object} 原形对象
 		 * @return {Class} 创建的新类
 		 *&#x2F;
-		create: Packager.createClass,
-		
-		&#x2F;**
-		 * 获得指定对象的类型
-		 * 
-		 * @method type
-		 * @param target {Any} 要判断的对象
-		 * @return {String} 类似于这样的值：undefined、null、Object、String、Boolean、Array、HTMLElement...
-		 *&#x2F;
-		type: function(target) {
-			if (target == null) return String(target);
-			
-			&#x2F;&#x2F; 如果是Object子类的话，那就再具体判断是什么类型
-			var typeString = toString.call(target);
-			if (typeString.indexOf(&#x27;[object &#x27;) == 0) {
-				return typeString.substring(8, typeString.length - 1);
-			}
-			
-			return typeString;
-		}
+		create: Packager.createClass
 	};
 	
 	return exports;

@@ -205,7 +205,7 @@
             "module": "kola.lang",
             "namespace": "",
             "file": "kola\\lang\\Array.js",
-            "line": 48,
+            "line": 54,
             "description": "kola的Array类",
             "static": 1,
             "author": "Jady Yang"
@@ -221,7 +221,7 @@
             "module": "kola.lang",
             "namespace": "",
             "file": "kola\\lang\\Class.js",
-            "line": 9,
+            "line": 7,
             "description": "kola的Class类，用于类的创建和检测等",
             "static": 1,
             "author": "Jady Yang"
@@ -1370,7 +1370,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 58,
+            "line": 64,
             "description": "获取指定元素在数组中的位置",
             "itemtype": "method",
             "name": "indexOf",
@@ -1378,7 +1378,7 @@
                 {
                     "name": "target",
                     "description": "被搜索的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "searchElement",
@@ -1401,7 +1401,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 91,
+            "line": 97,
             "description": "在数组中从后往前搜索指定元素的位置",
             "itemtype": "method",
             "name": "lastIndexOf",
@@ -1409,7 +1409,7 @@
                 {
                     "name": "target",
                     "description": "被搜索的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "searchElement",
@@ -1432,7 +1432,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 125,
+            "line": 131,
             "description": "循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false",
             "itemtype": "method",
             "name": "every",
@@ -1440,11 +1440,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1463,7 +1463,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 149,
+            "line": 155,
             "description": "循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false",
             "itemtype": "method",
             "name": "some",
@@ -1471,11 +1471,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1494,7 +1494,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 173,
+            "line": 179,
             "description": "从前往后迭代数组中的每一项，并可以设置迭代器的scope",
             "itemtype": "method",
             "name": "forEach",
@@ -1502,11 +1502,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1521,7 +1521,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 192,
+            "line": 198,
             "description": "从前往后迭代数组中的每一项，交给迭代器执行。\n当迭代器的返回值完全等于false时，就会停止循环。\n最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。",
             "itemtype": "method",
             "name": "each",
@@ -1529,11 +1529,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1548,7 +1548,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 216,
+            "line": 222,
             "description": "循环数组中的每一项，依次交给迭代器，得到的每个返回值，依次装入得到一个新数组",
             "itemtype": "method",
             "name": "map",
@@ -1556,11 +1556,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1579,7 +1579,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 239,
+            "line": 245,
             "description": "循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中",
             "itemtype": "method",
             "name": "filter",
@@ -1587,11 +1587,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受三个参数：\n\t\titem {Any} 数组当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1610,7 +1610,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 264,
+            "line": 270,
             "description": "从前向后循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回",
             "itemtype": "method",
             "name": "reduce",
@@ -1618,11 +1618,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受四个参数：\n\t\tvalue {Any} 上个方法返回的值；\n\t\titem {Any} 当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受四个参数：\n\t\tvalue {Any} 上个方法返回的值；\n\t\titem {Any} 当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1641,7 +1641,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 293,
+            "line": 299,
             "description": "从后往前循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回",
             "itemtype": "method",
             "name": "reduceRight",
@@ -1649,11 +1649,11 @@
                 {
                     "name": "target",
                     "description": "要循环的数组",
-                    "type": "Array"
+                    "type": "LikeArray"
                 },
                 {
                     "name": "callback",
-                    "description": "迭代器。其接受四个参数：\n\t\tvalue {Any} 上个方法返回的值；\n\t\titem {Any} 当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {Array} 数组对象；",
+                    "description": "迭代器。其接受四个参数：\n\t\tvalue {Any} 上个方法返回的值；\n\t\titem {Any} 当前项；\n\t\ti {Number} 在数组中的位置；\n\t\ttarget {LikeArray} 数组对象；",
                     "type": "Function"
                 },
                 {
@@ -1672,7 +1672,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 322,
+            "line": 328,
             "description": "判断指定的对象是否是Array类型",
             "itemtype": "method",
             "name": "isArray",
@@ -1692,7 +1692,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 335,
+            "line": 337,
             "description": "判断指定的对象是否类似于数组（存在length属性，可以转化为数组）",
             "itemtype": "method",
             "name": "likeArray",
@@ -1712,7 +1712,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 349,
+            "line": 351,
             "description": "把指定的对象转化为数组格式",
             "itemtype": "method",
             "name": "toArray",
@@ -1738,7 +1738,7 @@
         },
         {
             "file": "kola\\lang\\Class.js",
-            "line": 19,
+            "line": 17,
             "description": "创建一个新类",
             "itemtype": "method",
             "name": "createClass",
@@ -1758,26 +1758,6 @@
             "return": {
                 "description": "创建的新类",
                 "type": "Class"
-            },
-            "class": "Class",
-            "module": "kola.lang"
-        },
-        {
-            "file": "kola\\lang\\Class.js",
-            "line": 29,
-            "description": "获得指定对象的类型",
-            "itemtype": "method",
-            "name": "type",
-            "params": [
-                {
-                    "name": "target",
-                    "description": "要判断的对象",
-                    "type": "Any"
-                }
-            ],
-            "return": {
-                "description": "类似于这样的值：undefined、null、Object、String、Boolean、Array、HTMLElement...",
-                "type": "String"
             },
             "class": "Class",
             "module": "kola.lang"

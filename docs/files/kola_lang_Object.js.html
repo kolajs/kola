@@ -248,7 +248,7 @@ kola(&#x27;kola.lang.Object&#x27;, null, function() {
 			&#x2F;&#x2F; 实现参考自jQuery 1.8.0， thanks
 			
 			&#x2F;&#x2F; 先判断基本数据类型
-			if (!target || Class.type(target) !== &#x27;Object&#x27; 
+			if (!target || toString.call(target) !== &#x27;[object Object]&#x27; 
 				|| target.nodeType 	&#x2F;&#x2F; IE旧版本下，Class.type(element) == &#x27;[object Object]&#x27;
 				|| target == target.window  &#x2F;&#x2F; 刨除掉window
 			) {

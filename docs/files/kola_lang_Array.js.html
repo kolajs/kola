@@ -142,7 +142,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	 *&#x2F;
 	var supported = function(name) {
 		return function(target) {
-			return target[name].apply(target, slice.call(arguments, 1));
+			return Array.prototype[name].apply(target, slice.call(arguments, 1));
 		};
 	};
 	
@@ -151,11 +151,17 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	 *&#x2F;
 	var supportedButScope = function(name) {
 		return function(target, callback, scope) {
-			return target[name].call(target, arguments.length &gt; 2
+			return Array.prototype[name].call(target, arguments.length &gt; 2
 				? bindScope(callback, scope)	&#x2F;&#x2F; 存在scope的话，那建立一个设置了this的新方法
 				: callback);
 		};
 	};
+	
+	var isArray = partialSupport ? Array.isArray 
+		: function(target) {
+			if (typeof target != &#x27;object&#x27; || target === null) return false;
+			return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
+		};
 	
 	&#x2F;**
 	 * kola的Array类
@@ -171,7 +177,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 获取指定元素在数组中的位置
 		 * 
 		 * @method indexOf
-		 * @param target {Array} 被搜索的数组
+		 * @param target {LikeArray} 被搜索的数组
 		 * @param searchElement {Any} 要搜索的元素
 		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
 		 * @return {Number} 搜索到的位置，如果没有则返回-1
@@ -204,7 +210,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 在数组中从后往前搜索指定元素的位置
 		 * 
 		 * @method lastIndexOf
-		 * @param target {Array} 被搜索的数组
+		 * @param target {LikeArray} 被搜索的数组
 		 * @param searchElement {Any} 要搜索的元素
 		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
 		 * @return {Number} 搜索到的位置，如果没有则返回-1
@@ -238,11 +244,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false
 		 * 
 		 * @method every
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 *&#x2F;
@@ -262,11 +268,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false
 		 * 
 		 * @method some
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 *&#x2F;
@@ -286,11 +292,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 从前往后迭代数组中的每一项，并可以设置迭代器的scope
 		 * 
 		 * @method forEach
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 *&#x2F;
 		forEach: partialSupport ? supportedButScope(&#x27;forEach&#x27;) 
@@ -307,11 +313,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。
 		 * 
 		 * @method each
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 *&#x2F;
 		each: function(target, callback, scope) {
@@ -329,11 +335,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，得到的每个返回值，依次装入得到一个新数组
 		 * 
 		 * @method map
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 包含每次迭代结果的新数组
 		 *&#x2F;
@@ -352,11 +358,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中
 		 * 
 		 * @method filter
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 过滤后的新数组
 		 *&#x2F;
@@ -377,12 +383,12 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 从前向后循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回
 		 * 
 		 * @method reduce
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受四个参数：
 		 * 		value {Any} 上个方法返回的值；
 		 * 		item {Any} 当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [initialValue] {Any} 初始值
 		 * @return {Any} 最后一次处理函数的调用结果
 		 *&#x2F;
@@ -406,12 +412,12 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 从后往前循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回
 		 * 
 		 * @method reduceRight
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受四个参数：
 		 * 		value {Any} 上个方法返回的值；
 		 * 		item {Any} 当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [initialValue] {Any} 初始值
 		 * @return {Any} 最后一次处理函数的调用结果
 		 *&#x2F;
@@ -438,11 +444,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * @param target {Any} 要判断的对象
 		 * @return {Boolean}
 		 *&#x2F;
-		isArray: partialSupport ? Array.isArray 
-			: function(target) {
-				if (typeof target != &#x27;object&#x27; || target === null) return false;
-				return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
-			},
+		isArray: isArray,
 		
 		&#x2F;**
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
