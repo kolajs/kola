@@ -65,7 +65,7 @@ kola('kola.lang.Array', null, function() {
 		 * 获取指定元素在数组中的位置
 		 * 
 		 * @method indexOf
-		 * @param target {Array} 被搜索的数组
+		 * @param target {LikeArray} 被搜索的数组
 		 * @param searchElement {Any} 要搜索的元素
 		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
 		 * @return {Number} 搜索到的位置，如果没有则返回-1
@@ -98,7 +98,7 @@ kola('kola.lang.Array', null, function() {
 		 * 在数组中从后往前搜索指定元素的位置
 		 * 
 		 * @method lastIndexOf
-		 * @param target {Array} 被搜索的数组
+		 * @param target {LikeArray} 被搜索的数组
 		 * @param searchElement {Any} 要搜索的元素
 		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
 		 * @return {Number} 搜索到的位置，如果没有则返回-1
@@ -132,11 +132,11 @@ kola('kola.lang.Array', null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false
 		 * 
 		 * @method every
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 */
@@ -156,11 +156,11 @@ kola('kola.lang.Array', null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false
 		 * 
 		 * @method some
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 */
@@ -180,11 +180,11 @@ kola('kola.lang.Array', null, function() {
 		 * 从前往后迭代数组中的每一项，并可以设置迭代器的scope
 		 * 
 		 * @method forEach
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 */
 		forEach: partialSupport ? supportedButScope('forEach') 
@@ -201,11 +201,11 @@ kola('kola.lang.Array', null, function() {
 		 * 最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。
 		 * 
 		 * @method each
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 */
 		each: function(target, callback, scope) {
@@ -223,11 +223,11 @@ kola('kola.lang.Array', null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，得到的每个返回值，依次装入得到一个新数组
 		 * 
 		 * @method map
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 包含每次迭代结果的新数组
 		 */
@@ -246,11 +246,11 @@ kola('kola.lang.Array', null, function() {
 		 * 循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中
 		 * 
 		 * @method filter
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受三个参数：
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 过滤后的新数组
 		 */
@@ -271,12 +271,12 @@ kola('kola.lang.Array', null, function() {
 		 * 从前向后循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回
 		 * 
 		 * @method reduce
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受四个参数：
 		 * 		value {Any} 上个方法返回的值；
 		 * 		item {Any} 当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [initialValue] {Any} 初始值
 		 * @return {Any} 最后一次处理函数的调用结果
 		 */
@@ -300,12 +300,12 @@ kola('kola.lang.Array', null, function() {
 		 * 从后往前循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回
 		 * 
 		 * @method reduceRight
-		 * @param target {Array} 要循环的数组
+		 * @param target {LikeArray} 要循环的数组
 		 * @param callback {Function} 迭代器。其接受四个参数：
 		 * 		value {Any} 上个方法返回的值；
 		 * 		item {Any} 当前项；
 		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
+		 * 		target {LikeArray} 数组对象；
 		 * @param [initialValue] {Any} 初始值
 		 * @return {Any} 最后一次处理函数的调用结果
 		 */

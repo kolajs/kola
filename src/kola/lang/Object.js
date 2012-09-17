@@ -136,7 +136,7 @@ kola('kola.lang.Object', null, function() {
 			// 实现参考自jQuery 1.8.0， thanks
 			
 			// 先判断基本数据类型
-			if (!target || Class.type(target) !== 'Object' 
+			if (!target || toString.call(target) !== '[object Object]' 
 				|| target.nodeType 	// IE旧版本下，Class.type(element) == '[object Object]'
 				|| target == target.window  // 刨除掉window
 			) {

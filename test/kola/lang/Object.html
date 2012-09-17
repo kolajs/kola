@@ -12,19 +12,55 @@
 			var extra = {c: '3', d: '4'};
 			var moreExtra = {a: '5', f: '6', my:{a: '2'}};
 			KolaObject.extend(true, base, extra, moreExtra);
-			test("extend",function(testCase){
-				testCase(base.a == "5", "a");
-				testCase(base.c == "3", "c");
-				testCase(base.f == "6", "f");
+			test("extend",function(test){
+				test(base.a == "5", "a");
+				test(base.c == "3", "c");
+				test(base.f == "6", "f");
 
-				testCase(base.my.a == "2", "deep a");
-				testCase(base.my.b == "2", "deep b");
+				test(base.my.a == "2", "deep a");
+				test(base.my.b == "2", "deep b");
 			});
-			test("keys",function(testCase){
+			test("keys",function(test){
 				var keys = KolaObject.keys(extra);
-				testCase(keys.length == 2, "length");
-				testCase(keys[0] == "c", "c");
-				testCase(keys[1] == "d", "d");
+				test(keys.length == 2, "length");
+				test(keys[0] == "c", "c");
+				test(keys[1] == "d", "d");
+			});
+			test("isPlainObject", function(test) {
+				test(KolaObject.isPlainObject({}), '检测最简单的{}不成功');
+				test(!KolaObject.isPlainObject(function(){}), 'function() {}不是一个plainobject');
+				
+				var a = function() {};
+				var b = new a();
+				test(!KolaObject.isPlainObject(b), '类的实例不是一个plainobject');
+				
+				test(!KolaObject.isPlainObject(null), 'null不是一个plainobject');
+				
+				test(!KolaObject.isPlainObject(1), '数字不是一个plainobject');
+				
+				test(!KolaObject.isPlainObject(new Date()), 'Date实例也不是一个plainobject');
+				
+				test(!KolaObject.isPlainObject(window), 'window对象也不是一个plainobject');
+				
+				test(!KolaObject.isPlainObject(document.body), 'html元素也不是一个plainobject');
+			});
+			
+			test("notNull", function(test) {
+				test(KolaObject.notNull({}), '{}不是空');
+				
+				test(!KolaObject.notNull(null), 'null应该是空');
+				
+				test(!KolaObject.notNull(''), '字符串不是object');
+				
+				test(!KolaObject.notNull(false), '布尔型不是object');
+				
+				test(!KolaObject.notNull(1), '数字不是object');
+				
+				test(KolaObject.notNull(new Date()), 'Date实例是object，并且非空');
+				
+				test(KolaObject.notNull(window), 'window对象是object，并且非空');
+				
+				test(KolaObject.notNull(document.body), 'html元素是object，并且非空');
 			});
 		});
 	</script>

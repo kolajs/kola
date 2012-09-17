@@ -8,10 +8,20 @@
 <body>
 	<script>
 		kola("kola.lang.String",function(KolaString){
-			test("trim",function(testCase){
-				testCase(KolaString.trim(" ddfs") == "ddfs", "left");
-				testCase(KolaString.trim("ddfs ") == "ddfs", "right");
-				testCase(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
+			test("trim",function(test){
+				test(KolaString.trim(" ddfs") == "ddfs", "left");
+				test(KolaString.trim("ddfs ") == "ddfs", "right");
+				test(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
+			});
+			test("trimLeft",function(test){
+				test(KolaString.trimLeft(" ddfs") == "ddfs", "left");
+				test(KolaString.trimLeft("ddfs ") == "ddfs ", "right");
+				test(KolaString.trimLeft(" dd dfs    ") == "dd dfs    ", "both");
+			});
+			test("trimRight",function(test){
+				test(KolaString.trimRight(" ddfs") == " ddfs", "left");
+				test(KolaString.trimRight("ddfs ") == "ddfs", "right");
+				test(KolaString.trimRight(" dd dfs    ") == " dd dfs", "both");
 			});
 		});
 	</script>

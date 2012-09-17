@@ -6,14 +6,14 @@
 	<script type="text/javascript" src="../../testsuit/testSuit.js"></script>
 	<script>
 		kola(['kola.lang.Class'],function(KolaClass){
-			var newClass = KolaClass({
+			var newClass = KolaClass.create({
 				protoA: 1
 			});
 			test('创建类并绑定原型', function(test){
 				var instance = new newClass();
 				test(instance.protoA == 1, '原型');
 			});
-			var subClass = KolaClass(newClass, {
+			var subClass = KolaClass.create(newClass, {
 				protoB: 2
 			});
 			test('创建类并绑定原型', function(test){
