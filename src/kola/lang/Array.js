@@ -16,14 +16,14 @@ kola('kola.lang.Array', null, function() {
 	 */
 	var bindScope = function(fn, scope) {
 		return function() {
-			fn.apply(scope, arguments);
+			return fn.apply(scope, arguments);
 		};
 	};
 	
 	// 仅在IE9一下不支持这些方法，剩余的浏览器和版本都已经部分支持
 	var userAgent = navigator.userAgent;
-	var partialSupport = userAgent.indexOf('MSIE') != -1 
-		|| parseInt(userAgent.substr(userAgent.indexOf('MSIE') + 5, 3 )) < 9;
+	var partialSupport = userAgent.indexOf('MSIE') == -1 
+		|| parseInt(userAgent.substr(userAgent.indexOf('MSIE') + 5, 3 )) >= 9;
 	
 	/**
 	 * 获得指定名称的完全替代方法
@@ -148,11 +148,14 @@ kola('kola.lang.Array', null, function() {
 			},
 		
 		/**
-		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值都是true，才会返回true，其他情况返回false
+		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false
 		 * 
 		 * @method every
 		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器
+		 * @param callback {Function} 迭代器。其接受三个参数：
+		 * 		item {Any} 数组当前项；
+		 * 		i {Number} 在数组中的位置；
+		 * 		target {Array} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 * @return {Boolean} 返回值
 		 */
@@ -169,11 +172,14 @@ kola('kola.lang.Array', null, function() {
 			},
 		
 		/**
-		 * 循环数组中的每一项，依次交给迭代器，如果存在返回值为true，那就返回true，其他情况返回false
+		 * 循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false
 		 * 
 		 * @method some
 		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器
+		 * @param callback {Function} 迭代器。其接受三个参数：
+		 * 		item {Any} 数组当前项；
+		 * 		i {Number} 在数组中的位置；
+		 * 		target {Array} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 * @return {Boolean} 返回值
 		 */
@@ -194,7 +200,10 @@ kola('kola.lang.Array', null, function() {
 		 * 
 		 * @method forEach
 		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器
+		 * @param callback {Function} 迭代器。其接受三个参数：
+		 * 		item {Any} 数组当前项；
+		 * 		i {Number} 在数组中的位置；
+		 * 		target {Array} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 */
 		forEach: partialSupport ? supportedButScope('forEach') 
@@ -206,13 +215,16 @@ kola('kola.lang.Array', null, function() {
 			},
 		
 		/**
-		 * 从前往后迭代数组中的每一项，并可以设置迭代器的scope。
-		 * 当迭代器的返回值必须完全等于false时，就会停止执行。
-		 * 当有中断时，最终false（包括最后一个中断），没有中断就返回true。
+		 * 从前往后迭代数组中的每一项，交给迭代器执行。
+		 * 当迭代器的返回值完全等于false时，就会停止循环。
+		 * 最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。
 		 * 
 		 * @method each
 		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器
+		 * @param callback {Function} 迭代器。其接受三个参数：
+		 * 		item {Any} 数组当前项；
+		 * 		i {Number} 在数组中的位置；
+		 * 		target {Array} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 */
 		each: function(target, callback, scope) {
@@ -231,7 +243,10 @@ kola('kola.lang.Array', null, function() {
 		 * 
 		 * @method map
 		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器
+		 * @param callback {Function} 迭代器。其接受三个参数：
+		 * 		item {Any} 数组当前项；
+		 * 		i {Number} 在数组中的位置；
+		 * 		target {Array} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 * @return {Array} 包含每次迭代结果的新数组
 		 */
@@ -247,11 +262,14 @@ kola('kola.lang.Array', null, function() {
 			},
 		
 		/**
-		 * 循环数组中的每一项，依次交给迭代器，如果返回值为true，那就将该项存储到一个新数组中
+		 * 循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中
 		 * 
 		 * @method filter
 		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器
+		 * @param callback {Function} 迭代器。其接受三个参数：
+		 * 		item {Any} 数组当前项；
+		 * 		i {Number} 在数组中的位置；
+		 * 		target {Array} 数组对象；
 		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
 		 * @return {Array} 过滤后的新数组
 		 */
@@ -287,7 +305,7 @@ kola('kola.lang.Array', null, function() {
 				for (var i = 0, il = target.length; i < il; i++) {
 					if (target.hasOwnProperty(i.toString())) {
 						if (noInitialValue) {
-							noInitiaValue = false;
+							noInitialValue = false;
 							initialValue = target[i];
 						} else {
 							initialValue = callback(initialValue, target[i], i, target);
@@ -348,7 +366,7 @@ kola('kola.lang.Array', null, function() {
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
 		 * 
 		 * @method likeArray
-		 * @param target {Any} 要判断的对象
+		 * @param target {Any} 要被转化的对象
 		 * @return {Boolean}
 		 */
 		likeArray: likeArray,
@@ -357,7 +375,7 @@ kola('kola.lang.Array', null, function() {
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
 		 * 
 		 * @method like
-		 * @param target {Any} 要判断的对象
+		 * @param target {Any} 要被转化的对象
 		 * @return {Boolean}
 		 */
 		like: likeArray,
@@ -365,8 +383,17 @@ kola('kola.lang.Array', null, function() {
 		/**
 		 * 把指定的对象转化为数组格式
 		 * 
+		 * @method toArray
+		 * @param target {Any} 要被转化的对象
+		 * @return {Array}
+		 */
+		toArray: asArray,
+		
+		/**
+		 * 把指定的对象转化为数组格式
+		 * 
 		 * @method asArray
-		 * @param target {Any} 要判断的对象
+		 * @param target {Any} 要被转化的对象
 		 * @return {Array}
 		 */
 		asArray: asArray,
@@ -374,8 +401,8 @@ kola('kola.lang.Array', null, function() {
 		/**
 		 * 把指定的对象转化为数组格式
 		 * 
-		 * @method asArray
-		 * @param target {Any} 要判断的对象
+		 * @method as
+		 * @param target {Any} 要被转化的对象
 		 * @return {Array}
 		 */
 		as: asArray

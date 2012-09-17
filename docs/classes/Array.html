@@ -43,8 +43,6 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
-                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
-            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
@@ -66,8 +64,6 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
-            
-                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
             
                 <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
             
@@ -118,7 +114,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l10"><code>kola\lang\Array.js:10</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l73"><code>kola\lang\Array.js:73</code></a>
         </div>
     
 
@@ -161,7 +157,21 @@
 
                     <ul class="index-list methods">
                         
-                            <li class="index-item method private">
+                            <li class="index-item method">
+                                <a href="#method_as">as</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_asArray">asArray</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_each">each</a>
 
                                 
@@ -197,7 +207,35 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_is">is</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_isArray">isArray</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_lastIndexOf">lastIndexOf</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_like">like</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_likeArray">likeArray</a>
 
                                 
                                 
@@ -211,13 +249,6 @@
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_parse">parse</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
                                 <a href="#method_reduce">reduce</a>
 
                                 
@@ -225,7 +256,21 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_reduceRight">reduceRight</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_some">some</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_toArray">toArray</a>
 
                                 
                                 
@@ -247,8 +292,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_each" class="method item private">
-    <h3 class="name"><code>each</code></h3>
+                    <div id="method_as" class="method item">
+    <h3 class="name"><code>as</code></h3>
 
     
         <div class="args">
@@ -260,32 +305,18 @@
                     
                 </li>
             
-                <li class="arg">
-                    
-                        <code>fn</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>callback</code>
-                    
-                </li>
-            
             </ul><span class="paren">)</span>
         </div>
     
 
     
         <span class="returns-inline">
-            <span class="type">Boolean</span>
+            <span class="type">Array</span>
         </span>
     
 
     
 
-    
-        <span class="flag private">private</span>
     
 
     
@@ -307,7 +338,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l181"><code>kola\lang\Array.js:181</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l401"><code>kola\lang\Array.js:401</code></a>
         
         </p>
 
@@ -318,7 +349,223 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器。如果迭代没有被中断，那就返回true，否则返回false</p>
+        <p>把指定的对象转化为数组格式</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要被转化的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Array</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_asArray" class="method item">
+    <h3 class="name"><code>asArray</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Array</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l392"><code>kola\lang\Array.js:392</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>把指定的对象转化为数组格式</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要被转化的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Array</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_each" class="method item">
+    <h3 class="name"><code>each</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>callback</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[scope]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l217"><code>kola\lang\Array.js:217</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>从前往后迭代数组中的每一项，交给迭代器执行。
+当迭代器的返回值完全等于false时，就会停止循环。
+最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。</p>
     </div>
 
     
@@ -344,21 +591,6 @@
             
                 <li class="param">
                     
-                        <code class="param-name">fn</code>
-                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>要对数组调用的方法的名称</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
                         <code class="param-name">callback</code>
                         <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
                     
@@ -366,7 +598,26 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[scope]</code>
+                        <span class="type">Any</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>给迭代器设置的上下文。如果不存在的话，那就是undefined</p>
                     </div>
 
                     
@@ -376,19 +627,6 @@
         </div>
     
 
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Boolean</span>:
-                    
-                    返回值
-                
-            </div>
-        </div>
     
 
     
@@ -453,7 +691,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l70"><code>kola\lang\Array.js:70</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l150"><code>kola\lang\Array.js:150</code></a>
         
         </p>
 
@@ -464,7 +702,7 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器，确认所有的返回值都是true，才会返回true，其他情况返回false</p>
+        <p>循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false</p>
     </div>
 
     
@@ -491,13 +729,16 @@
                 <li class="param">
                     
                         <code class="param-name">callback</code>
-                        <span class="type">Callback | <a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -563,7 +804,7 @@
             
                 <li class="arg">
                     
-                        <code>scope</code>
+                        <code class="optional">[scope]</code>
                     
                 </li>
             
@@ -600,7 +841,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l131"><code>kola\lang\Array.js:131</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l264"><code>kola\lang\Array.js:264</code></a>
         
         </p>
 
@@ -611,7 +852,7 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器，如果返回值为true，那就将该项存储到一个新数组中</p>
+        <p>循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中</p>
     </div>
 
     
@@ -638,13 +879,16 @@
                 <li class="param">
                     
                         <code class="param-name">callback</code>
-                        <span class="type">Callback | <a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -652,8 +896,9 @@
             
                 <li class="param">
                     
-                        <code class="param-name">scope</code>
+                        <code class="param-name optional">[scope]</code>
                         <span class="type">Any</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
@@ -709,7 +954,7 @@
             
                 <li class="arg">
                     
-                        <code>scope</code>
+                        <code class="optional">[scope]</code>
                     
                 </li>
             
@@ -742,7 +987,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l100"><code>kola\lang\Array.js:100</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l198"><code>kola\lang\Array.js:198</code></a>
         
         </p>
 
@@ -753,7 +998,7 @@
     </div>
 
     <div class="description">
-        <p>在数组中从后往前搜索指定元素的位置，可以设置起始位置</p>
+        <p>从前往后迭代数组中的每一项，并可以设置迭代器的scope</p>
     </div>
 
     
@@ -780,13 +1025,16 @@
                 <li class="param">
                     
                         <code class="param-name">callback</code>
-                        <span class="type">Callback | <a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -794,8 +1042,9 @@
             
                 <li class="param">
                     
-                        <code class="param-name">scope</code>
+                        <code class="param-name optional">[scope]</code>
                         <span class="type">Any</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
@@ -875,7 +1124,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l20"><code>kola\lang\Array.js:20</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l83"><code>kola\lang\Array.js:83</code></a>
         
         </p>
 
@@ -964,6 +1213,212 @@
 </div>
 
                 
+                    <div id="method_is" class="method item">
+    <h3 class="name"><code>is</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Boolean</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l356"><code>kola\lang\Array.js:356</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>判断指定的对象是否是Array类型</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要判断的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Boolean</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_isArray" class="method item">
+    <h3 class="name"><code>isArray</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Boolean</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l347"><code>kola\lang\Array.js:347</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>判断指定的对象是否是Array类型</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要判断的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Boolean</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_lastIndexOf" class="method item">
     <h3 class="name"><code>lastIndexOf</code></h3>
 
@@ -1022,7 +1477,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l44"><code>kola\lang\Array.js:44</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l116"><code>kola\lang\Array.js:116</code></a>
         
         </p>
 
@@ -1111,6 +1566,212 @@
 </div>
 
                 
+                    <div id="method_like" class="method item">
+    <h3 class="name"><code>like</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Boolean</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l374"><code>kola\lang\Array.js:374</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>判断指定的对象是否类似于数组（存在length属性，可以转化为数组）</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要被转化的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Boolean</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_likeArray" class="method item">
+    <h3 class="name"><code>likeArray</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Boolean</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l365"><code>kola\lang\Array.js:365</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>判断指定的对象是否类似于数组（存在length属性，可以转化为数组）</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要被转化的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Boolean</span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_map" class="method item">
     <h3 class="name"><code>map</code></h3>
 
@@ -1132,7 +1793,7 @@
             
                 <li class="arg">
                     
-                        <code>scope</code>
+                        <code class="optional">[scope]</code>
                     
                 </li>
             
@@ -1169,7 +1830,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l114"><code>kola\lang\Array.js:114</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l241"><code>kola\lang\Array.js:241</code></a>
         
         </p>
 
@@ -1207,13 +1868,16 @@
                 <li class="param">
                     
                         <code class="param-name">callback</code>
-                        <span class="type">Callback | <a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -1221,8 +1885,9 @@
             
                 <li class="param">
                     
-                        <code class="param-name">scope</code>
+                        <code class="param-name optional">[scope]</code>
                         <span class="type">Any</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
@@ -1257,109 +1922,6 @@
 </div>
 
                 
-                    <div id="method_parse" class="method item">
-    <h3 class="name"><code>parse</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>source</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Array</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l230"><code>kola\lang\Array.js:230</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>从一个拥有length属性的object生成一个数组</p>
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">source</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>类数组</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Array</span>:
-                    
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_reduce" class="method item">
     <h3 class="name"><code>reduce</code></h3>
 
@@ -1382,12 +1944,6 @@
                 <li class="arg">
                     
                         <code class="optional">[initialValue]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>scope</code>
                     
                 </li>
             
@@ -1424,7 +1980,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l150"><code>kola\lang\Array.js:150</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l289"><code>kola\lang\Array.js:289</code></a>
         
         </p>
 
@@ -1468,7 +2024,11 @@
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受四个参数：
+        value {Any} 上个方法返回的值；
+        item {Any} 当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -1490,16 +2050,152 @@
                     
                 </li>
             
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Any</span>:
+                    
+                    最后一次处理函数的调用结果
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_reduceRight" class="method item">
+    <h3 class="name"><code>reduceRight</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>callback</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[initialValue]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Any</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l318"><code>kola\lang\Array.js:318</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>从后往前循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
                 <li class="param">
                     
-                        <code class="param-name">scope</code>
-                        <span class="type">Any</span>
+                        <code class="param-name">target</code>
+                        <span class="type">Array</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>给迭代器设置的上下文。如果不存在的话，那就是undefined</p>
+                        <p>要循环的数组</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>迭代器。其接受四个参数：
+        value {Any} 上个方法返回的值；
+        item {Any} 当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[initialValue]</code>
+                        <span class="type">Any</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>初始值</p>
                     </div>
 
                     
@@ -1549,7 +2245,7 @@
             
                 <li class="arg">
                     
-                        <code>scope</code>
+                        <code class="optional">[scope]</code>
                     
                 </li>
             
@@ -1586,7 +2282,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l85"><code>kola\lang\Array.js:85</code></a>
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l174"><code>kola\lang\Array.js:174</code></a>
         
         </p>
 
@@ -1597,7 +2293,7 @@
     </div>
 
     <div class="description">
-        <p>循环数组中的每一项，依次交给迭代器，如果存在返回值为true，那就返回true，其他情况返回false</p>
+        <p>循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false</p>
     </div>
 
     
@@ -1624,13 +2320,16 @@
                 <li class="param">
                     
                         <code class="param-name">callback</code>
-                        <span class="type">Callback | <a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>迭代器</p>
+                        <p>迭代器。其接受三个参数：
+        item {Any} 数组当前项；
+        i {Number} 在数组中的位置；
+        target {Array} 数组对象；</p>
                     </div>
 
                     
@@ -1638,8 +2337,9 @@
             
                 <li class="param">
                     
-                        <code class="param-name">scope</code>
+                        <code class="param-name optional">[scope]</code>
                         <span class="type">Any</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
@@ -1665,6 +2365,109 @@
                         <span class="type">Boolean</span>:
                     
                     返回值
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_toArray" class="method item">
+    <h3 class="name"><code>toArray</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>target</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Array</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;kola_lang_Array.js.html#l383"><code>kola\lang\Array.js:383</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>把指定的对象转化为数组格式</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">target</code>
+                        <span class="type">Any</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>要被转化的对象</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Array</span>:
+                    
                 
             </div>
         </div>

@@ -43,8 +43,6 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
-                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
-            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
@@ -66,8 +64,6 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
-            
-                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
             
                 <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
             
@@ -114,17 +110,13 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- *&#x2F;
-
 kola(&#x27;kola.lang.Class&#x27;, [
 	&#x27;kola.Packager&#x27;
-], function (Packager) {
+], function(Packager) {
 
 	&#x2F;********************************************** 类定义 **********************************************&#x2F;
+	
+	var toString = Object.prototype.toString;
 
 	&#x2F;**
 	 * kola的Class类，用于类的创建和检测等
@@ -134,91 +126,36 @@ kola(&#x27;kola.lang.Class&#x27;, [
 	 * 
 	 * @author Jady Yang
 	 *&#x2F;
-	&#x2F;**
-	 * 创建一个新类
-	 * 
-	 * @method createClass
-	 * @param [superClass] {Class} 父类
-	 * @param methods {Object} 方法列表
-	 * @return {Class}
-	 *&#x2F;
-	var exports = Packager.createClass;
-	&#x2F;**
-	 * 测试对象类型的函数
-	 * @property eye
-	 * @type {Function}
-	 * @private
-	 *&#x2F;
-	var eye = Object.prototype.toString;
-	&#x2F;**
-	 * 测试对象是否为函数
-	 * @method isFunction
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	exports.isFunction = function (target) {
-		return (eye.call(target) == &quot;[object Function]&quot;);
-	};
-
-	&#x2F;**
-	 * 测试对象是否为函数
-	 * @method isArray
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	exports.isArray = function (target) {
-		return (eye.call(target) == &quot;[object Array]&quot;);
-	};
-	&#x2F;*
-	 * 测试对象是否为对象
-	 * @method isObject
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	&#x2F;&#x2F; FIXME: isObject需要确定，你认为什么是object？使用者认为什么是object？你跟使用者认为的是否一致？是否会产生歧义？
-	&#x2F;&#x2F; FIXME: 没有考虑为null的情况，null在ie低版本下会认为是 [object Object]，其他情况会认为是[object Null]
-	&#x2F;&#x2F; FIXME: 还有很多种情况，比如 document.toString是 [object HTMLDocument]（非IE低版本浏览器）等等，尤其是在对象为dom的情况下
-	exports.isObject = function (target) {
-		return (eye.call(target) == &quot;[object Object]&quot;);
-	};
-	&#x2F;**
-	 * 测试对象是否为字符串
-	 * @method isString
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	exports.isString = function (target) {
-		return (eye.call(target) == &quot;[object String]&quot;);
-	};
-
-	&#x2F;**
-	 * 测试对象是否为正则表达式
-	 * @method isRegExp
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	exports.isRegExp = function (target) {
-		return (eye.call(target) == &quot;[object RegExp]&quot;);
-	};
-
-	&#x2F;**
-	 * 测试对象是否为数字
-	 * @method isNumber
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	exports.isNumber = function (target) {
-		return (eye.call(target) == &quot;[object Number]&quot;);
-	};
-
-	&#x2F;**
-	 * 测试对象是否未定义
-	 * @method isUndefined
-	 * @param target {Object} 目标对象
-	 * @return {Boolean}
-	 *&#x2F;
-	exports.isUndefined = function (target) {
-		return (typeof target==&quot;undefined&quot;);
+	var exports = {
+		
+		&#x2F;**
+		 * 创建一个新类
+		 * 
+		 * @method createClass
+		 * @param [superClass] {Function} 父类
+		 * @param prototypes {Object} 原形对象
+		 * @return {Class} 创建的新类
+		 *&#x2F;
+		create: Packager.createClass,
+		
+		&#x2F;**
+		 * 获得指定对象的类型
+		 * 
+		 * @method type
+		 * @param target {Any} 要判断的对象
+		 * @return {String} 类似于这样的值：undefined、null、Object、String、Boolean、Array、HTMLElement...
+		 *&#x2F;
+		type: function(target) {
+			if (target == null) return String(target);
+			
+			&#x2F;&#x2F; 如果是Object子类的话，那就再具体判断是什么类型
+			var typeString = toString.call(target);
+			if (typeString.indexOf(&#x27;[object &#x27;) == 0) {
+				return typeString.substring(8, typeString.length - 1);
+			}
+			
+			return typeString;
+		}
 	};
 	
 	return exports;

@@ -43,8 +43,6 @@
             
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
-                <li><a href="..&#x2F;classes/Browser.html">Browser</a></li>
-            
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
@@ -66,8 +64,6 @@
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="..&#x2F;modules/kola.html">kola</a></li>
-            
-                <li><a href="..&#x2F;modules/kola.bom.html">kola.bom</a></li>
             
                 <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
             
@@ -114,14 +110,9 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
- * kola language 包，提供JS语言中常见数据类型的常用方法
- * 
- * @module kola.lang
- *&#x2F;
 
-kola(&#x27;kola.lang.String&#x27;, [
-], function () {
+kola(&#x27;kola.lang.String&#x27;, null, function() {
+	
 	&#x2F;**
 	 * kola的String类
 	 * 
@@ -131,23 +122,45 @@ kola(&#x27;kola.lang.String&#x27;, [
 	 * @author Jady Yang
 	 *&#x2F;
 	var exports = {
+		
 		&#x2F;**
-		 * 去除掉字符串左右两侧的空格
+		 * 去除掉字符串左右两侧、连续的空格
 		 * 
 		 * @method trim
-		 * @param string {String} 要过滤空格的字符串
+		 * @param target {String} 要过滤空格的字符串
+		 * @return {String} 
+		 *&#x2F;
+		trim: function(target) {
+			return target.replace(trimLeft, &#x27;&#x27;).replace(trimRight, &#x27;&#x27;);
+		},
+		
+		&#x2F;**
+		 * 去除掉字符串左侧开始的、连续的空格
+		 * 
+		 * @method trimLeft
+		 * @param target {String} 要过滤空格的字符串
 		 * @return {String}
 		 *&#x2F;
-		trim: function(string) {
-			return string.replace(trimLeft, &#x27;&#x27;).replace(trimRight, &#x27;&#x27;);
+		trimLeft: function(target) {
+			return target.replace(trimLeft, &#x27;&#x27;);
+		},
+		
+		&#x2F;**
+		 * 去除掉字符串右侧开始的、连续的空格
+		 * 
+		 * @method trimRight
+		 * @param target {String} 要过滤空格的字符串
+		 * @return {String}
+		 *&#x2F;
+		trimRight: function(target) {
+			return target.replace(trimRight, &#x27;&#x27;);
 		}
 	};
-	&#x2F;**
-	 * @private
-	 * @proprety trimLeft
-	 *&#x2F;
+	
+	&#x2F;&#x2F; 使用这种正则的原因参考：http:&#x2F;&#x2F;blog.stevenlevithan.com&#x2F;archives&#x2F;faster-trim-javascript
 	var trimLeft = &#x2F;^\s\s*&#x2F;;
 	var trimRight = &#x2F;\s\s*$&#x2F;;
+	
 	return exports;
 });
     </pre>

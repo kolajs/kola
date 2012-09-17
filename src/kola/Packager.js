@@ -28,7 +28,7 @@ window.kola = (function(kola) {
 	};
 	
 	/*********************************************************************
-	 *                        kola类相关
+	 *                        类支持
 	 ********************************************************************/
 	
 	var newKolaClass = (function() {
@@ -126,6 +126,8 @@ window.kola = (function(kola) {
 	 ********************************************************************/
 	
 	var packageEntities = (function() {
+		
+		/****************** Aop支持 *******************/
 	
 		/**
 		 * Aop方法列表
@@ -253,7 +255,7 @@ window.kola = (function(kola) {
 		};
 			
 		/**
-		 * 获得一系列包的实体内容。其参数大体是由方法产生的，格式比较特殊
+		 * 获得一系列包的实体内容。其参数大体是由方法 parsePackages 产生的，格式比较特殊
 		 */
 		return function(packages) {
 			var values = [];
@@ -280,6 +282,31 @@ window.kola = (function(kola) {
 			return values;
 		};
 	
+	})();
+	
+	/*********************************************************************
+	 *                        getPackage私有方法
+	 ********************************************************************/
+	
+	var getPackage = (function() {
+		/**
+		 * 保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象
+		 * 
+		 * @type {Object}
+		 */
+		var packageObjects = {};
+		
+		/**
+		 * 获取某个package的控制对象
+		 * 
+		 * @param name {String} package名称
+		 * @return {Package} package控制对象
+		 */
+		return function(name) {
+			// 没有该package那就创建之
+			return packageObjects[name] || (packageObjects[name] = new Package(name));
+		};
+		
 	})();
 	
 	/*********************************************************************
@@ -553,32 +580,6 @@ window.kola = (function(kola) {
 	})();
 	
 	/*********************************************************************
-	 *                        getPackage 私有方法
-	 ********************************************************************/
-	
-	var getPackage = (function() {
-		/**
-		 * 保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象
-		 * 
-		 * @property packageObjects
-		 * @type {Object}
-		 */
-		var packageObjects = {};
-		
-		/**
-		 * 获取某个package的控制对象
-		 * 
-		 * @param name {String} package名称
-		 * @return {Package} package控制对象
-		 */
-		return function(name) {
-			// 没有该package那就创建之
-			return packageObjects[name] || (packageObjects[name] = new Package(name));
-		};
-		
-	})();
-	
-	/*********************************************************************
 	 *                        Packager类
 	 ********************************************************************/
 	
@@ -711,7 +712,7 @@ window.kola = (function(kola) {
 				// 创建一个依赖包可用后的回调方法
 				var allPackages = packages.concat(packages.plugin);
 				var fn = callTimes(allPackages.length, function() {
-					callback.apply(scope || Packager, packageEntities(packages));
+					callback.apply(scope || exports, packageEntities(packages));
 				});
 				
 				// 监听所有包的activate事件
@@ -871,10 +872,10 @@ window.kola = (function(kola) {
 	})();
 	
 	/*********************************************************************
-	 *                         kola方法定义
+	 *                         kola方法
 	 ********************************************************************/
 	
-	return (function() {
+	return (function(kola) {
 		
 		//	如果存在缓存的kola方法，那就保存之
 		var cachedKolaCall = !!kola && kola._cache;
@@ -956,6 +957,6 @@ window.kola = (function(kola) {
 		
 		return exports;
 	
-	})();
+	})(kola);
 	
 })(window.kola);
