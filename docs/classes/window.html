@@ -53,8 +53,6 @@
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
-                <li><a href="..&#x2F;classes/Packager.html">Packager</a></li>
-            
                 <li><a href="..&#x2F;classes/String.html">String</a></li>
             
                 <li><a href="..&#x2F;classes/window.html">window</a></li>
@@ -246,7 +244,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_Packager.js.html#l883"><code>kola\Packager.js:883</code></a>
+        <a href="..&#x2F;files&#x2F;kola_Packager.js.html#l840"><code>kola\Packager.js:840</code></a>
         
         </p>
 
@@ -380,7 +378,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_Packager.js.html#l896"><code>kola\Packager.js:896</code></a>
+        <a href="..&#x2F;files&#x2F;kola_Packager.js.html#l853"><code>kola\Packager.js:853</code></a>
         
         </p>
 
@@ -502,7 +500,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_Packager.js.html#l908"><code>kola\Packager.js:908</code></a>
+        <a href="..&#x2F;files&#x2F;kola_Packager.js.html#l865"><code>kola\Packager.js:865</code></a>
         
         </p>
 
@@ -543,6 +541,49 @@
 
     
 
+    
+        <div class="example">
+            <h4>Example:</h4>
+
+            <div class="example-content">
+                <pre class="code"><code class="prettyprint">{
+    charset: 'utf-8',           // 编码，默认没有
+    path: '/…/',                // 跟路径，默认自动寻找当前的
+    domReady: true,             // 要执行的方法默认都在domReady之后执行，默认为true
+
+    // lib配置，优先级高于全局配置，但是低于packages
+    libs: {                     // lib列表
+        'kola': {               // kola lib的定义
+            charset: 'utf-8',   // 编码，默认使用全局配置
+            path: '...'         // 根路径，默认使用全局配置
+        },
+        'kola.ui': {            // kola.ui lib的定义
+            charset: 'gbk',     // 编码，默认使用全局配置
+            path: '...'         // 根路径，默认使用全局配置
+        },
+        'webbricks.clay': {     / webbricks.clay lib的定义
+            charset: 'gbk',     // 编码，默认使用全局配置
+            path: '...'         // 根路径，默认使用全局配置
+        }
+    },
+
+    // package配置，编码采用全局配置，优先级高于libs
+    packages: {
+        'kola.lang.Class': 0,   // 如果是数字，代表要去uris数组上获取最终地址
+        'kola.net.Ajax', 0,
+        'kola.lang': 1,         // 这个代表所有kola.lang下的包，都在这个地址上
+        'webbricks.magicbox': 'http://.../magicbox.js'
+    },
+
+    // 可用地址列表
+    uris: [
+        'http://.../common.js',
+        'http://.../index.js'
+    ]
+}
+</code></pre>
+            </div>
+        </div>
     
 </div>
 

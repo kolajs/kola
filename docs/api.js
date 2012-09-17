@@ -7,7 +7,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "Function",
         "KolaElement",
         "Object",
-        "Packager",
         "String",
         "window"
     ],
