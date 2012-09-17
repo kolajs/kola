@@ -30,7 +30,7 @@ kola('kola.lang.Array', null, function() {
 	 */
 	var supported = function(name) {
 		return function(target) {
-			return target[name].apply(target, slice.call(arguments, 1));
+			return Array.prototype[name].apply(target, slice.call(arguments, 1));
 		};
 	};
 	
@@ -39,11 +39,17 @@ kola('kola.lang.Array', null, function() {
 	 */
 	var supportedButScope = function(name) {
 		return function(target, callback, scope) {
-			return target[name].call(target, arguments.length > 2
+			return Array.prototype[name].call(target, arguments.length > 2
 				? bindScope(callback, scope)	// 存在scope的话，那建立一个设置了this的新方法
 				: callback);
 		};
 	};
+	
+	var isArray = partialSupport ? Array.isArray 
+		: function(target) {
+			if (typeof target != 'object' || target === null) return false;
+			return Object.prototype.toString.call(target) == '[object Array]';
+		};
 	
 	/**
 	 * kola的Array类
@@ -326,11 +332,7 @@ kola('kola.lang.Array', null, function() {
 		 * @param target {Any} 要判断的对象
 		 * @return {Boolean}
 		 */
-		isArray: partialSupport ? Array.isArray 
-			: function(target) {
-				if (typeof target != 'object' || target === null) return false;
-				return Object.prototype.toString.call(target) == '[object Array]';
-			},
+		isArray: isArray,
 		
 		/**
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
