@@ -158,24 +158,6 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	};
 	
 	&#x2F;**
-	 * 判断指定的对象是否是Array类型
-	 *&#x2F;
-	var isArray = function(target) {
-		if (typeof target != &#x27;object&#x27; || target === null) return false;
-		return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
-	};
-	
-	&#x2F;**
-	 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
-	 *&#x2F;
-	var likeArray = function(target) {
-		var type = typeof target;
-		if (type == &#x27;undefined&#x27; || type == &#x27;object&#x27; &amp;&amp; target === null) return false;
-		if (typeof target.length != &#x27;number&#x27;) return false;
-		return true;
-	};
-	
-	&#x2F;**
 	 * kola的Array类
 	 * 
 	 * @class Array
@@ -261,7 +243,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 *&#x2F;
 		every: partialSupport ? supportedButScope(&#x27;every&#x27;) 
@@ -285,7 +267,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 *&#x2F;
 		some: partialSupport ? supportedButScope(&#x27;some&#x27;) 
@@ -309,7 +291,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 *&#x2F;
 		forEach: partialSupport ? supportedButScope(&#x27;forEach&#x27;) 
 			: function(target, callback, scope) {
@@ -330,7 +312,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 *&#x2F;
 		each: function(target, callback, scope) {
 			for (var i = 0, il = target.length; i &lt; il; i++) {
@@ -352,7 +334,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 包含每次迭代结果的新数组
 		 *&#x2F;
 		map: partialSupport ? supportedButScope(&#x27;map&#x27;) 
@@ -375,7 +357,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 过滤后的新数组
 		 *&#x2F;
 		filter: partialSupport ? supportedButScope(&#x27;filter&#x27;) 
@@ -456,16 +438,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * @param target {Any} 要判断的对象
 		 * @return {Boolean}
 		 *&#x2F;
-		isArray: partialSupport ? Array.isArray : isArray,
-		
-		&#x2F;**
-		 * 判断指定的对象是否是Array类型
-		 * 
-		 * @method is
-		 * @param target {Any} 要判断的对象
-		 * @return {Boolean}
-		 *&#x2F;
-		is: partialSupport ? Array.isArray : isArray,
+		isArray: partialSupport ? Array.isArray 
+			: function(target) {
+				if (typeof target != &#x27;object&#x27; || target === null) return false;
+				return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
+			},
 		
 		&#x2F;**
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
@@ -474,16 +451,12 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * @param target {Any} 要被转化的对象
 		 * @return {Boolean}
 		 *&#x2F;
-		likeArray: likeArray,
-		
-		&#x2F;**
-		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
-		 * 
-		 * @method like
-		 * @param target {Any} 要被转化的对象
-		 * @return {Boolean}
-		 *&#x2F;
-		like: likeArray,
+		likeArray: function(target) {
+			var type = typeof target;
+			if (type == &#x27;undefined&#x27; || type == &#x27;object&#x27; &amp;&amp; target === null) return false;
+			if (typeof target.length != &#x27;number&#x27;) return false;
+			return true;
+		},
 		
 		&#x2F;**
 		 * 把指定的对象转化为数组格式

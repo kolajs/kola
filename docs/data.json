@@ -205,7 +205,7 @@
             "module": "kola.lang",
             "namespace": "",
             "file": "kola\\lang\\Array.js",
-            "line": 66,
+            "line": 48,
             "description": "kola的Array类",
             "static": 1,
             "author": "Jady Yang"
@@ -1370,21 +1370,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 48,
-            "description": "判断指定的对象是否是Array类型",
-            "class": "Array",
-            "module": "kola.lang"
-        },
-        {
-            "file": "kola\\lang\\Array.js",
-            "line": 56,
-            "description": "判断指定的对象是否类似于数组（存在length属性，可以转化为数组）",
-            "class": "Array",
-            "module": "kola.lang"
-        },
-        {
-            "file": "kola\\lang\\Array.js",
-            "line": 76,
+            "line": 58,
             "description": "获取指定元素在数组中的位置",
             "itemtype": "method",
             "name": "indexOf",
@@ -1415,7 +1401,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 109,
+            "line": 91,
             "description": "在数组中从后往前搜索指定元素的位置",
             "itemtype": "method",
             "name": "lastIndexOf",
@@ -1446,7 +1432,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 143,
+            "line": 125,
             "description": "循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false",
             "itemtype": "method",
             "name": "every",
@@ -1463,7 +1449,7 @@
                 },
                 {
                     "name": "scope",
-                    "description": "给迭代器设置的上下文。如果不存在的话，那就是undefined",
+                    "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
                 }
@@ -1477,7 +1463,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 167,
+            "line": 149,
             "description": "循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false",
             "itemtype": "method",
             "name": "some",
@@ -1494,7 +1480,7 @@
                 },
                 {
                     "name": "scope",
-                    "description": "给迭代器设置的上下文。如果不存在的话，那就是undefined",
+                    "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
                 }
@@ -1508,7 +1494,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 191,
+            "line": 173,
             "description": "从前往后迭代数组中的每一项，并可以设置迭代器的scope",
             "itemtype": "method",
             "name": "forEach",
@@ -1525,7 +1511,7 @@
                 },
                 {
                     "name": "scope",
-                    "description": "给迭代器设置的上下文。如果不存在的话，那就是undefined",
+                    "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
                 }
@@ -1535,7 +1521,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 210,
+            "line": 192,
             "description": "从前往后迭代数组中的每一项，交给迭代器执行。\n当迭代器的返回值完全等于false时，就会停止循环。\n最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。",
             "itemtype": "method",
             "name": "each",
@@ -1552,7 +1538,7 @@
                 },
                 {
                     "name": "scope",
-                    "description": "给迭代器设置的上下文。如果不存在的话，那就是undefined",
+                    "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
                 }
@@ -1562,7 +1548,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 234,
+            "line": 216,
             "description": "循环数组中的每一项，依次交给迭代器，得到的每个返回值，依次装入得到一个新数组",
             "itemtype": "method",
             "name": "map",
@@ -1579,7 +1565,7 @@
                 },
                 {
                     "name": "scope",
-                    "description": "给迭代器设置的上下文。如果不存在的话，那就是undefined",
+                    "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
                 }
@@ -1593,7 +1579,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 257,
+            "line": 239,
             "description": "循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中",
             "itemtype": "method",
             "name": "filter",
@@ -1610,7 +1596,7 @@
                 },
                 {
                     "name": "scope",
-                    "description": "给迭代器设置的上下文。如果不存在的话，那就是undefined",
+                    "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
                 }
@@ -1624,7 +1610,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 282,
+            "line": 264,
             "description": "从前向后循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回",
             "itemtype": "method",
             "name": "reduce",
@@ -1655,7 +1641,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 311,
+            "line": 293,
             "description": "从后往前循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回",
             "itemtype": "method",
             "name": "reduceRight",
@@ -1686,7 +1672,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 340,
+            "line": 322,
             "description": "判断指定的对象是否是Array类型",
             "itemtype": "method",
             "name": "isArray",
@@ -1706,27 +1692,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 349,
-            "description": "判断指定的对象是否是Array类型",
-            "itemtype": "method",
-            "name": "is",
-            "params": [
-                {
-                    "name": "target",
-                    "description": "要判断的对象",
-                    "type": "Any"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Boolean"
-            },
-            "class": "Array",
-            "module": "kola.lang"
-        },
-        {
-            "file": "kola\\lang\\Array.js",
-            "line": 358,
+            "line": 335,
             "description": "判断指定的对象是否类似于数组（存在length属性，可以转化为数组）",
             "itemtype": "method",
             "name": "likeArray",
@@ -1746,27 +1712,7 @@
         },
         {
             "file": "kola\\lang\\Array.js",
-            "line": 367,
-            "description": "判断指定的对象是否类似于数组（存在length属性，可以转化为数组）",
-            "itemtype": "method",
-            "name": "like",
-            "params": [
-                {
-                    "name": "target",
-                    "description": "要被转化的对象",
-                    "type": "Any"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Boolean"
-            },
-            "class": "Array",
-            "module": "kola.lang"
-        },
-        {
-            "file": "kola\\lang\\Array.js",
-            "line": 376,
+            "line": 349,
             "description": "把指定的对象转化为数组格式",
             "itemtype": "method",
             "name": "toArray",

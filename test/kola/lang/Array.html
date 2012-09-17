@@ -92,6 +92,16 @@
 				}) == 31, "未指定初始值时，计算结果不对");
 			});
 
+			test("reduceRight",function(testCase){
+				testCase(KolaArray.reduceRight(testArrNum, function(prev, item, i, target){
+					return prev + item;
+				}, 1) == 32, "指定了初始化值时，计算结果不对");
+				
+				testCase(KolaArray.reduce(testArrNum, function(prev, item, i, target){
+					return prev + item;
+				}) == 31, "未指定初始值时，计算结果不对");
+			});
+
 			test("map",function(testCase){
 				var newArray = KolaArray.map(testArrNum, function(item, i, target){
 					return item + i;
@@ -100,12 +110,88 @@
 					return newArray[i] == item + i;
 				}), "和");
 			});
-			test("toArray",function(testCase){
+			
+			test('each', function(test) {
+				var array = ['abc', '', 0, 1, undefined, null, {}, function() {}, true, false, []];
+				var index;
+				var returnValue = KolaArray.each(array, function(item, i, target) {
+					index = i;
+					return item;
+				});
+				test(index >= 9, '迭代方法没有返回false，却中断了迭代');
+				test(index <= 9, '迭代方法返回了false，却没有中断迭代');
+				test(!returnValue, '迭代方法中断了，但each方法却没有返回false');
+				
+				var array = ['abc', '', 0, 1, undefined, null, {}, function() {}, true, []];
+				var returnValue = KolaArray.each(array, function(item, i, target) {
+					return item;
+				});
+				test(returnValue, '迭代方法没有中断，但each方法却没有返回true');
+				
+				var returnValue = KolaArray.each(array, function(item, i, target) {
+					return !!this && this.key === 2;
+				}, {key: 2});
+				test(returnValue, '给迭代方法设置了scope，但是成为迭代方法的this');
+				
+				var array = Array(5);
+				array[2] = 1;
+				test(KolaArray.each(array, function(item, i, target) {
+					return i === 2;
+				}), '数组中空项也被交给了迭代方法，这个不应该');
+			});
+			
+			test('isArray', function(test) {
+				test(KolaArray.isArray([]), '空数组没有被认为是数组');
+				
+				test(KolaArray.isArray([1, 2, 3]), '最简单的数组没有被认为是数组');
+				
+				test(!KolaArray.isArray(arguments), 'arguments对象不应该是数组');
+				
+				test(!KolaArray.isArray(document.anchors), 'HTMLCollection不应该是数组');
+				
+				test(!KolaArray.isArray(document.getElementsByTagName('script')), 'getElementsByTagName获取的结果也不应该是数组');
+				
+				test(!KolaArray.isArray('abc'), '字符串不应该是数组');
+			});
+			
+			test('likeArray', function(test) {
+				test(KolaArray.likeArray([]), '空数组应该是近似数组');
+				
+				test(KolaArray.likeArray([1, 2, 3]), '最简单的数组应该是近似数组');
+				
+				test(KolaArray.likeArray(arguments), 'arguments对象应该是近似数组');
+				
+				test(KolaArray.likeArray(document.anchors), 'HTMLCollection应该是近似数组');
+				
+				test(KolaArray.likeArray(document.getElementsByTagName('script')), 'getElementsByTagName获取的结果应该是近似数组');
+				
+				test(KolaArray.likeArray('abc'), '字符串应该是近似数组');
+				
+				test(KolaArray.likeArray({length: 3}), '存在length属性，并且值为数字，却没有被认为是近似数组');
+				
+				test(!KolaArray.likeArray({length: '3'}), '存在length属性，但值并不为数字，那就不是近似数组');
+			});
+			
+			test("toArray",function(test){
 				var likeArray = {}
 				likeArray[0] = 0;
 				likeArray.length = 1;
 				var testArray = KolaArray.toArray(likeArray);
-				testCase(testArray.length == 1 && testArray[0] == 0, "object转数组");
+				test(testArray.length == 1 && testArray[0] == 0, "object转数组");
+				
+				test(typeof KolaArray.toArray(arguments)[0] == 'function', 'arguments没有被正确转换为数组');
+				
+				test(KolaArray.isArray(KolaArray.toArray(document.anchors)), 'HTMLCollection没有被正确转换为数组');
+				
+				test(KolaArray.isArray(KolaArray.toArray(document.getElementsByTagName('script')))
+						&& KolaArray.toArray(document.getElementsByTagName('script')).length > 0
+						&& KolaArray.toArray(document.getElementsByTagName('script'))[0].nodeName.toLowerCase() == 'script'
+					, 'getElementsByTagName获取的结果没有被正确转换为数组');
+				
+				test(KolaArray.isArray(KolaArray.toArray('abc'))
+						&& KolaArray.toArray('abc').length == 3
+						&& KolaArray.toArray('abc').join('') == 'abc'
+					, '字符串没有被正确转换为数组');
 			});
 		});
 	</script>

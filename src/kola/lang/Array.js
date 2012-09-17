@@ -46,24 +46,6 @@ kola('kola.lang.Array', null, function() {
 	};
 	
 	/**
-	 * 判断指定的对象是否是Array类型
-	 */
-	var isArray = function(target) {
-		if (typeof target != 'object' || target === null) return false;
-		return Object.prototype.toString.call(target) == '[object Array]';
-	};
-	
-	/**
-	 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
-	 */
-	var likeArray = function(target) {
-		var type = typeof target;
-		if (type == 'undefined' || type == 'object' && target === null) return false;
-		if (typeof target.length != 'number') return false;
-		return true;
-	};
-	
-	/**
 	 * kola的Array类
 	 * 
 	 * @class Array
@@ -149,7 +131,7 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 */
 		every: partialSupport ? supportedButScope('every') 
@@ -173,7 +155,7 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 */
 		some: partialSupport ? supportedButScope('some') 
@@ -197,7 +179,7 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 */
 		forEach: partialSupport ? supportedButScope('forEach') 
 			: function(target, callback, scope) {
@@ -218,7 +200,7 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 */
 		each: function(target, callback, scope) {
 			for (var i = 0, il = target.length; i < il; i++) {
@@ -240,7 +222,7 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 包含每次迭代结果的新数组
 		 */
 		map: partialSupport ? supportedButScope('map') 
@@ -263,7 +245,7 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是undefined
+		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 过滤后的新数组
 		 */
 		filter: partialSupport ? supportedButScope('filter') 
@@ -344,16 +326,11 @@ kola('kola.lang.Array', null, function() {
 		 * @param target {Any} 要判断的对象
 		 * @return {Boolean}
 		 */
-		isArray: partialSupport ? Array.isArray : isArray,
-		
-		/**
-		 * 判断指定的对象是否是Array类型
-		 * 
-		 * @method is
-		 * @param target {Any} 要判断的对象
-		 * @return {Boolean}
-		 */
-		is: partialSupport ? Array.isArray : isArray,
+		isArray: partialSupport ? Array.isArray 
+			: function(target) {
+				if (typeof target != 'object' || target === null) return false;
+				return Object.prototype.toString.call(target) == '[object Array]';
+			},
 		
 		/**
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
@@ -362,16 +339,12 @@ kola('kola.lang.Array', null, function() {
 		 * @param target {Any} 要被转化的对象
 		 * @return {Boolean}
 		 */
-		likeArray: likeArray,
-		
-		/**
-		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
-		 * 
-		 * @method like
-		 * @param target {Any} 要被转化的对象
-		 * @return {Boolean}
-		 */
-		like: likeArray,
+		likeArray: function(target) {
+			var type = typeof target;
+			if (type == 'undefined' || type == 'object' && target === null) return false;
+			if (typeof target.length != 'number') return false;
+			return true;
+		},
 		
 		/**
 		 * 把指定的对象转化为数组格式
