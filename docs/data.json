@@ -95,7 +95,7 @@
             },
             "classes": {},
             "fors": {
-                "window": 1
+                "kola": 1
             },
             "namespaces": {}
         }
@@ -149,10 +149,10 @@
             "name": "kola",
             "submodules": {},
             "classes": {
-                "window": 1
+                "kola": 1
             },
             "fors": {
-                "window": 1
+                "kola": 1
             },
             "namespaces": {},
             "tag": "main",
@@ -271,9 +271,9 @@
             "static": 1,
             "author": "Jady Yang"
         },
-        "window": {
-            "name": "window",
-            "shortname": "window",
+        "kola": {
+            "name": "kola",
+            "shortname": "kola",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -2039,49 +2039,49 @@
             "file": "kola\\Packager.js",
             "line": 12,
             "description": "辅助方法",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 16,
             "description": "Array原生的slice方法",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 21,
             "description": "抛出一个错误信息",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 30,
             "description": "类支持",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 36,
             "description": "创建一个新的空方法",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 43,
             "description": "创建一个新的类构造器",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 56,
             "description": "创建一个新的AllInOne类构造器",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2105,27 +2105,27 @@
                 "description": "",
                 "type": "KolaClass"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 124,
             "description": "Packages内容获取器",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 130,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 132,
             "description": "Aop方法列表",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2154,7 +2154,7 @@
                     "type": "Array<Function>"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2178,21 +2178,21 @@
                 "description": "",
                 "type": "KolaClass"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 257,
             "description": "获得一系列包的实体内容。其参数大体是由方法 parsePackages 产生的，格式比较特殊",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 287,
             "description": "getPackage私有方法",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2200,7 +2200,7 @@
             "line": 292,
             "description": "保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象",
             "type": "{Object}",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2218,68 +2218,68 @@
                 "description": "package控制对象",
                 "type": "Package"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 312,
             "description": "Package类",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 318,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 320,
             "description": "Package加载状态枚举类",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 333,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 335,
             "description": "给方法绑定一个作用域",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 345,
             "description": "加载当前包",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 374,
             "description": "开始加载依赖包",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 390,
             "description": "设置为待用状态",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 402,
             "description": "设置为可用状态",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2298,7 +2298,7 @@
                     "type": "HTMLElement"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2317,7 +2317,7 @@
                     "type": "HTMLElement"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2331,13 +2331,13 @@
                     "type": "HTMLElement"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 474,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2351,7 +2351,7 @@
                     "type": "String"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2362,7 +2362,7 @@
                 "description": "",
                 "type": "Number"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2382,7 +2382,7 @@
                 }
             ],
             "chainable": 1,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2397,7 +2397,7 @@
                 }
             ],
             "chainable": 1,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2408,28 +2408,28 @@
                 "description": "包的实体内容",
                 "type": "Any"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 582,
             "description": "Packager类",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 588,
             "description": "深度复制对象",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 615,
             "description": "删除字符串中的所有空格",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2457,7 +2457,7 @@
                 "description": "生成新方法",
                 "type": "Function"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2465,14 +2465,14 @@
             "line": 642,
             "description": "packager的配置信息",
             "type": "{Object}",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 653,
             "description": "把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2480,7 +2480,7 @@
             "line": 692,
             "description": "kola的Package控制管理中心",
             "static": 1,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2505,7 +2505,7 @@
                     "optional": true
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2529,7 +2529,7 @@
                     "type": "Function"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2543,7 +2543,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2561,7 +2561,7 @@
                 "description": "路径信息，有这些属性：\n\turi，文件路径地址；\n\tcharset，文件编码，没有的话那就是不设定编码；",
                 "type": "Object"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2585,14 +2585,14 @@
                 "description": "创建的新类",
                 "type": "KolaClass"
             },
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
             "line": 831,
             "description": "kola方法",
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2619,7 +2619,7 @@
                 }
             ],
             "chainable": 1,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2647,7 +2647,7 @@
                 }
             ],
             "chainable": 1,
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         },
         {
@@ -2667,7 +2667,7 @@
             "example": [
                 "\n\t{\n\t\tcharset: 'utf-8',\t\t\t// 编码，默认没有\n\t\tpath: '/…/',\t\t\t\t// 跟路径，默认自动寻找当前的\n\t\tdomReady: true,\t\t\t\t// 要执行的方法默认都在domReady之后执行，默认为true\n\n\t\t// lib配置，优先级高于全局配置，但是低于packages\n\t\tlibs: {                     // lib列表\n\t\t\t'kola': {\t\t\t\t// kola lib的定义\n\t\t\t\tcharset: 'utf-8',\t// 编码，默认使用全局配置\n\t\t\t\tpath: '...'\t\t\t// 根路径，默认使用全局配置\n\t\t\t},\n\t\t\t'kola.ui': {\t\t\t// kola.ui lib的定义\n\t\t\t\tcharset: 'gbk',\t\t// 编码，默认使用全局配置\n\t\t\t\tpath: '...'\t\t\t// 根路径，默认使用全局配置\n\t\t\t},\n\t\t\t'webbricks.clay': {\t\t/ webbricks.clay lib的定义\n\t\t\t\tcharset: 'gbk',\t\t// 编码，默认使用全局配置\n\t\t\t\tpath: '...'\t\t\t// 根路径，默认使用全局配置\n\t\t\t}\n\t\t},\n\n\t\t// package配置，编码采用全局配置，优先级高于libs\n\t\tpackages: {\n\t\t\t'kola.lang.Class': 0,\t// 如果是数字，代表要去uris数组上获取最终地址\n\t\t\t'kola.net.Ajax', 0,\n\t\t\t'kola.lang': 1,\t\t\t// 这个代表所有kola.lang下的包，都在这个地址上\n\t\t\t'webbricks.magicbox': 'http://.../magicbox.js'\n\t\t},\n\n\t\t// 可用地址列表\n\t\turis: [\n\t\t\t'http://.../common.js',\n\t\t\t'http://.../index.js'\n\t\t]\n\t}"
             ],
-            "class": "window",
+            "class": "kola",
             "module": "kola"
         }
     ]

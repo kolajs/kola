@@ -841,7 +841,7 @@ window.kola = (function(kola) {
 		 * 定义一个包
 		 * 
 		 * @method kola
-		 * @for window
+		 * @for kola
 		 * @param name {String} 包名
 		 * @param dependence {String | Array<String> | Null} 依赖包列表。
 		 * 		如果是String类型，那就是只依赖一个包，即为依赖的包名；
@@ -854,7 +854,7 @@ window.kola = (function(kola) {
 		 * 使用包进行某项操作
 		 * 
 		 * @method kola
-		 * @for window
+		 * @for kola
 		 * @param packages {String | Array<String>} 要使用的包列表。
 		 * 		如果是String类型，那就是只使用一个包，即为包名；
 		 * 		如果是Array类型，那就是要使用的包列表，每项就是一个包名；
@@ -866,7 +866,7 @@ window.kola = (function(kola) {
 		 * 加载一个kola设置对象
 		 * 
 		 * @method kola
-		 * @for window
+		 * @for kola
 		 * @param config {Object} 设置对象
 		 * @chainable
 		 * 
