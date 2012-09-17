@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>kola\html\util\Event.js - kola</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.5.1&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title="kola"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 2.1.0.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/Array.html">Array</a></li>
+            
+                <li><a href="..&#x2F;classes/Class.html">Class</a></li>
+            
+                <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
+            
+                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+            
+                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
+            
+                <li><a href="..&#x2F;classes/Object.html">Object</a></li>
+            
+                <li><a href="..&#x2F;classes/Packager.html">Packager</a></li>
+            
+                <li><a href="..&#x2F;classes/String.html">String</a></li>
+            
+                <li><a href="..&#x2F;classes/window.html">window</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.event.html">kola.event</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.html.html">kola.html</a></li>
+            
+                <li><a href="..&#x2F;modules/kola.lang.html">kola.lang</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: kola\html\util\Event.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+kola(&#x27;kola.html.util.Event&#x27;,[
+	&#x27;kola.lang.Class&#x27;
+],function(KolaClass) {
+	&#x2F;********************************************** 类定义 **********************************************&#x2F;
+	var IEStyle = (navigator.userAgent.indexOf(&#x27;MSIE&#x27;) != -1 &amp;&amp; parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( &#x27;MSIE&#x27; ) + 5, 3)) &lt; 9);
+	&#x2F;&#x2F;FIXME:给window绑定onscroll事件没有位置信息
+	var copyParams=[&quot;keyCode&quot;,&quot;componentKey&quot;,&quot;shiftKey&quot;,&quot;clientX&quot;,&quot;clientY&quot;,&quot;screenX&quot;,&quot;screenY&quot;, &quot;offsetX&quot;, &quot;offsetY&quot;, &quot;wheelDeltaY&quot;,&quot;wheelDeltaX&quot;,&quot;wheelDelta&quot;];
+	&#x2F;*
+	 * kola事件对象
+	 * @prop currentTarget 绑定时没有设置option.delegate时，currentTarget为绑定该事件的元素，设置option.delegate时，currentTarget为被代理的元素
+	 * @prop data: 绑定事件时传入的数据
+	 * @prop event: 浏览器内置事件对象
+	 * @prop button: w3c兼容
+	 * @method preventDefault: w3c兼容
+	 * @method stopPropagation: w3c兼容
+	 * @method stop: preventDefault &amp; stopPropagation
+	 *&#x2F;
+	if(IEStyle){
+		var DomEvent = KolaClass.create({
+			_init :function(e){
+				this.event = e;
+				this.target = e.srcElement;
+				this.relatedTarget = (e.fromElement == e.srcElement ? e.toElement : e.fromElement);
+				if(e.button == 1)
+					this.button = 0;
+				if(e.button == 4)
+					this.button = 1;
+				if(e.button == 2)
+					this.button = 2;
+				this.pageY = e.clientY + document.documentElement.scrollTop;
+				this.pageX = e.clientX + document.documentElement.scrollLeft;
+				for(var i =0 ,il = copyParams.length; i &lt; il; i++){
+					this[copyParams[i]] = e[copyParams[i]];
+				}
+			},
+			preventDefault:function(){this.event.returnValue = false;},
+			stopPropagation:function(){this.event.cancelBubble = true;}
+		});
+	}else{
+		var DomEvent = KolaClass.create({
+			_init :function(e){
+				this.event = e;
+				this.target = e.target;
+				this.button = e.button;
+				this.relatedTarget = e.relatedTarget;
+				this.pageX = e.pageX;
+				this.pageY = e.pageY;
+				for(var i = 0,il = copyParams.length;i &lt; il; i++){
+					this[copyParams[i]] = e[copyParams[i]];
+				}
+			},
+			preventDefault:function(){
+				this.event.preventDefault()
+			},
+			stopPropagation:function(){
+				this.event.stopPropagation()
+			}
+		});
+	}
+	DomEvent.prototype.stop = function(){
+		this.preventDefault();
+		this.stopPropagation();
+	}
+	
+	var eventAgent = function(callback, option, e) {
+		
+		if(IEStyle){
+			e = new DomEvent(window.event);
+		}else{
+			e = new DomEvent(e);
+		}
+		e.currentTarget = this;
+		if(option.special &amp;&amp; option.special.check &amp;&amp; option.special.check(this, e)){
+			return;
+		}
+		&#x2F;&#x2F;当前事件是代理,则从target开始，向上查找符合delegate的dom，直到找到或者到达该元素
+		if(option.delegate){
+			var elem = e.target;
+			var match = false;
+			while(elem.nodeType == 1 &amp;&amp; elem != this){
+				if(Selector.matchesSelector(elem,option.delegate)){
+					match = elem;
+					break;
+				}
+				elem = elem.parentNode;
+			}
+			&#x2F;&#x2F;若target不是delegate的一部分，则放弃事件
+			if(!match)
+				return;
+			e.currentTarget = elem;
+		}
+		e.data = option.data;
+		
+		callback.call(option.scope || this, e);
+	};
+	&#x2F;&#x2F;light bind
+	function eventBind(target, scope, callback, option) {
+		return function(e) {
+			return target.call(scope, callback, option, e);
+		};
+	}
+	&#x2F;&#x2F;删除指定的事件
+	var off = function(element, name, callback, observer) {
+		&#x2F;&#x2F;	删除listener
+		if (!IEStyle) {
+			element.removeEventListener(name, callback, false);
+		} else {
+			element.detachEvent(&quot;on&quot; + name, callback);
+		}
+	};
+	function relationCheck(element, evt){
+		var from = evt.relatedTarget;
+		while (from) {
+			if (from == element) return true;
+			from = from.parentNode;
+		}
+		return false;
+	}
+	var specialEvent = {
+		mouseenter: {
+			domEvtName: &quot;mouseover&quot;,
+			check: relationCheck
+		},
+		mouseleave: {
+			domEvtName: &quot;mouseout&quot;,
+			check: relationCheck
+		}
+	}
+	if(IEStyle){
+		specialEvent.change = {
+			&#x2F;&#x2F;ie6-7的change在失焦后才会触发
+			setup: function(element, callback, option){
+				if(element.tagName.toLowerCase() == &#x27;input&#x27; &amp;&amp; element.type == &#x27;checkbox&#x27;){
+					element.attachEvent(&#x27;propertychange&#x27;, callback);
+					return true;
+				}
+			},
+			check: function(element, evt){
+				return evt.type === &#x27;value&#x27;;
+			}
+		}
+		&#x2F;*
+		specialEvent.unload = {
+			setup: function(element, callback, option){
+				if(element == window){
+					window.onunload = callback;
+					return true;
+				}
+			}
+		}
+		*&#x2F;
+	}
+	&#x2F;&#x2F;常见的inline事件
+	var inlineEvents = [
+		&#x27;onclick&#x27;, &#x27;ondblclick&#x27;, &#x27;onmouseover&#x27;, &#x27;onmouseout&#x27;, &#x27;onmouseup&#x27;, &#x27;onmousedown&#x27;,
+		&#x27;onblur&#x27;, &#x27;onfocus&#x27;, &#x27;onchange&#x27;, &#x27;onsubmit&#x27;
+	];
+	var exports = {
+		&#x2F;**
+		 * 监听一个事件
+		 * @param element {kolaElement} 要绑定事件的元素
+		 * @param name {String} 事件名称
+		 * @param callback {function} 事件的处理函数
+		 * @param [option] {object} 配置参数
+		 *	@option [option.scope] {Object} 指定处理函数的this，如果没有，则默认为element
+		 *	@option [option.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在event.data中
+		 *	@option [option.delegate] {Stirng} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
+		 *&#x2F;
+		on: function(element, name, callback, option) {
+			option = option || {};
+
+			var special = specialEvent[name];
+			var domName = special &amp;&amp; special.domEvtName ? special.domEvtName : name;
+			option.special = special;
+			&#x2F;&#x2F;	建立替代方法，主要是设定作用域
+			var observer = {
+				name: domName,
+				definer: callback,
+				handler: eventBind(eventAgent, element, callback, option),
+				option: option
+			};
+			
+			&#x2F;&#x2F;	缓存事件处理方法
+			((element.__events || (element.__events = {}))[name] || (element.__events[name] = [])).push(observer);
+			
+			if(specialEvent &amp;&amp; specialEvent.setup &amp;&amp; specialEvent.setup(element, name, callback, option)){
+				return;
+			}
+			&#x2F;&#x2F;	绑定事件
+			if (!IEStyle) {
+				element.addEventListener(domName, observer.handler);
+			} else {
+				element.attachEvent(&#x27;on&#x27; + domName, observer.handler);
+			}
+					
+			return this;
+		},
+		
+		&#x2F;*
+		 * 取消元素的指定事件处理
+		 * @param element {kolaElement} 要解除事件绑定的元素
+		 * @param [name] {String} 要解除事件绑定的类型
+		 * @param [callback] {Function} 要解除事件绑定的处理函数
+		 * @param [option] {Function} 要解除事件绑定的处理函数
+		 *&#x2F;
+		off: function(element, name, callback, option) {
+			&#x2F;&#x2F;	如果不存在事件缓存，那就不做处理
+			var events = element.__events;
+			if(!events) return;
+			
+			&#x2F;&#x2F;	如果不存在要移除的事件，那就是移除所有事件
+			var eventType;
+			if (!name) {&#x2F;&#x2F;	移除所有事件
+				
+				for (var key in events) {
+					eventType = events[key];
+					&#x2F;&#x2F;	循环取消所有事件监听
+					for (var i = eventType.length - 1; i &gt;= 0; i--) {
+						var observer = eventType[i];
+						off(element, key, observer.handler, observer);
+					}
+				}
+				
+				&#x2F;&#x2F;	删除常见的inline事件
+				for (var i = inlineEvents.length - 1; i &gt;= 0; i--) {
+					element[inlineEvents[i]] = null;
+				}
+				
+				delete element.__events;
+			} else {
+				&#x2F;&#x2F;	如果不存在该类型的事件存储器，那就不做处理
+				eventType = events[name];
+				if (!eventType) return;
+
+				if (callback) {&#x2F;&#x2F;	这是要取消指定的监听方法
+					&#x2F;&#x2F;	循环所有存储的事件处理方法，如果相同，那就删除之
+					for(var i = eventType.length - 1; i &gt;= 0; i--) {
+						var observer = eventType[i];
+						if (observer.definer == callback) {
+							off(element, observer.name, observer.handler);
+							eventType.splice(i, 1);
+						}
+					}
+		
+				} else {
+					&#x2F;&#x2F;	删除所有监听事件
+					for(var i = 0, il = eventType.length; i &lt; il; i++) {
+						var observer = eventType[i];
+						off(element, observer.name, eventType[i].handler);
+					}
+					&#x2F;&#x2F;	删除缓存
+					delete events[name];
+				}		
+			}
+		},
+		&#x2F;*
+		 * 派发事件
+		 * @param element
+		 * @param name
+		 * @return
+		 *&#x2F;
+		fire: function(element, name, event) {
+			if (name == &#x27;submit&#x27;)
+				element.submit();
+			if (name == &#x27;focus&#x27;)
+				element.focus();
+			else{		
+				if(IEStyle) {
+					element.fireEvent(&quot;on&quot;+name, event);
+				}else{
+					var evt = document.createEvent(&#x27;HTMLEvents&#x27;);  
+					evt.initEvent(name,true,true);
+					if(event){
+						for(key in event)
+							evt[key] = event[key];
+					}
+					element.dispatchEvent(evt);
+				}
+			}
+		}
+	};
+	return exports;
+});
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

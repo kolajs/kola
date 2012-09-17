@@ -176,13 +176,6 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	};
 	
 	&#x2F;**
-	 * 把指定的对象转化为数组格式
-	 *&#x2F;
-	var asArray = function(target) {
-		return slice.call(target);
-	};
-	
-	&#x2F;**
 	 * kola的Array类
 	 * 
 	 * @class Array
@@ -499,25 +492,9 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * @param target {Any} 要被转化的对象
 		 * @return {Array}
 		 *&#x2F;
-		toArray: asArray,
-		
-		&#x2F;**
-		 * 把指定的对象转化为数组格式
-		 * 
-		 * @method asArray
-		 * @param target {Any} 要被转化的对象
-		 * @return {Array}
-		 *&#x2F;
-		asArray: asArray,
-		
-		&#x2F;**
-		 * 把指定的对象转化为数组格式
-		 * 
-		 * @method as
-		 * @param target {Any} 要被转化的对象
-		 * @return {Array}
-		 *&#x2F;
-		as: asArray
+		toArray: function(target) {
+			return slice.call(target);
+		}
 	};
 	
 	return exports;
