@@ -2036,6 +2036,81 @@
             "module": "kola.lang"
         },
         {
+            "file": "kola\\lang\\String.js",
+            "line": 47,
+            "description": "判断某字符串是否以指定字符串开头",
+            "itemtype": "method",
+            "name": "startsWith",
+            "params": [
+                {
+                    "name": "target",
+                    "description": "被判断的字符串",
+                    "type": "String"
+                },
+                {
+                    "name": "it",
+                    "description": "被检测的字符串",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "String",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\lang\\String.js",
+            "line": 59,
+            "description": "判断某字符串是否以指定字符串结尾",
+            "itemtype": "method",
+            "name": "startsWith",
+            "params": [
+                {
+                    "name": "target",
+                    "description": "被判断的字符串",
+                    "type": "String"
+                },
+                {
+                    "name": "it",
+                    "description": "被检测的字符串",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "String",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\lang\\String.js",
+            "line": 72,
+            "description": "判断某字符串是否包含指定的字符串",
+            "itemtype": "method",
+            "name": "contains",
+            "params": [
+                {
+                    "name": "target",
+                    "description": "被判断的字符串",
+                    "type": "String"
+                },
+                {
+                    "name": "it",
+                    "description": "被检测的字符串",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "String",
+            "module": "kola.lang"
+        },
+        {
             "file": "kola\\Packager.js",
             "line": 12,
             "description": "辅助方法",

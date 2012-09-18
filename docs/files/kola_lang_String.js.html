@@ -152,6 +152,43 @@ kola(&#x27;kola.lang.String&#x27;, null, function() {
 		 *&#x2F;
 		trimRight: function(target) {
 			return target.replace(trimRight, &#x27;&#x27;);
+		},
+		
+		&#x2F;**
+		 * 判断某字符串是否以指定字符串开头
+		 * 
+		 * @method startsWith
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 *&#x2F;
+		startsWith: function(target, it) {
+			return target.indexOf(it) == 0;
+		},
+		
+		&#x2F;**
+		 * 判断某字符串是否以指定字符串结尾
+		 * 
+		 * @method startsWith
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 *&#x2F;
+		endsWith: function(target, it) {
+			var length = it.length;
+			return target.length &gt;= length &amp;&amp; target.substr(-length) == it;
+		},
+		
+		&#x2F;**
+		 * 判断某字符串是否包含指定的字符串
+		 * 
+		 * @method contains
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 *&#x2F;
+		contains: function(target, it) {
+			return target.indexOf(it) != -1;
 		}
 	};
 	

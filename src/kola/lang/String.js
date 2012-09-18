@@ -42,6 +42,43 @@ kola('kola.lang.String', null, function() {
 		 */
 		trimRight: function(target) {
 			return target.replace(trimRight, '');
+		},
+		
+		/**
+		 * 判断某字符串是否以指定字符串开头
+		 * 
+		 * @method startsWith
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 */
+		startsWith: function(target, it) {
+			return target.indexOf(it) == 0;
+		},
+		
+		/**
+		 * 判断某字符串是否以指定字符串结尾
+		 * 
+		 * @method startsWith
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 */
+		endsWith: function(target, it) {
+			var length = it.length;
+			return target.length >= length && target.substr(-length) == it;
+		},
+		
+		/**
+		 * 判断某字符串是否包含指定的字符串
+		 * 
+		 * @method contains
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 */
+		contains: function(target, it) {
+			return target.indexOf(it) != -1;
 		}
 	};
 	
