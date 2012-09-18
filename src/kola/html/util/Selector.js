@@ -1,11 +1,21 @@
-/*!
- * Sizzle CSS Selector Engine
- *  Copyright 2012 jQuery Foundation and other contributors
- *  Released under the MIT license
- *  http://sizzlejs.com/
- */
 kola("kola.html.util.Selector",[
 ],function() {
+	if(window.document.documentElement.webkitMatchesSelector){
+		var exports = function(selector, context) {
+			var res = context?context.querySelectorAll(selector):window.document.querySelectorAll(selector);
+			return Array.prototype.slice.call(res);
+		};
+		exports.matchesSelector = function(elem, expr) {
+			return elem.webkitMatchesSelector(expr);
+		};
+		return exports;
+	}
+	/*!
+	 * Sizzle CSS Selector Engine
+	 *  Copyright 2012 jQuery Foundation and other contributors
+	 *  Released under the MIT license
+	 *  http://sizzlejs.com/
+	 */
 	var cachedruns,
 		dirruns,
 		sortOrder,

@@ -47,9 +47,11 @@
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
             
-                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+                <li><a href="..&#x2F;classes/Element.html">Element</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
+                <li><a href="..&#x2F;classes/Event.html">Event</a></li>
+            
+                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -118,6 +120,16 @@
  *&#x2F;
 kola(&quot;kola.html.util.Selector&quot;,[
 ],function() {
+	if(window.document.documentElement.webkitMatchesSelector){
+		var exports = function(selector, context) {
+			var res = context?context.querySelectorAll(selector):window.document.querySelectorAll(selector);
+			return Array.prototype.slice.call(res);
+		};
+		exports.matchesSelector = function(elem, expr) {
+			return elem.webkitMatchesSelector(expr);
+		};
+		return exports;
+	}
 	var cachedruns,
 		dirruns,
 		sortOrder,

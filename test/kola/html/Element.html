@@ -271,6 +271,10 @@
 		<div class="innerDom"></div>
 		<div class="innerDom"></div>
 	</div>
+	<div id="displayChest" style="width:100px;height:100px">
+		<div class="upper" style="height:40%;background:blue"></div>
+		<div class="lower" style="height:50%;background:yellow"></div>
+	</div>
 	<script>
 		kola(["kola.html.Element", "kola.lang.Array"], function($, KolaArray){
 			function q(arr, dest) {
@@ -297,7 +301,7 @@
 				var adom = document.getElementById("firstp");
 				var formDom = document.getElementsByTagName("form")[0];
 				testCase(q($(group), groupIDs), "由kolaElement生成kolaElement");
-				testCase(q($(KolaArray.as($(group))), groupIDs), "由HTMLElement数组生成kolaElement");
+				testCase(q($(KolaArray.toArray($(group))), groupIDs), "由HTMLElement数组生成kolaElement");
 				testCase($(adom)[0] == adom, "由HTMLElement生成kolaElement");
 				testCase($(formDom)[0] == formDom, "由form生成kolaElement")
 				var htmlCollection = document.getElementById("moretests").children;
@@ -378,7 +382,9 @@
 				testCase(q($("#select1").descendants("select"), []), "不包括自己")
 			});
 			test("closest",function(testCase){
-				testCase(q($("#label-for").closest("div"), ["qunit-fixture"]), "")
+				var closestQuest = $('div')
+				testCase(q($("#label-for").closest("div"), ["qunit-fixture"]), "");
+				testCase(q($("#label-for").closest(closestQuest), ["qunit-fixture"]), "");
 			});
 			test("parent",function(testCase){
 				testCase(q($("#firstp").parent(), ["qunit-fixture"]), "")
@@ -387,7 +393,7 @@
 				testCase(q($("#label-for").closest("div"), ["qunit-fixture"]), "")
 			});
 			test("prev",function(testCase){
-				testCase(q($("#hidden1").prev(":radio"), ["radio2"]), "")
+				testCase(q($("#hidden1").prev("[type=radio]"), ["radio2"]), "")
 			});
 			test("next",function(testCase){
 				testCase(q($("#hidden1").next("object"), ["object1"]), "")
@@ -416,8 +422,12 @@
 			test("event",function(testCase){
 				var dom = $("#foo");
 				var fire1,fire2,fire3;
+				
 				var event1 = function(){
-					fire1 = true;
+					if(this.a == 1)
+						fire1 += 1;
+					else
+						fire1 += 10;
 				}
 				var event2 = function(){
 					fire2 = true;
@@ -425,6 +435,10 @@
 				var event3 = function(){
 					fire3 = true;					
 				}
+
+				var scope = {a:1}
+
+				dom.on("click", event1, {scope:scope});
 				dom.on("click", event1);
 				dom.on("click", event2);
 				dom.on("keydown", event3);
@@ -433,11 +447,16 @@
 				dom.fire("click");
 				testCase(fire1 && fire2 && !fire3, "添加和触发事件1");
 				
+				fire1=0;
+				dom.off("click", event1, {scope:scope});
+				dom.fire("click");
+				testCase(fire1 == 10, "移除事件,callback && option");
+
 				dom.off("click", event1);
 				fire1=false;fire2=false;fire3=false;
 				dom.fire("click");
 				dom.fire("keydown");
-				testCase(!fire1 && fire2 && fire3, "移除事件1");
+				testCase(!fire1 && fire2 && fire3, "移除事件callback");
 
 				dom.off("click");
 				fire1=false;fire2=false;fire3=false;
@@ -451,14 +470,14 @@
 				dom.fire("keydown");
 				testCase(!fire1 && !fire2 && !fire3, "移除事件3");
 
-				var scope = {a: '123'}
-				dom.on("click", function(e){
-					testCase(this.a == '123', "绑定作用域");
+				var scopeHandler = function(e){
+					testCase(this.a == 1, "绑定作用域");
 					clciked = true;
-					dom.off("click", arguments.callee);
-				}, {scope: scope});
+				}
+				dom.on("click", scopeHandler, {scope: scope});
 				dom.fire("click");
-				clciked = false
+				dom.off("click", scopeHandler);
+				clciked = false;
 				dom.fire("click");
 				testCase(!clciked, "移除带scope事件");
 
@@ -476,14 +495,51 @@
 			});
 			test("event delegate",function(testCase){
 				var outDom = $("#outerdiv");
-				var inDom =$("#nothiddendivchild");
-			})
-			$("#outerdiv").mouseenter(function(){
-				console.log("enter");
-			}).off("mouseover");
-			$("#outerdiv").mouseleave(function(){
-				console.log("leave");
-			}).off("mouseleave");
+				var clickCount = 0;
+				var target = null;
+				var handle = function(e){
+					clickCount ++;
+					target = e.currentTarget;
+				}
+				outDom.click(".innerDom", handle);
+				outDom.click();
+				testCase(clickCount == 0, 'delegater本身不触发事件');
+
+				var firstChild = outDom.children(".innerDom:first-child");
+				firstChild.click();
+				testCase(clickCount == 1, '符合条件的dom触发事件');
+				testCase(target == firstChild[0], '事件触发时currentTarget指向被代理人');
+
+				var newDom = $('<div class="innerDom"></div>');
+				outDom.append(newDom);
+				newDom.click();
+				testCase(clickCount == 2, '新增的dom能触发事件');
+				testCase(target == newDom[0], '新增的dom的currentTarget');
+
+				outDom.off("click", handle);
+				newDom.click();
+				firstChild.click();
+				testCase(clickCount == 2, 'delegate可以被移除');
+
+			});
+			test("size",function(testCase){
+				var outerDom = $('#displayChest');
+				var upper = outerDom.find('.upper');
+				var lower = outerDom.find('.lower');
+				testCase(outerDom.width() == 100, 'width');
+				testCase(upper.height() == 40, 'height');
+				testCase(lower.height() == 50, 'width');
+				lower.style("padding","10");
+				lower.style("border","10");
+				testCase(lower.height("border") == 90, 'height with border and padding');
+			});
+			test("position",function(testCase){
+				var outerDom = $('#displayChest');
+				var lower = outerDom.find('.lower');
+				var a=lower[0];
+				testCase(lower.pos().left = lower[0].left, 'left');
+				console.log(lower.pos())
+			});
 		});
 	</script>
 </body>

@@ -47,9 +47,11 @@
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
             
-                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+                <li><a href="..&#x2F;classes/Element.html">Element</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
+                <li><a href="..&#x2F;classes/Event.html">Event</a></li>
+            
+                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -142,7 +144,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	 *&#x2F;
 	var supported = function(name) {
 		return function(target) {
-			return target[name].apply(target, slice.call(arguments, 1));
+			return Array.prototype[name].apply(target, slice.call(arguments, 1));
 		};
 	};
 	
@@ -151,11 +153,17 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	 *&#x2F;
 	var supportedButScope = function(name) {
 		return function(target, callback, scope) {
-			return target[name].call(target, arguments.length &gt; 2
+			return Array.prototype[name].call(target, arguments.length &gt; 2
 				? bindScope(callback, scope)	&#x2F;&#x2F; 存在scope的话，那建立一个设置了this的新方法
 				: callback);
 		};
 	};
+	
+	var isArray = partialSupport ? Array.isArray 
+		: function(target) {
+			if (typeof target != &#x27;object&#x27; || target === null) return false;
+			return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
+		};
 	
 	&#x2F;**
 	 * kola的Array类
@@ -438,11 +446,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * @param target {Any} 要判断的对象
 		 * @return {Boolean}
 		 *&#x2F;
-		isArray: partialSupport ? Array.isArray 
-			: function(target) {
-				if (typeof target != &#x27;object&#x27; || target === null) return false;
-				return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
-			},
+		isArray: isArray,
 		
 		&#x2F;**
 		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）

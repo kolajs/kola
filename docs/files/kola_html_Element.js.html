@@ -47,9 +47,11 @@
             
                 <li><a href="..&#x2F;classes/Dispatcher.html">Dispatcher</a></li>
             
-                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+                <li><a href="..&#x2F;classes/Element.html">Element</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
+                <li><a href="..&#x2F;classes/Event.html">Event</a></li>
+            
+                <li><a href="..&#x2F;classes/Function.html">Function</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -451,7 +453,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		&#x2F;**
 		 * 得到父元素
 		 * @method parent
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		parent: function (targetElement) {
 			return targetElement.parentNode;
@@ -460,7 +462,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * 得到祖先元素
 		 * @method parents
 		 * @param [selector] {String} 过滤器，用于过滤得到的结果
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		parents: function (targetElement, selector) {
 			var nodes = [];
@@ -475,7 +477,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * 从当前元素开始向文档根部查找，得到第一个符合条件的元素
 		 * @method closest
 		 * @param selector {String|Array[]} 用于指定查找的条件
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		closest: function (targetElement, selector) {
 			&#x2F;&#x2F;如果是选择器，则找到符合选择器的元素
@@ -497,16 +499,22 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * 得到下一级元素
 		 * @method children
 		 * @param [selector] {String} 过滤器，用于过滤得到的结果
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		children: function (targetElement, selector) {
-			return Selector.matches(selector, Array.prototype.slice.call(targetElement.children));
+			var children = [];
+			for(var child = targetElement.firstChild; child; child = child.nextSibling){
+				if(child.nodeType == 1 &amp;&amp; Selector.matchesSelector(child, selector)){
+					children.push(child);
+				}
+			}
+			return children;
 		},
 		&#x2F;**
 		 * 得到元素以及元素内部符合条件的元素集合
 		 * @method find
 		 * @param selector {String} 选择器，用于指定要查找的元素类型
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		find: function (targetElement, selector) {
 			var arrs = Selector(selector, targetElement);
@@ -516,9 +524,9 @@ kola(&#x27;kola.html.Element&#x27;,[
 		},
 		&#x2F;**
 		 * 得到元素内部符合条件的元素集合
-		 * @method children
+		 * @method descendants
 		 * @param selector {String} 选择器，用于指定要查找的元素类型
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		descendants: function (targetElement, selector) {
 			return Selector(selector, targetElement);
@@ -527,7 +535,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * 得到前一个符合条件的节点
 		 * @method prev
 		 * @param [selector] {String} 选择器，如果提供，则得到元素前第一个符合条件的节点
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		prev: function (targetElement, selector){
 			while(targetElement = targetElement.previousSibling){
@@ -541,7 +549,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * 得到后一个符合条件的节点
 		 * @method next
 		 * @param [selector] {String} 选择器，如果提供，则得到元素后第一个符合条件的节点
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 *&#x2F;
 		next: function (targetElement, selector){
 			while(targetElement = targetElement.nextSibling){
@@ -617,27 +625,30 @@ kola(&#x27;kola.html.Element&#x27;,[
 		&#x2F;*
 		 * 监听一个事件
 		 * @method on
+		 * @param [delegate] {String} 监听的事件的代理的参数
 		 * @param name {String} 事件名称
-		 * @param listenerfn {function} 事件的处理函数
-		 * @param [option] {object}  配置参数
-				@option [option.scope] {object} 指定处理函数的this，如果没有，则默认为element
-				@option [option.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在event.data中
-				@option [option.delegate] {String} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
-				@option [option.out] {Boolean} 指定事件在当前元素之外触发
+		 * @param callback {function} 事件的处理函数
+		 * @param [options] {Object}  配置参数
+				@option [options.scope] {Object} 指定处理函数的this，如果没有，则默认为element
+				@option [options.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在event.data中
+				@option [options.delegate] {String} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
 		 *&#x2F;
 		on: KolaDomEvent.on,
 		&#x2F;**
 		 * 取消对事件的监听
+		 * @method off
+		 * @param [delegate] {String} 监听的事件的代理的参数
 		 * @param [name] {String} 监听的事件名称，如果没有，则取消所有类型事件的监听
-		 * @param [listenerfn] {Function} 事件处理方法 如果没有，则符合name的取消所有事件监听
-		 * @param [option] {Object} 对解绑事件的描述
-		 * 	@param [option.out] {Boolean} 解绑对dom之外的侦听
+		 * @param [callback] {Function} 事件处理方法 如果没有，则符合name的取消所有事件监听
+		 * @param [options] {Object} 对解绑事件的描述
 		 * @chainable
 		 *&#x2F;
 		off: KolaDomEvent.off,
 		&#x2F;**
 		 * 触发事件
+		 * @method fire
 		 * @param name {String} 事件名称
+		 * @param event {Object} 事件的参数
 		 * @chainable
 		 *&#x2F;
 		fire: KolaDomEvent.fire,
@@ -754,7 +765,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * @type Number
 		 *&#x2F;
 		height: function(targetElement, boundary){
-			var height = targetElement.offsetWidth;
+			var height = targetElement.offsetHeight;
 			if(!boundary || boundary == &quot;inner&quot;)
 				return height;
 			height += parseFloat(this.style(&quot;padding-top&quot;) || &quot;0&quot;) + parseFloat(this.style(&quot;padding-bottom&quot;) || &quot;0&quot;)
@@ -871,16 +882,6 @@ kola(&#x27;kola.html.Element&#x27;,[
 			}
 			parent = parent.tBodies[0];
 		}
-		&#x2F;&#x2F;	如果要添加的节点是DocumentFragment，那就进行特殊处理
-		if (child.nodeType === 11) {
-			var length = child.childNodes.length;
-			parent.appendChild(child);
-			var nodes = parent.childNodes, news = [];
-			for (var j = nodes.length, i = j - length; i &lt; j; i++) {
-				news.push(nodes[i]);
-			}
-			return news;
-		}
 		return parent.appendChild(child);
 	};
 
@@ -960,47 +961,42 @@ kola(&#x27;kola.html.Element&#x27;,[
 		var purgeChildren = KolaFunction.empty;
 	}
 	&#x2F;**
-	 * kola的KolaElement类
+	 * kola的Element类
 	 * 
-	 * @class KolaElement
-	 * 
+	 * @class Element
+	 * @constructor
+	 * @param elements {Array&lt;HTMLElement&gt;}
 	 *&#x2F;
 	var exports = function(elements){
 		if(this.constructor != exports){
 			&#x2F;&#x2F;instanceof当涉及跨iframe时会工作不正常
 			if(typeof elements === &quot;string&quot; &amp;&amp; elements.charAt(0) != &#x27;&lt;&#x27;){
 				&#x2F;*
-					define DomRefer Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|KolaElement|String
+					define DomRefer Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|Element|String
 				*&#x2F;
 				&#x2F;**
 				* 使用选择器选择特定dom
-				* @function direct
+				* @method Element
 				* @param elements {String}
-				* @return {KolaElement}
+				* @return {Element}
 				*&#x2F;
 				return new exports(Selector(elements));
 			}else{
 				&#x2F;**
-				* 根据字符串生成dom，并生成KolaElement
-				* @function direct
+				* 根据字符串生成dom，并生成Element
+				* @method Element
 				* @param elements {String} 要转换的字符串，以html &lt; 格式开头
-				* @return {KolaElement}
+				* @return {Element}
 				*&#x2F;
 				&#x2F;**
-				* 将指定的dom转换为KolaElement
-				* @function direct
-				* @param elements {Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|KolaElement}
-				* @return {KolaElement}
+				* 将指定的dom转换为Element
+				* @method Element
+				* @param elements {Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|Element}
+				* @return {Element}
 				*&#x2F;
 				return new exports(Operation.toElements(elements));
 			}
 		}
-		&#x2F;**
-		* 构造函数
-		* @constructor
-		* @param elements {Array&lt;HTMLElement&gt;}
-		* @return {KolaElement}
-		*&#x2F;
 		this.length = elements.length;
 		for(var i = 0, il = this.length; i &lt; il; i ++)
 			this[i] = elements[i];
@@ -1009,7 +1005,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 	exports.prototype = {
 		constructor: exports,
 		&#x2F;**
-		* 依次迭代内部dom，将内部每一个元素封装成KolaElement交给callback处理
+		* 依次迭代内部dom，将内部每一个元素封装成Element交给callback处理
 		* @method each
 		* @param callback {Function} 回调函数
 		* @chainable
@@ -1118,10 +1114,27 @@ kola(&#x27;kola.html.Element&#x27;,[
 		}
 	});
 	&#x2F;&#x2F;each
-	KolaArray.forEach(&#x27;on,fire,off,detach,append,prepend,before,after&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(p0, p1, p2){
+	KolaArray.forEach(&#x27;fire,detach,append,prepend,before,after&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(p0, p1){
 			for(var i = 0; i &lt; this.length; i++){
-				Operation[functionName].call(this, this[i], p0, p1, p2);
+				Operation[functionName].call(this, this[i], p0, p1);
+			}
+			return this
+		}
+	});
+	&#x2F;&#x2F;on and off
+	KolaArray.forEach(&#x27;on,off&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(delegate, name, callback, option){
+			if(typeof name == &quot;string&quot;){
+				option = option || {};
+				option.delegate = delegate;
+			}else{
+				option = callback;
+				callback = name;
+				name = delegate;
+			}
+			for(var i = 0; i &lt; this.length; i++){
+				Operation[functionName].call(this, this[i], name, callback, option);
 			}
 			return this
 		}
@@ -1132,7 +1145,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 			var results = [];
 			for(var i = 0; i &lt; this.length; i++){
 				var res = Operation[functionName].call(this, this[i], p0, p1);
-				if(KolaArray.is(res))
+				if(KolaArray.isArray(res))
 					results = results.concat(res);
 				else if(res)
 					results.push(res);
@@ -1142,13 +1155,21 @@ kola(&#x27;kola.html.Element&#x27;,[
 	});
 	&#x2F;&#x2F;shortcut for events
 	KolaArray.forEach(&#x27;click,mouseenter,mouseleave,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,change&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(listenerfn,option){
-			for(var i = 0; i &lt; this.length; i++){
-				if(arguments.length == 0){
-					KolaDomEvent.fire(this[i], functionName);
-				}else{
-					KolaDomEvent.on(this[i], functionName, listenerfn, option);
+		exports.prototype[functionName] = function(delegate, callback, option){
+			if(typeof delegate == &quot;string&quot;){
+				option = option || {};
+				option.delegate = delegate;
+			}else if(typeof delegate == &#x27;function&#x27;){
+				option = callback;
+				callback = delegate
+			}else{
+				for(var i = 0; i &lt; this.length; i++){
+					KolaDomEvent.fire(this[i], functionName, delegate);
 				}
+				return this;
+			}
+			for(var i = 0; i &lt; this.length; i++){
+				KolaDomEvent.on(this[i], functionName, callback, option);
 			}
 			return this;
 		}

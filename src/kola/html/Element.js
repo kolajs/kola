@@ -13,12 +13,8 @@ kola('kola.html.Element',[
 	'kola.html.util.Event'
 ],function(KolaClass, KolaArray, KolaFunction, KolaString, Selector, KolaDomEvent){
 	var IEStyle = (navigator.userAgent.indexOf('MSIE') != -1 && parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( 'MSIE' ) + 5, 3)) < 9);
-	//用于element.data的存储
-	var cache = {};
 	//使用随机名称，防止冲突
-	var cache_attr_name = 'kola' + new Date().getTime();
-	//从1开始，方便检测
-	var cacheSize = 1;
+	var data_name = 'kola' + new Date().getTime();
 	
 	var Operation = {
 		/**
@@ -45,7 +41,7 @@ kola('kola.html.Element',[
 							value = targetElement.attributes.getNamedItem(name);
 							return !!value ? value.value : null;
 						}else{
-							if(KolaClass.isUndefined(value))
+							if(value === undefined)
 								return;
 							return value.toString();
 						}
@@ -141,32 +137,25 @@ kola('kola.html.Element',[
 		 * @return {Any} dom上name对应的数据
 		 */
 		getdata: function (targetElement, name) {
-			index = targetElement[cache_attr_name];
-			if(!index || !cache[index]) return undefined;
-			return cache[index][name];
+			var dataset = targetElement[data_name];
+			if(!dataset) return undefined;
+			return dataset[name];
 		},
 		/**
 		 * 设置dom上指定的附加数据
-		 * @method removeData
+		 * @method data
 		 * @param name {String} 要删除的数据名称,如果为undefined，则表示删除全部数据
 		 * @param value {Any} 指定数据的名称，如果为undefined，则删除该数据
 		 * @chainable
 		 */
 		setdata: function (targetElement, name, value) {
-			index = targetElement[cache_attr_name];
+			var dataset = targetElement[data_name];
 			if(name === undefined && index){
-				cache[index] = undefined;
-				targetElement[cache_attr_name] = undefined;
-			}else if(value === undefined && index && cache[index]){
-				cache[index][name] = undefined;
+				delete targetElement[data_name];
+			}else if(value === undefined && dataset){
+				delete dataset[name];
 			}else{
-				if(!index){
-					index = cacheSize++;
-					targetElement[cache_attr_name] = index;
-				}
-				if(!cache[index])
-					cache[index] = {};
-				cache[index][name] = value;
+				(targetElement[data_name] || (targetElement[data_name] = {}))[name] = value;
 			}
 		},
 		/**
@@ -175,6 +164,7 @@ kola('kola.html.Element',[
 		 * @param name {String} 要设置的类名的名称
 		 * @return {Boolean} 该类名是否存在
 		 */
+		 //to do :confirm
 		getcss: function (targetElement, name) {//这是要查询一个类名
 			var className = targetElement.className;
 			return className.length > 0 && (' ' + className + ' ').indexOf(' ' + name + ' ') != -1;
@@ -294,7 +284,6 @@ kola('kola.html.Element',[
 					innerHtml(targetElement, value);
 				}
 			}
-			//Dispatcher.global.fire({type: 'DOMNodeInserted', data: targetElement.childNodes});
 		},
 		/**
 		 * 查询一个元素的html(包含元素自身)
@@ -339,7 +328,7 @@ kola('kola.html.Element',[
 		/**
 		 * 得到父元素
 		 * @method parent
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		parent: function (targetElement) {
 			return targetElement.parentNode;
@@ -348,7 +337,7 @@ kola('kola.html.Element',[
 		 * 得到祖先元素
 		 * @method parents
 		 * @param [selector] {String} 过滤器，用于过滤得到的结果
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		parents: function (targetElement, selector) {
 			var nodes = [];
@@ -363,7 +352,7 @@ kola('kola.html.Element',[
 		 * 从当前元素开始向文档根部查找，得到第一个符合条件的元素
 		 * @method closest
 		 * @param selector {String|Array[]} 用于指定查找的条件
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		closest: function (targetElement, selector) {
 			//如果是选择器，则找到符合选择器的元素
@@ -385,16 +374,22 @@ kola('kola.html.Element',[
 		 * 得到下一级元素
 		 * @method children
 		 * @param [selector] {String} 过滤器，用于过滤得到的结果
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		children: function (targetElement, selector) {
-			return Selector.matches(selector, Array.prototype.slice.call(targetElement.children));
+			var children = [];
+			for(var child = targetElement.firstChild; child; child = child.nextSibling){
+				if(child.nodeType == 1 && Selector.matchesSelector(child, selector)){
+					children.push(child);
+				}
+			}
+			return children;
 		},
 		/**
 		 * 得到元素以及元素内部符合条件的元素集合
 		 * @method find
 		 * @param selector {String} 选择器，用于指定要查找的元素类型
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		find: function (targetElement, selector) {
 			var arrs = Selector(selector, targetElement);
@@ -404,18 +399,18 @@ kola('kola.html.Element',[
 		},
 		/**
 		 * 得到元素内部符合条件的元素集合
-		 * @method children
+		 * @method down
 		 * @param selector {String} 选择器，用于指定要查找的元素类型
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
-		descendants: function (targetElement, selector) {
+		down: function (targetElement, selector) {
 			return Selector(selector, targetElement);
 		},
 		/**
 		 * 得到前一个符合条件的节点
 		 * @method prev
 		 * @param [selector] {String} 选择器，如果提供，则得到元素前第一个符合条件的节点
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		prev: function (targetElement, selector){
 			while(targetElement = targetElement.previousSibling){
@@ -429,7 +424,7 @@ kola('kola.html.Element',[
 		 * 得到后一个符合条件的节点
 		 * @method next
 		 * @param [selector] {String} 选择器，如果提供，则得到元素后第一个符合条件的节点
-		 * @return {KolaElement} 新的元素集合
+		 * @return {Element} 新的元素集合
 		 */
 		next: function (targetElement, selector){
 			while(targetElement = targetElement.nextSibling){
@@ -446,6 +441,7 @@ kola('kola.html.Element',[
 		* @param elements {DomRefer} 要增加的dom
 		* @chainable
 		*/
+		//add appendto prependto
 		append: function(targetElement, elements){
 			elements = toElements(elements);
 			for(var i = 0, il = elements.length; i < il; i++){
@@ -498,6 +494,7 @@ kola('kola.html.Element',[
 		* @method detach
 		* @chainable
 		*/
+		//remove destroy
 		detach: function(targetElement){
 			if (targetElement.parentNode) 
 				targetElement.parentNode.removeChild(targetElement);
@@ -505,27 +502,30 @@ kola('kola.html.Element',[
 		/*
 		 * 监听一个事件
 		 * @method on
+		 * @param [delegate] {String} 监听的事件的代理的参数
 		 * @param name {String} 事件名称
-		 * @param listenerfn {function} 事件的处理函数
-		 * @param [option] {object}  配置参数
-				@option [option.scope] {object} 指定处理函数的this，如果没有，则默认为element
-				@option [option.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在event.data中
-				@option [option.delegate] {String} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
-				@option [option.out] {Boolean} 指定事件在当前元素之外触发
+		 * @param callback {function} 事件的处理函数
+		 * @param [options] {Object}  配置参数
+				@option [options.scope] {Object} 指定处理函数的this，如果没有，则默认为element
+				@option [options.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在event.data中
+				@option [options.delegate] {String} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
 		 */
 		on: KolaDomEvent.on,
 		/**
 		 * 取消对事件的监听
+		 * @method off
+		 * @param [delegate] {String} 监听的事件的代理的参数
 		 * @param [name] {String} 监听的事件名称，如果没有，则取消所有类型事件的监听
-		 * @param [listenerfn] {Function} 事件处理方法 如果没有，则符合name的取消所有事件监听
-		 * @param [option] {Object} 对解绑事件的描述
-		 * 	@param [option.out] {Boolean} 解绑对dom之外的侦听
+		 * @param [callback] {Function} 事件处理方法 如果没有，则符合name的取消所有事件监听
+		 * @param [options] {Object} 对解绑事件的描述
 		 * @chainable
 		 */
 		off: KolaDomEvent.off,
 		/**
 		 * 触发事件
+		 * @method fire
 		 * @param name {String} 事件名称
+		 * @param event {Object} 事件的参数
 		 * @chainable
 		 */
 		fire: KolaDomEvent.fire,
@@ -544,6 +544,7 @@ kola('kola.html.Element',[
 		* @param selector {String} 选择器,如果提供，则返回当前元素在同级中符合条件的节点中是第几个
 		* @return {Boolean}
 		*/
+		//name
 		index: function(targetElement, selector){
 			if(selector)
 				return KolaArray.indexOf(Operation(elem.parentNode).children(selector),elem);
@@ -626,14 +627,7 @@ kola('kola.html.Element',[
 		 * @type Number
 		 */
 		width: function(targetElement, boundary){
-			var width = targetElement.offsetWidth;
-			if(!boundary || boundary == "inner")
-				return width;
-			width += parseFloat(this.style("padding-left") || "0") + parseFloat(this.style("padding-right") || "0")
-			if(boundary == "padding")
-				return width;
-			width += parseFloat(this.style("border-left") || "0") + parseFloat(this.style("border-right") || "0")
-			return width;
+			return boundary ? targetElement.offsetWidth : targetElement.scrollWidth
 		},
 		/**
 		 * 获取对象的高度
@@ -642,14 +636,7 @@ kola('kola.html.Element',[
 		 * @type Number
 		 */
 		height: function(targetElement, boundary){
-			var height = targetElement.offsetWidth;
-			if(!boundary || boundary == "inner")
-				return height;
-			height += parseFloat(this.style("padding-top") || "0") + parseFloat(this.style("padding-bottom") || "0")
-			if(boundary == "padding")
-				return height;
-			height += parseFloat(this.style("border-top") || "0") + parseFloat(this.style("border-bottom") || "0")
-			return height;
+			return boundary ? targetElement.offsetHeight : targetElement.scrollHeight
 		},
 		/**
 		 * 获取在页面中的绝对位置和大小信息
@@ -759,16 +746,6 @@ kola('kola.html.Element',[
 			}
 			parent = parent.tBodies[0];
 		}
-		//	如果要添加的节点是DocumentFragment，那就进行特殊处理
-		if (child.nodeType === 11) {
-			var length = child.childNodes.length;
-			parent.appendChild(child);
-			var nodes = parent.childNodes, news = [];
-			for (var j = nodes.length, i = j - length; i < j; i++) {
-				news.push(nodes[i]);
-			}
-			return news;
-		}
 		return parent.appendChild(child);
 	};
 
@@ -837,7 +814,7 @@ kola('kola.html.Element',[
 			var nodes = element.all,count;
 			for (var i = nodes.length - 1; i >= 0; i--){
 				KolaDomEvent.off(nodes[i]);
-				node[cache_attr_name] = null;
+				node[data_name] = null;
 			}
 		};
 		//如果会引起内存泄露，那就跟踪unload事件，处理这些
@@ -848,47 +825,42 @@ kola('kola.html.Element',[
 		var purgeChildren = KolaFunction.empty;
 	}
 	/**
-	 * kola的KolaElement类
+	 * kola的Element类
 	 * 
-	 * @class KolaElement
-	 * 
+	 * @class Element
+	 * @constructor
+	 * @param elements {Array<HTMLElement>}
 	 */
 	var exports = function(elements){
 		if(this.constructor != exports){
 			//instanceof当涉及跨iframe时会工作不正常
 			if(typeof elements === "string" && elements.charAt(0) != '<'){
 				/*
-					define DomRefer Array<HTMLElement>|NodeList|HtmlCollection|HtmlElement|KolaElement|String
+					define DomRefer Array<HTMLElement>|NodeList|HtmlCollection|HtmlElement|Element|String
 				*/
 				/**
 				* 使用选择器选择特定dom
-				* @function direct
+				* @method Element
 				* @param elements {String}
-				* @return {KolaElement}
+				* @return {Element}
 				*/
 				return new exports(Selector(elements));
 			}else{
 				/**
-				* 根据字符串生成dom，并生成KolaElement
-				* @function direct
+				* 根据字符串生成dom，并生成Element
+				* @method Element
 				* @param elements {String} 要转换的字符串，以html < 格式开头
-				* @return {KolaElement}
+				* @return {Element}
 				*/
 				/**
-				* 将指定的dom转换为KolaElement
-				* @function direct
-				* @param elements {Array<HTMLElement>|NodeList|HtmlCollection|HtmlElement|KolaElement}
-				* @return {KolaElement}
+				* 将指定的dom转换为Element
+				* @method Element
+				* @param elements {Array<HTMLElement>|NodeList|HtmlCollection|HtmlElement|Element}
+				* @return {Element}
 				*/
 				return new exports(Operation.toElements(elements));
 			}
 		}
-		/**
-		* 构造函数
-		* @constructor
-		* @param elements {Array<HTMLElement>}
-		* @return {KolaElement}
-		*/
 		this.length = elements.length;
 		for(var i = 0, il = this.length; i < il; i ++)
 			this[i] = elements[i];
@@ -897,7 +869,7 @@ kola('kola.html.Element',[
 	exports.prototype = {
 		constructor: exports,
 		/**
-		* 依次迭代内部dom，将内部每一个元素封装成KolaElement交给callback处理
+		* 依次迭代内部dom，将内部每一个元素封装成Element交给callback处理
 		* @method each
 		* @param callback {Function} 回调函数
 		* @chainable
@@ -905,7 +877,7 @@ kola('kola.html.Element',[
 		each: function (callback) {
 			//	使用迭代器循环每个元素
 			for(var i = 0, il = this.length; i < il; i++){
-				callback.call(this, new exports([this[i]]), i);
+				callback.call(this, new this.constructor([this[i]]), i);
 			}
 			return this;
 		},
@@ -913,11 +885,11 @@ kola('kola.html.Element',[
 		/**
 		 * 增加一些元素
 		 * @method add
-		 * @param sets {DomRefer} 要增加的dom集合
+		 * @param elements {DomRefer} 要增加的dom集合
 		 * @chainable
 		 */
-		add: function(sets){
-			var elements = Operation.toElements(sets);
+		add: function(elements){
+			var elements = Operation.toElements(elements);
 			for(var i = 0, il = elements.length; i < il ; i ++){
 				this[this.length] = elements[i];
 			}
@@ -929,11 +901,11 @@ kola('kola.html.Element',[
 		/**
 		 * 移除一些元素
 		 * @method remove
-		 * @param sets {DomRefer} 要移除的dom集合
+		 * @param elements {DomRefer} 要移除的dom集合
 		 * @chainable
 		 */
-		remove: function(sets){
-			var elements = Operation.toElements(sets);
+		remove: function(elements) {
+			var elements = Operation.toElements(elements);
 			for(var i=0, il = elements.length; i < il; i++){
 				for(var j=0, jl = this.length; j < jl; j++){
 					if(this[j] == elements[i]){
@@ -961,12 +933,12 @@ kola('kola.html.Element',[
 			return this.css("___Kola___Hidden", false);
 		},
 
-		outerHtml: function(value){
+		outer: function(value){
 			if (arguments.length == 0) {
-				return Operation.getouterHtml(this[0])
+				return Operation.getouter(this[0])
 			}else{
 				for(var i = 0; i < this.length; i++){
-					this[i] = Operation.setouterHtml(this[i], value)[0]
+					this[i] = Operation.setouter(this[i], value)[0]
 				}
 				return this;
 			}
@@ -1006,21 +978,38 @@ kola('kola.html.Element',[
 		}
 	});
 	//each
-	KolaArray.forEach('on,fire,off,detach,append,prepend,before,after'.split(','),function(functionName){
-		exports.prototype[functionName] = function(p0, p1, p2){
+	KolaArray.forEach('fire,detach,append,prepend,before,after'.split(','),function(functionName){
+		exports.prototype[functionName] = function(p0, p1){
 			for(var i = 0; i < this.length; i++){
-				Operation[functionName].call(this, this[i], p0, p1, p2);
+				Operation[functionName].call(this, this[i], p0, p1);
+			}
+			return this
+		}
+	});
+	//on and off
+	KolaArray.forEach('on,off'.split(','),function(functionName){
+		exports.prototype[functionName] = function(delegate, name, callback, option){
+			if(typeof name == "string"){
+				option = option || {};
+				option.delegate = delegate;
+			}else{
+				option = callback;
+				callback = name;
+				name = delegate;
+			}
+			for(var i = 0; i < this.length; i++){
+				Operation[functionName].call(this, this[i], name, callback, option);
 			}
 			return this
 		}
 	});
 	//traveller
-	KolaArray.forEach('parent,parents,closest,children,find,descendants,prev,next'.split(','),function(functionName){
+	KolaArray.forEach('parent,parents,closest,children,find,down,prev,next'.split(','),function(functionName){
 		exports.prototype[functionName] = function(p0, p1){
 			var results = [];
 			for(var i = 0; i < this.length; i++){
 				var res = Operation[functionName].call(this, this[i], p0, p1);
-				if(KolaArray.is(res))
+				if(KolaArray.isArray(res))
 					results = results.concat(res);
 				else if(res)
 					results.push(res);
@@ -1030,13 +1019,21 @@ kola('kola.html.Element',[
 	});
 	//shortcut for events
 	KolaArray.forEach('click,mouseenter,mouseleave,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,change'.split(','),function(functionName){
-		exports.prototype[functionName] = function(listenerfn,option){
-			for(var i = 0; i < this.length; i++){
-				if(arguments.length == 0){
-					KolaDomEvent.fire(this[i], functionName);
-				}else{
-					KolaDomEvent.on(this[i], functionName, listenerfn, option);
+		exports.prototype[functionName] = function(delegate, callback, option){
+			if(typeof delegate == "string"){
+				option = option || {};
+				option.delegate = delegate;
+			}else if(typeof delegate == 'function'){
+				option = callback;
+				callback = delegate
+			}else{
+				for(var i = 0; i < this.length; i++){
+					KolaDomEvent.fire(this[i], functionName, delegate);
 				}
+				return this;
+			}
+			for(var i = 0; i < this.length; i++){
+				KolaDomEvent.on(this[i], functionName, callback, option);
 			}
 			return this;
 		}

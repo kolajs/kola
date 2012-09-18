@@ -1,6 +1,7 @@
 kola('kola.html.util.Event',[
-	'kola.lang.Class'
-],function(KolaClass) {
+	'kola.lang.Class',
+	'kola.html.util.Selector'
+],function(KolaClass, Selector) {
 	/********************************************** 类定义 **********************************************/
 	var IEStyle = (navigator.userAgent.indexOf('MSIE') != -1 && parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( 'MSIE' ) + 5, 3)) < 9);
 	//FIXME:给window绑定onscroll事件没有位置信息
@@ -8,7 +9,6 @@ kola('kola.html.util.Event',[
 	/*
 	 * kola事件对象
 	 * @prop currentTarget 绑定时没有设置option.delegate时，currentTarget为绑定该事件的元素，设置option.delegate时，currentTarget为被代理的元素
-	 * @prop data: 绑定事件时传入的数据
 	 * @prop event: 浏览器内置事件对象
 	 * @prop button: w3c兼容
 	 * @method preventDefault: w3c兼容
@@ -19,16 +19,21 @@ kola('kola.html.util.Event',[
 		var DomEvent = KolaClass.create({
 			_init :function(e){
 				this.event = e;
+				
 				this.target = e.srcElement;
+				
 				this.relatedTarget = (e.fromElement == e.srcElement ? e.toElement : e.fromElement);
+				
 				if(e.button == 1)
 					this.button = 0;
 				if(e.button == 4)
 					this.button = 1;
 				if(e.button == 2)
 					this.button = 2;
+
 				this.pageY = e.clientY + document.documentElement.scrollTop;
 				this.pageX = e.clientX + document.documentElement.scrollLeft;
+				
 				for(var i =0 ,il = copyParams.length; i < il; i++){
 					this[copyParams[i]] = e[copyParams[i]];
 				}
@@ -62,7 +67,7 @@ kola('kola.html.util.Event',[
 		this.stopPropagation();
 	}
 	
-	var eventAgent = function(callback, option, e) {
+	var eventAgent = function(callback, options, e) {
 		
 		if(IEStyle){
 			e = new DomEvent(window.event);
@@ -70,15 +75,15 @@ kola('kola.html.util.Event',[
 			e = new DomEvent(e);
 		}
 		e.currentTarget = this;
-		if(option.special && option.special.check && option.special.check(this, e)){
+		if(options.special && options.special.check && options.special.check(this, e)){
 			return;
 		}
 		//当前事件是代理,则从target开始，向上查找符合delegate的dom，直到找到或者到达该元素
-		if(option.delegate){
+		if(options.delegate){
 			var elem = e.target;
 			var match = false;
 			while(elem.nodeType == 1 && elem != this){
-				if(Selector.matchesSelector(elem,option.delegate)){
+				if(Selector.matchesSelector(elem,options.delegate)){
 					match = elem;
 					break;
 				}
@@ -88,15 +93,13 @@ kola('kola.html.util.Event',[
 			if(!match)
 				return;
 			e.currentTarget = elem;
-		}
-		e.data = option.data;
-		
-		callback.call(option.scope || this, e);
+		}		
+		callback.call(options.scope || this, e, options.data);
 	};
 	//light bind
-	function eventBind(target, scope, callback, option) {
+	function eventBind(target, scope, callback, options) {
 		return function(e) {
-			return target.call(scope, callback, option, e);
+			return target.call(scope, callback, options, e);
 		};
 	}
 	//删除指定的事件
@@ -129,7 +132,7 @@ kola('kola.html.util.Event',[
 	if(IEStyle){
 		specialEvent.change = {
 			//ie6-7的change在失焦后才会触发
-			setup: function(element, callback, option){
+			setup: function(element, callback, options){
 				if(element.tagName.toLowerCase() == 'input' && element.type == 'checkbox'){
 					element.attachEvent('propertychange', callback);
 					return true;
@@ -141,7 +144,7 @@ kola('kola.html.util.Event',[
 		}
 		/*
 		specialEvent.unload = {
-			setup: function(element, callback, option){
+			setup: function(element, callback, options){
 				if(element == window){
 					window.onunload = callback;
 					return true;
@@ -155,35 +158,41 @@ kola('kola.html.util.Event',[
 		'onclick', 'ondblclick', 'onmouseover', 'onmouseout', 'onmouseup', 'onmousedown',
 		'onblur', 'onfocus', 'onchange', 'onsubmit'
 	];
+	/**
+	 * kola的事件类
+	 * 
+	 * @class Event
+	 */
 	var exports = {
 		/**
 		 * 监听一个事件
+		 * @method on
 		 * @param element {kolaElement} 要绑定事件的元素
 		 * @param name {String} 事件名称
 		 * @param callback {function} 事件的处理函数
-		 * @param [option] {object} 配置参数
-		 *	@option [option.scope] {Object} 指定处理函数的this，如果没有，则默认为element
-		 *	@option [option.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在event.data中
-		 *	@option [option.delegate] {Stirng} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
+		 * @param [options] {object} 配置参数
+		 *	@param [options.scope] {Object} 指定处理函数的this，如果没有，则默认为element
+		 *	@param [options.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在回调函数的参数后面
+		 *	@param [options.delegate] {Stirng} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
 		 */
-		on: function(element, name, callback, option) {
-			option = option || {};
+		on: function(element, name, callback, options) {
+			options = options || {};
 
 			var special = specialEvent[name];
 			var domName = special && special.domEvtName ? special.domEvtName : name;
-			option.special = special;
+			options.special = special;
 			//	建立替代方法，主要是设定作用域
 			var observer = {
 				name: domName,
 				definer: callback,
-				handler: eventBind(eventAgent, element, callback, option),
-				option: option
+				handler: eventBind(eventAgent, element, callback, options),
+				options: options
 			};
 			
 			//	缓存事件处理方法
 			((element.__events || (element.__events = {}))[name] || (element.__events[name] = [])).push(observer);
 			
-			if(specialEvent && specialEvent.setup && specialEvent.setup(element, name, callback, option)){
+			if(specialEvent && specialEvent.setup && specialEvent.setup(element, name, callback, options)){
 				return;
 			}
 			//	绑定事件
@@ -192,18 +201,19 @@ kola('kola.html.util.Event',[
 			} else {
 				element.attachEvent('on' + domName, observer.handler);
 			}
-					
-			return this;
+
 		},
 		
-		/*
+		/**
 		 * 取消元素的指定事件处理
-		 * @param element {kolaElement} 要解除事件绑定的元素
-		 * @param [name] {String} 要解除事件绑定的类型
-		 * @param [callback] {Function} 要解除事件绑定的处理函数
-		 * @param [option] {Function} 要解除事件绑定的处理函数
+		 * @method off
+		 * @param element {HTMLElement} 要解除事件绑定的元素
+		 * @param [name] {String} 要解除事件绑定的类型 若不存在，则解绑全部事件，包括inline的
+		 * @param [callback] {Function} 要解除事件绑定的处理函数 若不存在，则认为其他callback全部符合解绑条件
+		 * @param [options] {Object} 要解除事件绑定的处理函数的参数 若不存在，则认为其他option全部符合解绑条件
+		 * @retrun null
 		 */
-		off: function(element, name, callback, option) {
+		off: function(element, name, callback, options) {
 			//	如果不存在事件缓存，那就不做处理
 			var events = element.__events;
 			if(!events) return;
@@ -232,16 +242,15 @@ kola('kola.html.util.Event',[
 				eventType = events[name];
 				if (!eventType) return;
 
-				if (callback) {//	这是要取消指定的监听方法
+				if (callback || options) {//	这是要取消指定的监听方法
 					//	循环所有存储的事件处理方法，如果相同，那就删除之
 					for(var i = eventType.length - 1; i >= 0; i--) {
 						var observer = eventType[i];
-						if (observer.definer == callback) {
+						if ((!callback || observer.definer == callback) && (!options || compareOptions(options, observer.options))) {
 							off(element, observer.name, observer.handler);
 							eventType.splice(i, 1);
 						}
 					}
-		
 				} else {
 					//	删除所有监听事件
 					for(var i = 0, il = eventType.length; i < il; i++) {
@@ -253,11 +262,13 @@ kola('kola.html.util.Event',[
 				}		
 			}
 		},
-		/*
+		/**
 		 * 派发事件
-		 * @param element
-		 * @param name
-		 * @return
+		 * @method fire
+		 * @param element {HTMLElement} 触发事件的对象
+		 * @param name {String} 事件的名称
+		 * @param [event] {Object} 事件的参数
+		 * @return null
 		 */
 		fire: function(element, name, event) {
 			if (name == 'submit')
@@ -279,5 +290,14 @@ kola('kola.html.util.Event',[
 			}
 		}
 	};
+	var comparePropertys = ['scope', 'data', 'delegate'];
+	function compareOptions(optionsA, optionsB){
+		if(!optionsA || !optionsB)
+			return false;
+		for(var i = 0; i < comparePropertys.length; i++){
+			if(optionsA[comparePropertys[i]] !== optionsB[comparePropertys[i]]) return false;
+		}
+		return true;
+	}
 	return exports;
 });
