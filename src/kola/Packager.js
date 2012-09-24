@@ -134,21 +134,38 @@ window.kola = (function(kola) {
 		 */
 		var AopMethod = {
 			before: 1,
-			after: 1
+			around:	1,
+			after: 	1
+		};
+		
+		/**
+		 * 创建包装方法
+		 */
+		var createAroundFunc = function(scope, around) {
+			return function() {
+				var args = slice.call(arguments);
+				var aroundFn = around.shift();
+				if (around.length > 0) {
+					args.unshift(createAroundFunc(scope, around));
+				}
+				return aroundFn.apply(scope, args);
+			};
 		};
 		
 		/**
 		 * 生成一个新的Aop方法
+		 * 
 		 * @param fn {Function} 原生的方法
 		 * @param aop {Object} aop配置参数
-		 * 	@param before {Array<Function>} 之前需要调用的方法
-		 * 	@param after {Array<Function>} 之后需要调用的方法
+		 * 		@param aop.before {Array<Function>} 之前需要调用的方法
+		 * 		@param aop.around {Array<Function>} 包装方法
+		 * 		@param aop.after {Array<Function>} 之后需要调用的方法
 		 */
 		var createAopedFunc = function(fn, aop) {
 			return function() {
 				var args = slice.call(arguments);
 				
-				//	如果存在调用前的方法，那就调用之
+				// 如果存在调用前的方法，那就调用之
 				var before = aop.before;
 				if (before.length > 0) {
 					for (var i = 0, il = before.length; i < il; i++) {
@@ -159,10 +176,16 @@ window.kola = (function(kola) {
 					}
 				}
 				
-				// 那就调用原来的方法
+				// 如果存在around方法，那就创建around代理
+				var around = aop.around;
+				if (around.length > 0) {
+					fn = createAroundFunc(this, around.concat([fn]));
+				}
+				
+				// 调用相应的方法
 				var result = fn.apply(this, args);
 				
-				//	如果存在调用后的方法，那就调用之
+				// 如果存在调用后的方法，那就调用之
 				var after = aop.after;
 				if (after.length > 0) {
 					args.unshift(result);
@@ -224,7 +247,8 @@ window.kola = (function(kola) {
 							aops.push({
 								name: 	name,
 								before: [],
-								after:	[]
+								after:	[],
+								around: []
 							});
 						}
 						
