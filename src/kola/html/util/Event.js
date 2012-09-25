@@ -132,10 +132,9 @@ kola('kola.html.util.Event',[
 	if(IEStyle){
 		specialEvent.change = {
 			//ie6-7的change在失焦后才会触发
-			setup: function(element, callback, options){
+			setup: function(element, callback, observer){
 				if(element.tagName.toLowerCase() == 'input' && element.type == 'checkbox'){
-					element.attachEvent('propertychange', callback);
-					return true;
+					observer.name = 'propertychange';
 				}
 			},
 			check: function(element, evt){
@@ -175,10 +174,10 @@ kola('kola.html.util.Event',[
 		 *	@param [options.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在回调函数的参数后面
 		 *	@param [options.delegate] {Stirng} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
 		 */
-		on: function(element, name, callback, options) {
+		on: function(element, name, callback, options, extra) {
 			options = options || {};
 
-			var special = specialEvent[name];
+			var special = extra || specialEvent[name];
 			var domName = special && special.domEvtName ? special.domEvtName : name;
 			options.special = special;
 			//	建立替代方法，主要是设定作用域
@@ -192,14 +191,14 @@ kola('kola.html.util.Event',[
 			//	缓存事件处理方法
 			((element.__events || (element.__events = {}))[name] || (element.__events[name] = [])).push(observer);
 			
-			if(specialEvent && specialEvent.setup && specialEvent.setup(element, name, callback, options)){
+			if(special && special.setup && special.setup(element, name, callback, observer)){
 				return;
 			}
 			//	绑定事件
 			if (!IEStyle) {
-				element.addEventListener(domName, observer.handler);
+				element.addEventListener(observer.name, observer.handler);
 			} else {
-				element.attachEvent('on' + domName, observer.handler);
+				element.attachEvent('on' + observer.name, observer.handler);
 			}
 
 		},
@@ -277,7 +276,7 @@ kola('kola.html.util.Event',[
 				element.focus();
 			else{		
 				if(IEStyle) {
-					element.fireEvent("on"+name, event);
+					element.fireEvent("on"+name);
 				}else{
 					var evt = document.createEvent('HTMLEvents');  
 					evt.initEvent(name,true,true);

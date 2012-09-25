@@ -318,11 +318,11 @@
 				org.add($("#ap"));
 				testCase(q(org, ["firstp","sndp","en","sap","first", "ap"]),"排重");
 			});
-			test("remove",function(testCase){
+			test("not",function(testCase){
 				var org = $("p");
-				org.remove($("#ap"));
+				org.not($("#ap"));
 				testCase(q(org, ["firstp","sndp","en","sap","first"]),"1个");
-				org.remove($("p"));
+				org.not($("p"));
 				testCase(q(org, []),"多个");
 			});
 			//////////////////////////////////////////////////////////////////////////////////////////
@@ -377,9 +377,9 @@
 				testCase(q($("div").find("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
 				testCase(q($("#select1").find("select"), ["select1"]), "包括自己")
 			});
-			test("descendants",function(testCase){
-				testCase(q($("div").descendants("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
-				testCase(q($("#select1").descendants("select"), []), "不包括自己")
+			test("down",function(testCase){
+				testCase(q($("div").down("p"), ["firstp","sndp","en","sap","first"]), "多元素查找")
+				testCase(q($("#select1").down("select"), []), "不包括自己")
 			});
 			test("closest",function(testCase){
 				var closestQuest = $('div')
@@ -398,11 +398,6 @@
 			test("next",function(testCase){
 				testCase(q($("#hidden1").next("object"), ["object1"]), "")
 			});
-			//////////////////////////////////////////////////////////////////////////////////////
-			test("val",function(testCase){
-				$("#area1").val('123');
-				testCase($("#area1").val() == "123", "设置");
-			});
 			test("html",function(testCase){
 				testCase($("#nothiddendivchild").html() == "123", "读取");
 				$("#nothiddendivchild").html('123<a>456</a>78');
@@ -413,10 +408,10 @@
 				$("#nothiddendivchild").text("<a>123</a>");
 				testCase($("#nothiddendivchild").text() == "<a>123</a>", "设置");
 			});
-			test("outerHtml",function(testCase){
+			test("outer",function(testCase){
 				var dom = $("#nothiddendivchild");
-				testCase(dom.outerHtml().toLowerCase() == '<div id="nothiddendivchild">&lt;a&gt;123&lt;/a&gt;</div>', "读取");
-				dom.outerHtml('<h3 id="nothiddendivchild">h3</h3>');
+				testCase(dom.outer().toLowerCase() == '<div id="nothiddendivchild">&lt;a&gt;123&lt;/a&gt;</div>', "读取");
+				dom.outer('<h3 id="nothiddendivchild">h3</h3>');
 				testCase(dom.is("h3"));
 			});
 			test("event",function(testCase){
@@ -520,26 +515,30 @@
 				newDom.click();
 				firstChild.click();
 				testCase(clickCount == 2, 'delegate可以被移除');
+			});
+		});
 
-			});
-			test("size",function(testCase){
-				var outerDom = $('#displayChest');
-				var upper = outerDom.find('.upper');
-				var lower = outerDom.find('.lower');
-				testCase(outerDom.width() == 100, 'width');
-				testCase(upper.height() == 40, 'height');
-				testCase(lower.height() == 50, 'width');
-				lower.style("padding","10");
-				lower.style("border","10");
-				testCase(lower.height("border") == 90, 'height with border and padding');
-			});
-			test("position",function(testCase){
-				var outerDom = $('#displayChest');
-				var lower = outerDom.find('.lower');
-				var a=lower[0];
-				testCase(lower.pos().left = lower[0].left, 'left');
-				console.log(lower.pos())
-			});
+		kola("kola.html.Element[kola.html.Input]", function($){
+			var input = $("#area1");
+			/*
+			test("val",function(testCase){
+				testCase(input.val() === "foobar", "读取val");
+				input.val("123");
+				testCase(input.val() === "123", "设置val");
+			});*/
+
+			input[0].onpropertychange = function(){
+				alert(1);
+			}
+			input[0].value = "123";
+			/*
+			function t(testCase){
+				input.input(function(){
+					alert("input");
+				});
+				testCase(true);
+			};
+			t();*/
 		});
 	</script>
 </body>

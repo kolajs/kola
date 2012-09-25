@@ -13,7 +13,7 @@ kola('kola.event.Dispatcher',[
 	 * @class Dispatcher
 	 * 
 	 */
-	var Dispatcher = KolaClass({
+	var Dispatcher = KolaClass.create({
 		_init: function() {
 		},
 		/**
@@ -66,10 +66,11 @@ kola('kola.event.Dispatcher',[
 		 * @param e {Object} 事件对象
 		 * @chainable
 		 */
-		fire: function(e) {
-			if(KolaClass.isString(e)){
+		fire: function(e, data) {
+			if(typeof(e) == "string"){
 				e = {
-					type:e
+					type: e,
+					data: data
 				}
 			}
 			e.target = this;

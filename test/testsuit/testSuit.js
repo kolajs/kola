@@ -118,4 +118,20 @@
 			window.testCases.push(newCase);
 		}
 	}
+	var keyEvents = 'keydown,keyup,keypress'.split(',');
+	for(var i = 0; i < keyEvents.length; i++){
+		(function(eventName){
+			window.test[eventName] = function(element, keyChar, extra){
+				extra = extra || {};
+				extra.keyCode = keyChar.charCodeAt(0);
+				var evt = document.createEvent ("KeyboardEvent");
+                evt.initKeyEvent ("keydown", true, true, window, 
+                                        false, false, false, false, 
+                                        0, "x".charCodeAt(0));
+				element.dispatchEvent(evt);
+			}
+		})(keyEvents[i]);
+	}
+	var mouseEvents = 'mouseonver,mouseout,mousedown,mouseup,mousemove,click'.split(',');
+	
 })();
