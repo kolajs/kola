@@ -17,6 +17,9 @@
 			width: 10px;
 			height: 10px;
 		}
+		.placeholder{
+			color: gray;
+		}
 	</style>
 </head>
 <body>
@@ -31,7 +34,7 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
-	<textarea id="area1" maxlength="30">foobar</textarea>
+	<textarea id="area1" maxlength="30" placeholderd="123">foobar</textarea>
 	<!-- Test HTML -->
 	<div id="nothiddendiv" style="background:white;" class="nothiddendiv">
 		<div id="nothiddendivchild">123</div>
@@ -289,25 +292,30 @@
 					fireTimes++;
 				}
 				input.input(onInput);
-				input[0].value = 4;
+				input[0].value = 14;
 				testCase(fireTimes == 1, "非val方式会触发input");
-				input.val("123");
+				input.val("1233");
 				testCase(fireTimes == 1, "val方式不会触发input");
+			});
+			test("change",function(testCase){
+				var fireTimes = 0;
+				function onInput(){
+					fireTimes++;
+				}
+				input.change(onInput);
+				input.val("12v3");
+				testCase(fireTimes == 1, "val方式会触发change");
 			});
 			/*
 			test("restrict",function(testCase){
 				input.restrict("0-9");
 				testCase(true, "设置val");
 			});*/
-
-		});
-		Input 
-			val
-			restrict
-			placeholder
-			selectionStart
-			selectionEnd
-			
+			test("placeholder",function(testCase){
+				input.placeholder();
+				testCase(true, "设置val");
+			});
+		});			
 
 	</script>
 </body>

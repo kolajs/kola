@@ -115,7 +115,7 @@ window.kola = (function(kola) {
 				? newAllIn1Constructor(prototypeInstance._init, prototypeInstance.__ME)
 				: newConstructor(); 
 			newClass.prototype = prototypeInstance;	
-			
+			prototypeInstance.constructor = newClass;
 			return newClass;
 		};
 	

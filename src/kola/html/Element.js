@@ -624,6 +624,7 @@ kola('kola.html.Element',[
 			for(var i = 0, il = this.length; i < il; i ++)
 				this[i] = elements[i];
 		},
+
 		/**
 		* 依次迭代内部dom，将内部每一个元素封装成Element交给callback处理
 		* @method each
@@ -647,9 +648,8 @@ kola('kola.html.Element',[
 		add: function(elements){
 			var elements = Operation.toElements(elements);
 			for(var i = 0, il = elements.length; i < il ; i ++){
-				this[this.length] = elements[i];
+				this[this.length++] = elements[i];
 			}
-			this.length += elements.length;
 			unique(this);
 			return this;
 		},
@@ -671,6 +671,23 @@ kola('kola.html.Element',[
 			}
 			return this;
 		},
+
+		/**
+		 * 将符合选择器的元素组成一个新的element
+		 * @method filter
+		 * @param selector {String} 选择器
+		 * @return {Element}
+		 */
+		filter: function(selector){
+			var res = [];
+			for(var i = 0, il = this.length; i<il; i++){
+				if(Selector.matchesSelector(this[i], selector)){
+					res.push(this[i]);
+				}
+			}
+			return new this.constructor(res);
+		},
+
 		/**
 		 * 隐藏元素
 		 * @method hide
@@ -704,6 +721,7 @@ kola('kola.html.Element',[
 		//使得浏览器认为实例是一个数组，方便调试
 		splice:[].splice
 	});
+	exports._operations = Operation
 	//定义一个针对节点读取属性或设置属性的操作
 	function getSet(getFunction, setFunction){
 		var functionGroup = [];
