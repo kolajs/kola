@@ -51,15 +51,17 @@
             
                 <li><a href="..&#x2F;classes/Event.html">Event</a></li>
             
+<<<<<<< HEAD
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+=======
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
+>>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
-                <li><a href="..&#x2F;classes/Packager.html">Packager</a></li>
-            
                 <li><a href="..&#x2F;classes/String.html">String</a></li>
-            
-                <li><a href="..&#x2F;classes/window.html">window</a></li>
             
             </ul>
 
@@ -112,6 +114,7 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
+<<<<<<< HEAD
 kola(&#x27;kola.lang.Class&#x27;, [
 	&#x27;kola.Packager&#x27;
 ], function(Packager) {
@@ -161,6 +164,36 @@ kola(&#x27;kola.lang.Class&#x27;, [
 	};
 	
 	return exports;
+=======
+kola(&#x27;kola.lang.Class&#x27;, [
+	&#x27;kola.Packager&#x27;
+], function(Packager) {
+
+	&#x2F;********************************************** 类定义 **********************************************&#x2F;
+	
+	&#x2F;**
+	 * kola的Class类，用于类的创建和检测等
+	 * 
+	 * @class Class
+	 * @static
+	 * 
+	 * @author Jady Yang
+	 *&#x2F;
+	var exports = {
+		
+		&#x2F;**
+		 * 创建一个新类
+		 * 
+		 * @method createClass
+		 * @param [superClass] {Function} 父类
+		 * @param prototypes {Object} 原形对象
+		 * @return {Class} 创建的新类
+		 *&#x2F;
+		create: Packager.createClass
+	};
+	
+	return exports;
+>>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
 });
     </pre>
 </div>

@@ -535,6 +535,46 @@
 				
 			});
 			
+			kola(['plugin.Animal[plugin.around.Plug1]'
+					, 'plugin.Person[plugin.around.Plug1]'
+			], function(Animal, Person) {
+				
+				var animal = new Animal('小强');
+					
+				test(animal.name === '小强'
+						&& animal.isDead() === '还没死？'
+					, 'around方法没有被正确调用'
+				);
+				
+				var me = new Person('我');
+				var us = new Person('大家');
+					
+				test(me.build('kola') == '搞不定'
+					, 'around方法没有被正确调用'
+				);
+					
+				test(us.build('kola') == '大家建造kola'
+					, 'around方法没有被正确调用'
+				);
+				
+			});
+			
+			kola(['plugin.Person[plugin.around.Plug1, plugin.around.Plug2, plugin.around.Plug3]'
+					, 'plugin.Person[plugin.around.Plug3, plugin.around.Plug2, plugin.around.Plug1]'
+			], function(Person, Person2) {
+				
+				var us = new Person('大家');
+				test(us.build('kola') == '大家建造kola；Plug3也去建造kola；Plug2也去建造kola'
+					, '对于同一方法，存在多个around方法时，调用出错'
+				);
+				
+				var me = new Person2('我自己');
+				test(me.build('kola') == '搞不定；Plug2也去建造kola；Plug3也去建造kola'
+					, '对于同一方法，存在多个around方法时，调用出错'
+				);
+				
+			});
+			
 		});
 		
 		/*

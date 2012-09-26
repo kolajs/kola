@@ -11,102 +11,102 @@
 			var testArrNum = [1, 2, 3, 4, 5, 6, 4, 3, 2, 1];
 			var testArrString = ["alpha", "beta", "gamma", "delta", "gamma", "beta", "alpha"];
 			
-			test("indexOf",function(testCase){
-				testCase(KolaArray.indexOf(testArrNum, 4) == 3, "数字数组");
-				testCase(KolaArray.indexOf(testArrNum, '1') == -1, "数字数组不存在");
-				testCase(KolaArray.indexOf(testArrString, "delta") == 3, "字符串数组");
-				testCase(KolaArray.indexOf(testArrString, 'omega') == -1, "字符串数组不存在");
+			test("indexOf",function(test){
+				test(KolaArray.indexOf(testArrNum, 4) == 3, "数字数组");
+				test(KolaArray.indexOf(testArrNum, '1') == -1, "数字数组不存在");
+				test(KolaArray.indexOf(testArrString, "delta") == 3, "字符串数组");
+				test(KolaArray.indexOf(testArrString, 'omega') == -1, "字符串数组不存在");
 
-				testCase(KolaArray.indexOf(testArrNum, 4, 4) == 6, "数字数组+fromIndex");
-				testCase(KolaArray.indexOf(testArrNum, 4, -10) == 3, "数字数组不存在+(-fromIndex)");
-				testCase(KolaArray.indexOf(testArrString, "delta", 4) == -1, "字符串数组+fromIndex");
-				testCase(KolaArray.indexOf(testArrString, 'delta', -6) == 3, "字符串数组+(-fromIndex)");
+				test(KolaArray.indexOf(testArrNum, 4, 4) == 6, "数字数组+fromIndex");
+				test(KolaArray.indexOf(testArrNum, 4, -10) == 3, "数字数组不存在+(-fromIndex)");
+				test(KolaArray.indexOf(testArrString, "delta", 4) == -1, "字符串数组+fromIndex");
+				test(KolaArray.indexOf(testArrString, 'delta', -6) == 3, "字符串数组+(-fromIndex)");
 			});
 
-			test("lastIndexOf",function(testCase){
-				testCase(KolaArray.lastIndexOf(testArrNum, 4) == 6, "数字数组测试");
-				testCase(KolaArray.lastIndexOf(testArrNum, '1') == -1, "数字数组不存在测试");
-				testCase(KolaArray.lastIndexOf(testArrString, "gamma") == 4, "字符串数组测试");
-				testCase(KolaArray.lastIndexOf(testArrString, 'omega') == -1, "字符串数组不存在测试");
+			test("lastIndexOf",function(test){
+				test(KolaArray.lastIndexOf(testArrNum, 4) == 6, "数字数组测试");
+				test(KolaArray.lastIndexOf(testArrNum, '1') == -1, "数字数组不存在测试");
+				test(KolaArray.lastIndexOf(testArrString, "gamma") == 4, "字符串数组测试");
+				test(KolaArray.lastIndexOf(testArrString, 'omega') == -1, "字符串数组不存在测试");
 
-				testCase(KolaArray.lastIndexOf(testArrNum, 4, 4) == 3, "数字数组+fromIndex");
-				testCase(KolaArray.lastIndexOf(testArrNum, 4, -6) == 3, "数字数组不存在+(-fromIndex)");
-				testCase(KolaArray.lastIndexOf(testArrString, "gamma", 4) == 4, "字符串数组+fromIndex");
-				testCase(KolaArray.lastIndexOf(testArrString, 'gamma', -6) == -1, "字符串数组+(-fromIndex)");
+				test(KolaArray.lastIndexOf(testArrNum, 4, 4) == 3, "数字数组+fromIndex");
+				test(KolaArray.lastIndexOf(testArrNum, 4, -6) == 3, "数字数组不存在+(-fromIndex)");
+				test(KolaArray.lastIndexOf(testArrString, "gamma", 4) == 4, "字符串数组+fromIndex");
+				test(KolaArray.lastIndexOf(testArrString, 'gamma', -6) == -1, "字符串数组+(-fromIndex)");
 			});
 
-			test("every",function(testCase){
+			test("every",function(test){
 				var scope = {scopeName : "alpha"};
-				testCase(KolaArray.every(testArrNum, function(item, i, target){
+				test(KolaArray.every(testArrNum, function(item, i, target){
 					return (item > 3);
 				}) == false, "部分成立");
 
-				testCase(KolaArray.every(testArrNum, function(item, i, target){
+				test(KolaArray.every(testArrNum, function(item, i, target){
 					return (item > 0);
 				}), "全部成立");
 
 				var index=0;
-				testCase(KolaArray.every(testArrNum, function(item, i, target){
+				test(KolaArray.every(testArrNum, function(item, i, target){
 					return (index++ == i);
 				}), "index");
 
-				testCase(KolaArray.every(testArrNum, function(item, i, target){
+				test(KolaArray.every(testArrNum, function(item, i, target){
 					return this.scopeName.length;
 				}, scope), "设置了scope，但是不能被");
 
-				testCase(KolaArray.every([1,1,undefined,1,1], function(item, i, target){
+				test(KolaArray.every([1,1,undefined,1,1], function(item, i, target){
 					return(item == 1);
 				}) == false, "有定义过的undefined");
 				var testArr=[]
 				testArr[2] = 1;
 				testArr[8] = 1;
-				testCase(KolaArray.every(testArr, function(item, i, target){
+				test(KolaArray.every(testArr, function(item, i, target){
 					return(item == 1);
 				}), "有未定义过的undefined");
 			});
 
-			test("some",function(testCase){
-				testCase(KolaArray.some(testArrNum, function(item, i, target){
+			test("some",function(test){
+				test(KolaArray.some(testArrNum, function(item, i, target){
 					return(item > 3);
 				}), "部分成立");
 
-				testCase(KolaArray.some(testArrNum, function(item, i, target){
+				test(KolaArray.some(testArrNum, function(item, i, target){
 					return(item < 0);
 				}) == false, "全部不成立");
 			});
 
-			test("forEach",function(testCase){
+			test("forEach",function(test){
 				var sum = 0;
 				KolaArray.forEach(testArrNum, function(item, i, target){
 					sum += item;
 				});
-				testCase(sum == 31, "和");
+				test(sum == 31, "和");
 			});
 
-			test("reduce",function(testCase){
-				testCase(KolaArray.reduce(testArrNum, function(prev, item, i, target){
+			test("reduce",function(test){
+				test(KolaArray.reduce(testArrNum, function(prev, item, i, target){
 					return prev + item;
 				}, 1) == 32, "指定了初始化值时，计算结果不对");
-				testCase(KolaArray.reduce(testArrNum, function(prev, item, i, target){
+				test(KolaArray.reduce(testArrNum, function(prev, item, i, target){
 					return prev + item;
 				}) == 31, "未指定初始值时，计算结果不对");
 			});
 
-			test("reduceRight",function(testCase){
-				testCase(KolaArray.reduceRight(testArrNum, function(prev, item, i, target){
+			test("reduceRight",function(test){
+				test(KolaArray.reduceRight(testArrNum, function(prev, item, i, target){
 					return prev + item;
 				}, 1) == 32, "指定了初始化值时，计算结果不对");
 				
-				testCase(KolaArray.reduce(testArrNum, function(prev, item, i, target){
+				test(KolaArray.reduce(testArrNum, function(prev, item, i, target){
 					return prev + item;
 				}) == 31, "未指定初始值时，计算结果不对");
 			});
 
-			test("map",function(testCase){
+			test("map",function(test){
 				var newArray = KolaArray.map(testArrNum, function(item, i, target){
 					return item + i;
 				});
-				testCase(KolaArray.every(testArrNum, function(item, i, target){
+				test(KolaArray.every(testArrNum, function(item, i, target){
 					return newArray[i] == item + i;
 				}), "和");
 			});

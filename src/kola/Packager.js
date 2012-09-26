@@ -134,21 +134,38 @@ window.kola = (function(kola) {
 		 */
 		var AopMethod = {
 			before: 1,
-			after: 1
+			around:	1,
+			after: 	1
+		};
+		
+		/**
+		 * 创建包装方法
+		 */
+		var createAroundFunc = function(scope, around) {
+			return function() {
+				var args = slice.call(arguments);
+				var aroundFn = around.shift();
+				if (around.length > 0) {
+					args.unshift(createAroundFunc(scope, around));
+				}
+				return aroundFn.apply(scope, args);
+			};
 		};
 		
 		/**
 		 * 生成一个新的Aop方法
+		 * 
 		 * @param fn {Function} 原生的方法
 		 * @param aop {Object} aop配置参数
-		 * 	@param before {Array<Function>} 之前需要调用的方法
-		 * 	@param after {Array<Function>} 之后需要调用的方法
+		 * 		@param aop.before {Array<Function>} 之前需要调用的方法
+		 * 		@param aop.around {Array<Function>} 包装方法
+		 * 		@param aop.after {Array<Function>} 之后需要调用的方法
 		 */
 		var createAopedFunc = function(fn, aop) {
 			return function() {
 				var args = slice.call(arguments);
 				
-				//	如果存在调用前的方法，那就调用之
+				// 如果存在调用前的方法，那就调用之
 				var before = aop.before;
 				if (before.length > 0) {
 					for (var i = 0, il = before.length; i < il; i++) {
@@ -159,10 +176,16 @@ window.kola = (function(kola) {
 					}
 				}
 				
-				// 那就调用原来的方法
+				// 如果存在around方法，那就创建around代理
+				var around = aop.around;
+				if (around.length > 0) {
+					fn = createAroundFunc(this, around.concat([fn]));
+				}
+				
+				// 调用相应的方法
 				var result = fn.apply(this, args);
 				
-				//	如果存在调用后的方法，那就调用之
+				// 如果存在调用后的方法，那就调用之
 				var after = aop.after;
 				if (after.length > 0) {
 					args.unshift(result);
@@ -224,7 +247,8 @@ window.kola = (function(kola) {
 							aops.push({
 								name: 	name,
 								before: [],
-								after:	[]
+								after:	[],
+								around: []
 							});
 						}
 						
@@ -692,7 +716,6 @@ window.kola = (function(kola) {
 		/**
 		 * kola的Package控制管理中心
 		 * 
-		 * @class Packager
 		 * @static
 		 */
 		var exports = {
@@ -700,7 +723,6 @@ window.kola = (function(kola) {
 			/**
 			 * 使用某些包执行某个方法
 			 * 
-			 * @method use
 			 * @param packages {String | Array<String>} 要使用的包，如果是string也就是一个包的包名，如果是Array，那可能就是依赖的包列表
 			 * @param callback {Function} 包可用之后的回调方法
 			 * @param [scope] {Any} 回调方法的作用域，没有的话就为Packager
@@ -724,7 +746,6 @@ window.kola = (function(kola) {
 			/**
 			 * 定义一个包
 			 * 
-			 * @method define
 			 * @param name {String} 包全名
 			 * @param dependence {Array<String> | String | Null} 依赖包列表。
 			 * 		如果为String类型，说明只有一个依赖包；
@@ -739,45 +760,7 @@ window.kola = (function(kola) {
 			/**
 			 * 增量保存设置信息
 			 * 
-			 * @method config
 			 * @param config {Object} 增量设置对象
-			 * 
-			 * @example
-			 * 	{
-			 * 		charset: 'utf-8',			// 编码，默认没有
-			 * 		path: '/…/',				// 跟路径，默认自动寻找当前的
-			 * 		domReady: true,				// 要执行的方法默认都在domReady之后执行，默认为true
-			 * 
-			 * 		// lib配置，优先级高于全局配置，但是低于packages
-			 * 		libs: {                     // lib列表
-			 * 			'kola': {				// kola lib的定义
-			 * 				charset: 'utf-8',	// 编码，默认使用全局配置
-			 * 				path: '...'			// 根路径，默认使用全局配置
-			 * 			},
-			 * 			'kola.ui': {			// kola.ui lib的定义
-			 * 				charset: 'gbk',		// 编码，默认使用全局配置
-			 * 				path: '...'			// 根路径，默认使用全局配置
-			 * 			},
-			 * 			'webbricks.clay': {		/ webbricks.clay lib的定义
-			 * 				charset: 'gbk',		// 编码，默认使用全局配置
-			 * 				path: '...'			// 根路径，默认使用全局配置
-			 * 			}
-			 * 		},
-			 * 
-			 * 		// package配置，编码采用全局配置，优先级高于libs
-			 * 		packages: {
-			 * 			'kola.lang.Class': 0,	// 如果是数字，代表要去uris数组上获取最终地址
-			 * 			'kola.net.Ajax', 0,
-			 * 			'kola.lang': 1,			// 这个代表所有kola.lang下的包，都在这个地址上
-			 * 			'webbricks.magicbox': 'http://.../magicbox.js'
-			 * 		},
-			 * 
-			 * 		// 可用地址列表
-			 * 		uris: [
-			 * 			'http://.../common.js',
-			 * 			'http://.../index.js'
-			 * 		]
-			 * 	}
 			 */
 			config: function(config) {
 				objectExtend(config, packagerConfig);
@@ -786,7 +769,6 @@ window.kola = (function(kola) {
 			/**
 			 * 获取一个包的路径配置信息
 			 * 
-			 * @method path
 			 * @param name {String} package名称
 			 * @return {Object} 路径信息，有这些属性：
 			 * 	uri，文件路径地址；
@@ -859,7 +841,6 @@ window.kola = (function(kola) {
 			/**
 			 * 创建一个新类
 			 * 
-			 * @method createClass
 			 * @param [superClass] {Function} 父类
 			 * @param prototypes {Object} 属性和方法列表
 			 * @return {KolaClass} 创建的新类
@@ -884,7 +865,7 @@ window.kola = (function(kola) {
 		 * 定义一个包
 		 * 
 		 * @method kola
-		 * @for window
+		 * @for kola
 		 * @param name {String} 包名
 		 * @param dependence {String | Array<String> | Null} 依赖包列表。
 		 * 		如果是String类型，那就是只依赖一个包，即为依赖的包名；
@@ -897,7 +878,7 @@ window.kola = (function(kola) {
 		 * 使用包进行某项操作
 		 * 
 		 * @method kola
-		 * @for window
+		 * @for kola
 		 * @param packages {String | Array<String>} 要使用的包列表。
 		 * 		如果是String类型，那就是只使用一个包，即为包名；
 		 * 		如果是Array类型，那就是要使用的包列表，每项就是一个包名；
@@ -909,9 +890,46 @@ window.kola = (function(kola) {
 		 * 加载一个kola设置对象
 		 * 
 		 * @method kola
-		 * @for window
+		 * @for kola
 		 * @param config {Object} 设置对象
 		 * @chainable
+		 * 
+		 * @example
+		 * 	{
+		 * 		charset: 'utf-8',			// 编码，默认没有
+		 * 		path: '/…/',				// 跟路径，默认自动寻找当前的
+		 * 		domReady: true,				// 要执行的方法默认都在domReady之后执行，默认为true
+		 * 
+		 * 		// lib配置，优先级高于全局配置，但是低于packages
+		 * 		libs: {                     // lib列表
+		 * 			'kola': {				// kola lib的定义
+		 * 				charset: 'utf-8',	// 编码，默认使用全局配置
+		 * 				path: '...'			// 根路径，默认使用全局配置
+		 * 			},
+		 * 			'kola.ui': {			// kola.ui lib的定义
+		 * 				charset: 'gbk',		// 编码，默认使用全局配置
+		 * 				path: '...'			// 根路径，默认使用全局配置
+		 * 			},
+		 * 			'webbricks.clay': {		/ webbricks.clay lib的定义
+		 * 				charset: 'gbk',		// 编码，默认使用全局配置
+		 * 				path: '...'			// 根路径，默认使用全局配置
+		 * 			}
+		 * 		},
+		 * 
+		 * 		// package配置，编码采用全局配置，优先级高于libs
+		 * 		packages: {
+		 * 			'kola.lang.Class': 0,	// 如果是数字，代表要去uris数组上获取最终地址
+		 * 			'kola.net.Ajax', 0,
+		 * 			'kola.lang': 1,			// 这个代表所有kola.lang下的包，都在这个地址上
+		 * 			'webbricks.magicbox': 'http://.../magicbox.js'
+		 * 		},
+		 * 
+		 * 		// 可用地址列表
+		 * 		uris: [
+		 * 			'http://.../common.js',
+		 * 			'http://.../index.js'
+		 * 		]
+		 * 	}
 		 */
 		var exports = function() {
 			var args = arguments,

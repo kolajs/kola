@@ -51,15 +51,17 @@
             
                 <li><a href="..&#x2F;classes/Event.html">Event</a></li>
             
+<<<<<<< HEAD
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
+=======
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
+            
+                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
+>>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
-                <li><a href="..&#x2F;classes/Packager.html">Packager</a></li>
-            
                 <li><a href="..&#x2F;classes/String.html">String</a></li>
-            
-                <li><a href="..&#x2F;classes/window.html">window</a></li>
             
             </ul>
 
@@ -156,6 +158,46 @@ kola(&#x27;kola.lang.String&#x27;, null, function() {
 		 *&#x2F;
 		trimRight: function(target) {
 			return target.replace(trimRight, &#x27;&#x27;);
+<<<<<<< HEAD
+=======
+		},
+		
+		&#x2F;**
+		 * 判断某字符串是否以指定字符串开头
+		 * 
+		 * @method startsWith
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 *&#x2F;
+		startsWith: function(target, it) {
+			return target.indexOf(it) == 0;
+		},
+		
+		&#x2F;**
+		 * 判断某字符串是否以指定字符串结尾
+		 * 
+		 * @method startsWith
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 *&#x2F;
+		endsWith: function(target, it) {
+			var length = it.length;
+			return target.length &gt;= length &amp;&amp; target.substr(-length) == it;
+		},
+		
+		&#x2F;**
+		 * 判断某字符串是否包含指定的字符串
+		 * 
+		 * @method contains
+		 * @param target {String} 被判断的字符串
+		 * @param it {String} 被检测的字符串
+		 * @return {Boolean}
+		 *&#x2F;
+		contains: function(target, it) {
+			return target.indexOf(it) != -1;
+>>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
 		}
 	};
 	

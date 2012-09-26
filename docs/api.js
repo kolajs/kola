@@ -8,9 +8,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "Event",
         "Function",
         "Object",
-        "Packager",
         "String",
-        "window"
+        "kola"
     ],
     "modules": [
         "kola",

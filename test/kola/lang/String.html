@@ -7,11 +7,47 @@
 </head>
 <body>
 	<script>
-		kola("kola.lang.String",function(KolaString){
-			test("trim",function(testCase){
-				testCase(KolaString.trim(" ddfs") == "ddfs", "left");
-				testCase(KolaString.trim("ddfs ") == "ddfs", "right");
-				testCase(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
+		kola("kola.lang.String", function(KolaString) {
+			test("trim",function(test){
+				test(KolaString.trim(" ddfs") == "ddfs", "left");
+				test(KolaString.trim("ddfs ") == "ddfs", "right");
+				test(KolaString.trim(" dd dfs    ") == "dd dfs", "both");
+			});
+			
+			test("trimLeft",function(test){
+				test(KolaString.trimLeft(" ddfs") == "ddfs", "left");
+				test(KolaString.trimLeft("ddfs ") == "ddfs ", "right");
+				test(KolaString.trimLeft(" dd dfs    ") == "dd dfs    ", "both");
+			});
+			
+			test("trimRight",function(test){
+				test(KolaString.trimRight(" ddfs") == " ddfs", "left");
+				test(KolaString.trimRight("ddfs ") == "ddfs", "right");
+				test(KolaString.trimRight(" dd dfs    ") == " dd dfs", "both");
+			});
+			
+			test('startsWith', function(test) {
+				test(KolaString.startsWith('abcedfg', 'a'), '判断单个字符出错');
+				test(!KolaString.startsWith('abcedfg', 'g'), '判断单个字符出错');
+				test(KolaString.startsWith('abcedfg', 'abc'), '判断多个字符出错');
+				test(!KolaString.startsWith('abcedfg', 'dfg'), '判断单个字符出错');
+				test(KolaString.startsWith('abcedfg', 'abcedfg'), '判断等价字符出错');
+			});
+			
+			test('endsWith', function(test) {
+				test(KolaString.endsWith('abcedfg', 'g'), '判断单个字符出错');
+				test(!KolaString.endsWith('abcedfg', 'a'), '判断单个字符出错');
+				test(KolaString.endsWith('abcedfg', 'dfg'), '判断多个字符出错');
+				test(!KolaString.endsWith('abcedfg', 'abc'), '判断单个字符出错');
+				test(KolaString.endsWith('abcedfg', 'abcedfg'), '判断等价字符出错');
+			});
+			
+			test('contains', function(test) {
+				test(KolaString.contains('abcedfg', 'g'), '判断单个字符出错');
+				test(!KolaString.contains('abcedfg', 'h'), '判断单个字符出错');
+				test(KolaString.contains('abcedfg', 'ced'), '判断多个字符出错');
+				test(!KolaString.contains('abcedfg', 'abg'), '判断单个字符出错');
+				test(KolaString.contains('abcedfg', 'abcedfg'), '判断等价字符出错');
 			});
 		});
 	</script>
