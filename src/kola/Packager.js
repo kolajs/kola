@@ -116,6 +116,7 @@ window.kola = (function(kola) {
 				: newConstructor(); 
 			newClass.prototype = prototypeInstance;	
 			prototypeInstance.constructor = newClass;
+			prototypeInstance._super = superClass && superClass.prototype;
 			return newClass;
 		};
 	

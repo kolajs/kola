@@ -33,7 +33,7 @@ kola('kola.html.Input',[
 	function placeholder_blur(e){
 		if(e.target.value.length == 0 && !$._operations.getcss(e.target, 'placeholder')){
 			$._operations.setcss(e.target, 'placeholder', true);
-			Operations.setval(e.target, $._operations.getattr(e.target, 'placeholderd'));
+			Operations.setval(e.target, $._operations.getattr(e.target, 'placeholder'));
 		}
 	}
 	function placeholder_focus(e){

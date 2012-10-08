@@ -3,7 +3,7 @@
  * 
  * @module kola.html
  */
-
+ 
 kola('kola.html.Element',[
 	'kola.lang.Class',
 	'kola.lang.Array',
@@ -500,8 +500,8 @@ kola('kola.html.Element',[
 		 */
 		hide:function(targetElement){
 			var oldDisplay = targetElement.style.display;
-			Operation.setdata(targetElement, "oldDisplay", oldDisplay);
-			targetElement.style.display = "hidden";
+			Operation.setdata(targetElement, 'oldDisplay', oldDisplay);
+			targetElement.style.display = 'none';
 		},
 		/**
 		 * 显示元素
@@ -509,7 +509,8 @@ kola('kola.html.Element',[
 		 * @chainable
 		 */
 		show:function(targetElement){
-			var oldDisplay = Operation.getdata(targetElement, "oldDisplay");
+			var oldDisplay = Operation.getdata(targetElement, 'oldDisplay') || '';
+			if(oldDisplay == 'none') oldDisplay = '';
 			targetElement.style.display = oldDisplay;
 		},
 		/*
@@ -686,24 +687,6 @@ kola('kola.html.Element',[
 				}
 			}
 			return new this.constructor(res);
-		},
-
-		/**
-		 * 隐藏元素
-		 * @method hide
-		 * @chainable
-		 */
-		hide:function(){
-			return this.css("___Kola___Hidden", true);
-		},
-		
-		/**
-		 * 显示元素
-		 * @method show
-		 * @chainable
-		 */
-		show:function(){
-			return this.css("___Kola___Hidden", false);
 		},
 		outer: function(value){
 			if (arguments.length == 0) {

@@ -276,6 +276,8 @@
 		<div class="lower" style="height:50%;background:yellow"></div>
 	</div>
 	<script>
+		var a={"class":123};
+		alert(a.class);
 		kola(["kola.html.Element", "kola.lang.Array"], function($, KolaArray){
 			function q(arr, dest) {
 				if(arr.length != dest.length)
@@ -516,29 +518,6 @@
 				firstChild.click();
 				testCase(clickCount == 2, 'delegate可以被移除');
 			});
-		});
-
-		kola("kola.html.Element[kola.html.Input]", function($){
-			var input = $("#area1");
-			/*
-			test("val",function(testCase){
-				testCase(input.val() === "foobar", "读取val");
-				input.val("123");
-				testCase(input.val() === "123", "设置val");
-			});*/
-
-			input[0].onpropertychange = function(){
-				alert(1);
-			}
-			input[0].value = "123";
-			/*
-			function t(testCase){
-				input.input(function(){
-					alert("input");
-				});
-				testCase(true);
-			};
-			t();*/
 		});
 	</script>
 </body>
