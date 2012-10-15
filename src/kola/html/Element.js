@@ -64,7 +64,7 @@ kola('kola.html.Element',[
 			}
 			switch(name){
 				case 'class':
-					targetElement.className.toLowerCase() = value;
+					targetElement.className = value.toLowerCase();
 					break;
 				case 'style':
 					targetElement.style.cssText = value;
@@ -178,12 +178,13 @@ kola('kola.html.Element',[
 		 * @chainable
 		 */
 		setcss: function (targetElement, name, value) {
-			var className = targetElement.className;
+			var className = ' ' + targetElement.className + ' ';
+			var safeName = ' ' + name + ' '
 			if(!value){//这是要删除一个类名
-				if ((' ' + className + ' ').indexOf(' ' + name + ' ') != -1) {
-					targetElement.className = KolaString.trim(className.split(name).join(' ').replace(/[ ]{2,}/g,' '));
+				if ((className).indexOf(safeName) != -1) {
+					targetElement.className = KolaString.trim(className.split(safeName).join(' ').replace(/[ ]{2,}/g,' '));
 				}
-			}else if((' ' + className + ' ').indexOf(name) == -1){//这是要增加一个类名
+			}else if((className).indexOf(safeName) == -1){//这是要增加一个类名
 				targetElement.className += ' ' + name;
 			}
 		},
@@ -194,6 +195,7 @@ kola('kola.html.Element',[
 		 * @return {String|Number} 样式的值
 		 */
 		getstyle: function (targetElement, name) {
+			name = antihyphenate(name);
 			var st = targetElement.style;
 			if(name == 'opacity'){
 				var filter;
@@ -214,6 +216,7 @@ kola('kola.html.Element',[
 		* @chainable
 		*/
 		setstyle: function (targetElement, name, value) {
+			name = antihyphenate(name);
 			var elementStyle = targetElement.style;
 			if(value == undefined){//要删除一个样式
 				if (elementStyle.removeProperty){
@@ -308,6 +311,85 @@ kola('kola.html.Element',[
 			typeof(targetElement.innerText) != 'undefined' ? 
 				targetElement.innerText = value :
 				targetElement.textContent = value;
+		},
+		/**
+		 * 获取对象的样式left
+		 * @method left
+		 * @return {Number}
+		 */
+		/**
+		 * 设置对象的样式left
+		 * @param value
+		 * @method left
+		 * @chainable
+		 */
+		/**
+		 * 获取对象的样式top
+		 * @method top
+		 * @return {Number}
+		 */
+		/**
+		 * 设置对象的样式top
+		 * @method left
+		 * @param value
+		 * @chainable
+		 */
+		/**
+		 * 获取对象的样式宽度
+		 * @method width
+		 * @return {Number}
+		 */
+		/**
+		 * 设置对象的样式宽度
+		 * @param value
+		 * @method left
+		 * @chainable
+		 */
+		/**
+		 * 获取对象的样式高度
+		 * @method height
+		 * @return {Number}
+		 */
+		/**
+		 * 设置对象的样式高度
+		 * @param value
+		 * @method left
+		 * @chainable
+		 */
+		getleft: function(targetElement){
+			return targetElement.offsetLeft;
+		},
+		setleft: function(targetElement, value){
+			targetElement.style.left = value + 'px';
+		},
+		gettop: function(targetElement){
+			return targetElement.offsetTop;
+		},
+		settop: function(targetElement, value){
+			targetElement.style.top = value + 'px';
+		},
+		getwidth: function(targetElement){
+			//如果style上面直接写了width，则直接使用
+			//ISSUE: 使用getwidth时，如果在css中有带!important的宽度覆盖了style上面的值，则getwidth得到的仍然是style上面的值
+			var styleWidth = targetElement.elementStyle.width;
+			if(styleWidth != null){
+				return parseFloat(styleWidth);
+			}
+			//否则计算width
+			return parseFloat(getComputedStyle(targetElement, 'width'));
+		},
+		setwidth: function(targetElement, value){
+			targetElement.style.width = value + 'px';
+		},
+		getheight: function(targetElement){
+			var styleHeight = targetElement.elementStyle.height
+			if(styleHeight != null){
+				return parseFloat(styleHeight);
+			}
+			return parseFloat(getComputedStyle(targetElement, 'height'));
+		},
+		setheight: function(targetElement, value){
+			targetElement.style.height = value + 'px';
 		},
 		////////////////////////////////////////////////////////////////////
 		/**
@@ -467,8 +549,8 @@ kola('kola.html.Element',[
 		*/
 		after: function(targetElement, elements){
 			elements = toElements(elements);
-			var parent = element.parentNode;
-			var offset = element.nextSibling;
+			var parent = targetElement.parentNode;
+			var offset = targetElement.nextSibling;
 			var func = !!offset ? insertBefore : appendChild;
 			for(var i = 0, il = elements.length; i < il; i++){
 				func(parent, elements[i], offset);
@@ -498,20 +580,24 @@ kola('kola.html.Element',[
 		 * @method hide
 		 * @chainable
 		 */
-		hide:function(targetElement){
-			var oldDisplay = targetElement.style.display;
-			Operation.setdata(targetElement, 'oldDisplay', oldDisplay);
-			targetElement.style.display = 'none';
+		getshow:function(targetElement){
+			return !(targetElement.style.display === 'none');
 		},
 		/**
 		 * 显示元素
 		 * @method show
 		 * @chainable
 		 */
-		show:function(targetElement){
-			var oldDisplay = Operation.getdata(targetElement, 'oldDisplay') || '';
-			if(oldDisplay == 'none') oldDisplay = '';
-			targetElement.style.display = oldDisplay;
+		setshow:function(targetElement, value){
+			if(value){
+				var oldDisplay = Operation.getdata(targetElement, 'oldDisplay') || '';
+				if(oldDisplay == 'none') oldDisplay = '';
+				targetElement.style.display = oldDisplay;
+			}else{
+				var oldDisplay = targetElement.style.display;
+				Operation.setdata(targetElement, 'oldDisplay', oldDisplay);
+				targetElement.style.display = 'none';
+			}
 		},
 		/*
 		 * 监听一个事件
@@ -698,6 +784,16 @@ kola('kola.html.Element',[
 				return this;
 			}
 		},
+		/**
+		 * 将该元素添加到某个dom之后
+		 * @method appendTo
+		 * @param target {HtmlElement|Element} 被添加的元素
+		 * @chainable
+		 */
+		appendTo: function(target){
+			this.constructor(target).append(this);
+			return this;
+		},
 		getData:function(){
 			return Array.prototype.slice.call(this);
 		},
@@ -714,7 +810,7 @@ kola('kola.html.Element',[
 		return functionGroup;
 	}
 	//getSet
-	KolaArray.forEach('attr,prop,data,css,style,html,text'.split(','),function(functionName){
+	KolaArray.forEach('attr,prop,data,css,style,html,text,show,left,top,width,height'.split(','),function(functionName){
 		var getSetFunction = getSet(Operation['get' + functionName], Operation['set' + functionName]);
 		exports.prototype[functionName] = function(name, value){
 			var operater = getSetFunction[arguments.length];
@@ -737,7 +833,7 @@ kola('kola.html.Element',[
 		}
 	});
 	//each
-	KolaArray.forEach('fire,remove,destroy,append,prepend,before,after,hide,show'.split(','),function(functionName){
+	KolaArray.forEach('fire,remove,destroy,append,prepend,before,after'.split(','),function(functionName){
 		exports.prototype[functionName] = function(p0, p1){
 			for(var i = 0; i < this.length; i++){
 				Operation[functionName].call(this, this[i], p0, p1);
@@ -884,63 +980,9 @@ kola('kola.html.Element',[
 				}
 			}else{
 				for(var i = 0; i < this.length; i++){
-					this[i] == value;
+					this[i][functionName] == value;
 				}
 				return this;
-			}
-		}
-	});
-	/**
-	 * 获取对象的样式left
-	 * @method left
-	 * @return {Number}
-	 */
-	/**
-	 * 设置对象的样式left
-	 * @param value
-	 * @method left
-	 * @chainable
-	 */
-	//ISSUE:如果值为auto,在webkit 和 ie下会得到auto，firefox下会得到确切的值
-	/**
-	 * 获取对象的样式top
-	 * @method top
-	 * @return {Number}
-	 */
-	/**
-	 * 设置对象的样式top
-	 * @method left
-	 * @param value
-	 * @chainable
-	 */
-	/**
-	 * 获取对象的样式宽度
-	 * @method width
-	 * @return {Number}
-	 */
-	/**
-	 * 设置对象的样式宽度
-	 * @param value
-	 * @method left
-	 * @chainable
-	 */
-	/**
-	 * 获取对象的样式高度
-	 * @method height
-	 * @return {Number}
-	 */
-	/**
-	 * 设置对象的样式高度
-	 * @param value
-	 * @method left
-	 * @chainable
-	 */
-	KolaArray.forEach('left,top,width,height'.split(','),function(functionName){
-		exports.prototype[functionName] = function(value){
-			if (arguments.length == 0) {
-				return parseFloat(this.style(functionName));
-			}else{
-				return this.style(functionName, value);
 			}
 		}
 	});
@@ -993,6 +1035,12 @@ kola('kola.html.Element',[
 	function hyphenate(name) {
 		return name.replace(/[A-Z]/g, function(match) {
 			return '-' + match.toLowerCase();
+		});
+	}
+	//将驼峰式转换为css写法
+	function antihyphenate(name) {
+		return name.replace(/-([a-z])/ig,function( all, letter ) {
+			return letter.toUpperCase();
 		});
 	}
 	/*
@@ -1103,7 +1151,7 @@ kola('kola.html.Element',[
 			var nodes = element.all,count;
 			for (var i = nodes.length - 1; i >= 0; i--){
 				KolaDomEvent.off(nodes[i]);
-				node[data_name] = null;
+				nodes[data_name] = null;
 			}
 		};
 		//如果会引起内存泄露，那就跟踪unload事件，处理这些
