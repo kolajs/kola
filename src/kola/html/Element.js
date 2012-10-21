@@ -371,8 +371,8 @@ kola('kola.html.Element',[
 		getwidth: function(targetElement){
 			//如果style上面直接写了width，则直接使用
 			//ISSUE: 使用getwidth时，如果在css中有带!important的宽度覆盖了style上面的值，则getwidth得到的仍然是style上面的值
-			var styleWidth = targetElement.elementStyle.width;
-			if(styleWidth != null){
+			var styleWidth = targetElement.style.width;
+			if(styleWidth != ''){
 				return parseFloat(styleWidth);
 			}
 			//否则计算width
@@ -382,8 +382,8 @@ kola('kola.html.Element',[
 			targetElement.style.width = value + 'px';
 		},
 		getheight: function(targetElement){
-			var styleHeight = targetElement.elementStyle.height
-			if(styleHeight != null){
+			var styleHeight = targetElement.style.height
+			if(styleHeight != ''){
 				return parseFloat(styleHeight);
 			}
 			return parseFloat(getComputedStyle(targetElement, 'height'));
@@ -664,8 +664,13 @@ kola('kola.html.Element',[
 				return {top:client.top - refer.top, left:client.left - refer.left};
 			}
 		},
-		clientPosition: function(targetElement){
-			return targetElement.getBoundingClientRect();
+		clientPosition: function(targetElement, refer){
+			if(!refer)
+				return targetElement.getBoundingClientRect();
+			var relativeToPage = Operation.pagePosition(targetElement, refer);
+			relativeToPage.top -= refer.clientTop;
+			relativeToPage.left -= refer.clientLeft;
+			return relativeToPage;
 		},
 		toElements: toElements
 	};
@@ -815,6 +820,7 @@ kola('kola.html.Element',[
 		exports.prototype[functionName] = function(name, value){
 			var operater = getSetFunction[arguments.length];
 			if(operater.isGet){
+				if(!this[0]) return null;
 				return operater.call(this, this[0], name);
 			}else{
 				for(var i = 0; i < this.length; i++){
