@@ -17,14 +17,14 @@ kola('kola.lang.Function', null, function() {
 		 * 
 		 * @method bind
 		 * @param target {Function} 被绑定的方法
-		 * @param scope {Any} 方法执行时的this
+		 * @param context {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 */
-		bind: function(target, scope) {
+		bind: function(target, context) {
 			var args = slice.call(arguments, 2);
 			return function() {
-				return target.apply(scope, args.concat(slice.call(arguments)));
+				return target.apply(context, args.concat(slice.call(arguments)));
 			};
 		},
 		
@@ -34,14 +34,14 @@ kola('kola.lang.Function', null, function() {
 		 * @method timeout
 		 * @param target {Function} 被绑定的方法
 		 * @param second {Number} 秒数
-		 * @param [scope] {Any} 方法执行时的this
+		 * @param [context] {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 */
-		timeout: function(target, second, scope) {
+		timeout: function(target, second, context) {
 			var args = slice.call(arguments, 3);
 			return window.setTimeout(function() {
-				target.apply(scope, args)
+				target.apply(context, args)
 			}, second);
 		},
 		
@@ -51,14 +51,14 @@ kola('kola.lang.Function', null, function() {
 		 * @method interval
 		 * @param target {Function} 被绑定的方法
 		 * @param second {Number} 秒数
-		 * @param [scope] {Any} 方法执行时的this
+		 * @param [context] {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 */
-		interval: function(target, second, scope) {
+		interval: function(target, second, context) {
 			var args = slice.call(arguments, 3);
 			return window.setInterval(function() {
-				target.apply(scope, args)
+				target.apply(context, args)
 			}, second);
 		},
 		

@@ -12,11 +12,11 @@ kola('kola.lang.Array', null, function() {
 	var slice = Array.prototype.slice;
 	
 	/**
-	 * 仅给方法绑定scope
+	 * 仅给方法绑定context
 	 */
-	var bindScope = function(fn, scope) {
+	var bindContext = function(fn, context) {
 		return function() {
-			return fn.apply(scope, arguments);
+			return fn.apply(context, arguments);
 		};
 	};
 	
@@ -37,10 +37,10 @@ kola('kola.lang.Array', null, function() {
 	/**
 	 * 获得指定名称的部分替代方法
 	 */
-	var supportedButScope = function(name) {
-		return function(target, callback, scope) {
+	var supportedButContext = function(name) {
+		return function(target, callback, context) {
 			return Array.prototype[name].call(target, arguments.length > 2
-				? bindScope(callback, scope)	// 存在scope的话，那建立一个设置了this的新方法
+				? bindContext(callback, context)	// 存在context的话，那建立一个设置了this的新方法
 				: callback);
 		};
 	};
@@ -137,14 +137,14 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 */
-		every: partialSupport ? supportedButScope('every') 
-			: function(target, callback, scope) {
+		every: partialSupport ? supportedButContext('every') 
+			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i < il; i++) {
 					if (target.hasOwnProperty(i.toString())
-						&& !callback.call(scope, target[i], i, target)
+						&& !callback.call(context, target[i], i, target)
 					) {
 						return false;
 					}
@@ -161,14 +161,14 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 */
-		some: partialSupport ? supportedButScope('some') 
-			: function(target, callback, scope) {
+		some: partialSupport ? supportedButContext('some') 
+			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i < il; i++) {
 					if (target.hasOwnProperty(i.toString())
-						&& callback.call(scope, target[i], i, target)
+						&& callback.call(context, target[i], i, target)
 					) {
 						return true;
 					}
@@ -177,7 +177,7 @@ kola('kola.lang.Array', null, function() {
 			},
 		
 		/**
-		 * 从前往后迭代数组中的每一项，并可以设置迭代器的scope
+		 * 从前往后迭代数组中的每一项，并可以设置迭代器的context
 		 * 
 		 * @method forEach
 		 * @param target {LikeArray} 要循环的数组
@@ -185,13 +185,13 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 */
-		forEach: partialSupport ? supportedButScope('forEach') 
-			: function(target, callback, scope) {
+		forEach: partialSupport ? supportedButContext('forEach') 
+			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i < il; i++) {
 					target.hasOwnProperty(i.toString())
-						&& callback.call(scope, target[i], i, target);
+						&& callback.call(context, target[i], i, target);
 				}
 			},
 		
@@ -206,12 +206,12 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 */
-		each: function(target, callback, scope) {
+		each: function(target, callback, context) {
 			for (var i = 0, il = target.length; i < il; i++) {
 				if (target.hasOwnProperty(i.toString())
-					&& callback.call(scope, target[i], i, target) === false
+					&& callback.call(context, target[i], i, target) === false
 				) {
 					return false;
 				} 
@@ -228,15 +228,15 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 包含每次迭代结果的新数组
 		 */
-		map: partialSupport ? supportedButScope('map') 
-			: function(target, callback, scope) {
+		map: partialSupport ? supportedButContext('map') 
+			: function(target, callback, context) {
 				var values = [];
 				for (var i = 0, il = target.length; i < il; i++) {
 					if (target.hasOwnProperty(i.toString())) {
-						values[i] = callback.call(scope, target[i], i, target);
+						values[i] = callback.call(context, target[i], i, target);
 					}
 				}
 				return values;
@@ -251,15 +251,15 @@ kola('kola.lang.Array', null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 过滤后的新数组
 		 */
-		filter: partialSupport ? supportedButScope('filter') 
-			: function(target, callback, scope) {
+		filter: partialSupport ? supportedButContext('filter') 
+			: function(target, callback, context) {
 				var values = [];
 				for (var i = 0, il = target.length; i < il; i++) {
 					if (target.hasOwnProperty(i.toString())
-						&& callback.call(scope, target[i], i, target)
+						&& callback.call(context, target[i], i, target)
 					) {
 						values.push(target[i]);
 					}
