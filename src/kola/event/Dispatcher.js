@@ -22,7 +22,7 @@ kola('kola.event.Dispatcher',[
 		 * @param name {String} 事件名称
 		 * @param listener {Function} 监听者
 		 * @param [option] {Object}
-		 * 	@param [option.scope] {Object} 回调函数的执行作用域
+		 * 	@param [option.context] {Object} 回调函数的执行作用域
 		 * 	@param [option.data] {Object} 回调时的额外数据
 		 * @chainable
 		 */
@@ -81,7 +81,7 @@ kola('kola.event.Dispatcher',[
 					if(observers){
 						for(var i = 0; i < observers.length; i++){
 							var ob = observers[i];
-							ob.listener.call(ob.option.scope || this, e);
+							ob.listener.call(ob.option.context || this, e);
 						}
 					}
 				}

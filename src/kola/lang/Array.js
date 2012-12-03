@@ -10,7 +10,7 @@ kola('kola.lang.Array', null, function() {
 	 * 保存原生的slice方法
 	 */
 	var slice = Array.prototype.slice;
-	
+	var hasOwnProperty = Object.prototype.hasOwnProperty
 	/**
 	 * 仅给方法绑定context
 	 */
@@ -84,7 +84,7 @@ kola('kola.lang.Array', null, function() {
 								
 					//	从起始位置开始，寻找元素
 					for (var i = fromIndex, il = length; i < il; i++) {
-						if (target.hasOwnProperty(i.toString())
+						if (hasOwnProperty.call(target, i.toString())
 							&& target[i] === searchElement
 						) {
 							return i;
@@ -117,7 +117,7 @@ kola('kola.lang.Array', null, function() {
 					
 					//	从起始位置开始，寻找元素
 					for (var i = fromIndex; i >= 0; i--) {
-						if (target.hasOwnProperty(i.toString())
+						if (hasOwnProperty.call(target,i.toString())
 							&& target[i] === searchElement
 						) {
 							return i;
@@ -143,7 +143,7 @@ kola('kola.lang.Array', null, function() {
 		every: partialSupport ? supportedButContext('every') 
 			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i < il; i++) {
-					if (target.hasOwnProperty(i.toString())
+					if (hasOwnProperty.call(target,i.toString())
 						&& !callback.call(context, target[i], i, target)
 					) {
 						return false;
@@ -167,7 +167,7 @@ kola('kola.lang.Array', null, function() {
 		some: partialSupport ? supportedButContext('some') 
 			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i < il; i++) {
-					if (target.hasOwnProperty(i.toString())
+					if (hasOwnProperty.call(target,i.toString())
 						&& callback.call(context, target[i], i, target)
 					) {
 						return true;
@@ -190,7 +190,7 @@ kola('kola.lang.Array', null, function() {
 		forEach: partialSupport ? supportedButContext('forEach') 
 			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i < il; i++) {
-					target.hasOwnProperty(i.toString())
+					hasOwnProperty.call(target,i.toString())
 						&& callback.call(context, target[i], i, target);
 				}
 			},
@@ -210,7 +210,7 @@ kola('kola.lang.Array', null, function() {
 		 */
 		each: function(target, callback, context) {
 			for (var i = 0, il = target.length; i < il; i++) {
-				if (target.hasOwnProperty(i.toString())
+				if (hasOwnProperty.call(target,i.toString())
 					&& callback.call(context, target[i], i, target) === false
 				) {
 					return false;
@@ -235,7 +235,7 @@ kola('kola.lang.Array', null, function() {
 			: function(target, callback, context) {
 				var values = [];
 				for (var i = 0, il = target.length; i < il; i++) {
-					if (target.hasOwnProperty(i.toString())) {
+					if (hasOwnProperty.call(target,i.toString())) {
 						values[i] = callback.call(context, target[i], i, target);
 					}
 				}
@@ -258,7 +258,7 @@ kola('kola.lang.Array', null, function() {
 			: function(target, callback, context) {
 				var values = [];
 				for (var i = 0, il = target.length; i < il; i++) {
-					if (target.hasOwnProperty(i.toString())
+					if (hasOwnProperty.call(target,i.toString())
 						&& callback.call(context, target[i], i, target)
 					) {
 						values.push(target[i]);
@@ -284,7 +284,7 @@ kola('kola.lang.Array', null, function() {
 			: function(target, callback, initialValue) {
 				var noInitialValue = arguments.length < 3;
 				for (var i = 0, il = target.length; i < il; i++) {
-					if (target.hasOwnProperty(i.toString())) {
+					if (hasOwnProperty.call(target,i.toString())) {
 						if (noInitialValue) {
 							noInitialValue = false;
 							initialValue = target[i];
@@ -313,7 +313,7 @@ kola('kola.lang.Array', null, function() {
 			: function(target, callback, initialValue) {
 				var noInitialValue = arguments.length < 3;
 				for (var i = target.length - 1; i >= 0; i--) {
-					if (target.hasOwnProperty(i.toString())) {
+					if (hasOwnProperty.call(target,i.toString())) {
 						if (noInitialValue) {
 							noInitiaValue = false;
 							initialValue = target[i];

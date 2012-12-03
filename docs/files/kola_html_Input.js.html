@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kola\lang\Class.js - kola</title>
+    <title>kola\html\Input.js - kola</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -108,37 +108,154 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: kola\lang\Class.js</h1>
+                        <h1 class="file-heading">File: kola\html\Input.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-kola(&#x27;kola.lang.Class&#x27;, [
-	&#x27;kola.Packager&#x27;
-], function(Packager) {
-
-	&#x2F;********************************************** 类定义 **********************************************&#x2F;
-	
-	&#x2F;**
-	 * kola的Class类，用于类的创建和检测等
-	 * 
-	 * @class Class
-	 * @static
-	 * 
-	 * @author Jady Yang
-	 *&#x2F;
+kola(&#x27;kola.html.Input&#x27;,[
+	&#x27;kola.html.util.Event&#x27;,
+	&#x27;kola.html.Element&#x27;
+],function(Event, $){
+	var IEStyle = (navigator.userAgent.indexOf(&#x27;MSIE&#x27;) != -1 &amp;&amp; parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( &#x27;MSIE&#x27; ) + 5, 3)) &lt; 9);
+	var restrictDefault = {
+		number:&#x2F;[^0-9]&#x2F;g,
+		name:&#x2F;[^a-zA-Z0-9]&#x2F;g
+	}
+	var _program_change = false;
+	if(IEStyle){
+		var Operations = {
+			setval: function(targetElement, value){
+				if(targetElement.value == value)
+					return;
+				_program_change = true;
+				targetElement.value = value;
+				_program_change = false;
+				targetElement.blur();
+				targetElement.focus();
+			}
+		};
+	}else{
+		var Operations = {
+			setval: function(targetElement, value){
+				if(targetElement.value == value)
+					return;
+				targetElement.value = value;
+				Event.fire(targetElement, &quot;valuechange&quot;);
+			}
+		}
+	}
+	function placeholder_blur(e){
+		if(e.target.value.length == 0 &amp;&amp; !$._operations.getcss(e.target, &#x27;placeholder&#x27;)){
+			$._operations.setcss(e.target, &#x27;placeholder&#x27;, true);
+			Operations.setval(e.target, $._operations.getattr(e.target, &#x27;placeholder&#x27;));
+		}
+	}
+	function placeholder_focus(e){
+		if($._operations.getcss(e.target, &#x27;placeholder&#x27;)){
+			Operations.setval(e.target, &#x27;&#x27;);
+		}
+		$._operations.setcss(e.target, &#x27;placeholder&#x27;, false);
+	}
 	var exports = {
-		
 		&#x2F;**
-		 * 创建一个新类
-		 * 
-		 * @method createClass
-		 * @param [superClass] {Function} 父类
-		 * @param prototypes {Object} 原形对象
-		 * @return {Class} 创建的新类
+		 * 查询一个表单的值
+		 * @method val
+		 * @return {String} 样式的值
 		 *&#x2F;
-		create: Packager.createClass
+		&#x2F;**
+		 * 设置一个表单的值
+		 * @method val
+		 * @param value {String} 样式的值
+		 * @chainable
+		 *&#x2F;
+		val: function(value){
+			var elements = this.getData();
+			if(arguments.length == 0){
+				return elements[0].value;
+			}else{
+				for(var i = 0; i &lt; elements.length; i++){
+					Operations.setval(elements[i], value);
+				}
+				return this;
+			}
+		},
+		&#x2F;**
+		 * 绑定该表单元素的oninput事件
+		 * @method input
+		 * @param callback {Function} 事件的回调函数
+		 * @param options {Object} 样式的值
+		 * @chainable
+		 *&#x2F;
+		input: function(callback, options){
+			var elements = this.getData();
+			for(var i = 0; i &lt; elements.length; i++){
+				Event.on(elements[i], &#x27;input&#x27;, callback, options, inputSpecialValue);
+			}
+			return this;
+		},
+		&#x2F;**
+		 * 限定该输入框只能输入选中的字符
+		 * @method restrict
+		 * @param chars {String} 选择的字符
+		 * @chainable
+		 *&#x2F;
+		restrict: function(chars){
+			if(typeof chars === &#x27;string&#x27;){
+				var reg = new RegExp(&#x27;[^&#x27; + chars + &#x27;]&#x27;, &#x27;g&#x27;);
+			}else{
+				var reg = restrictDefault[chars];
+			}
+			return this.input(function(e){
+				Operations.setval(e.target, e.target.value.replace(reg, &#x27;&#x27;));
+			});
+		},
+		&#x2F;**
+		 * 给当前元素增加placeholder
+		 * @method placeholder
+		 * @chainable
+		 *&#x2F;
+		placeholder: function(){
+			this.blur(placeholder_blur);
+			this.focus(placeholder_focus);
+			return this;
+		},
+		&#x2F;**
+		 * 绑定该表单元素的change事件,该表单元素的任何value改变都会触发（包括程序触发）
+		 * @method change
+		 * @param callback {Function} 事件的回调函数
+		 * @param options {Object} 样式的值
+		 * @chainable
+		 *&#x2F;
+		change: function(callback, options){
+			var elements = this.getData();
+			if(IEStyle){
+				for(var i = 0; i &lt; elements.length; i++){
+					Event.on(elements[i], &#x27;propertychange&#x27;, callback, options, inputSpecialChange);
+				}
+			}else{
+				for(var i = 0; i &lt; elements.length; i++){
+					Event.on(elements[i], &#x27;valuechange&#x27;, callback, options);
+					Event.on(elements[i], &#x27;input&#x27;, callback, options);
+				}
+			}
+			return this;
+		}
 	};
-	
+	if(IEStyle){
+		var inputSpecialValue = {
+			domEvtName: &#x27;propertychange&#x27;,
+			check: function(element, evt){
+				if(window.event.propertyName != &#x27;value&#x27; || _program_change) return true;
+				return false;
+			}
+		}
+		var inputSpecialChange = {
+			check: function(element, evt){
+				if(window.event.propertyName != &#x27;value&#x27;) return true;
+				return false;
+			}
+		}
+	}
 	return exports;
 });
     </pre>

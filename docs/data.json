@@ -5,6 +5,13 @@
         "version": "2.1.0.0"
     },
     "files": {
+        "kola\\bom\\Selection.js": {
+            "name": "kola\\bom\\Selection.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "kola\\event\\Dispatcher.js": {
             "name": "kola\\event\\Dispatcher.js",
             "modules": {
@@ -40,6 +47,13 @@
             "classes": {
                 "Element": 1
             },
+            "fors": {},
+            "namespaces": {}
+        },
+        "kola\\html\\Input.js": {
+            "name": "kola\\html\\Input.js",
+            "modules": {},
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -90,6 +104,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "kola\\net\\Ajax.js": {
+            "name": "kola\\net\\Ajax.js",
+            "modules": {},
+            "classes": {
+                "Ajax": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "kola\\Packager.js": {
             "name": "kola\\Packager.js",
             "modules": {
@@ -114,7 +137,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "kola\\html\\util\\Event.js",
-            "line": 164,
+            "line": 172,
             "description": "kola.event.Dispatcher 包, 事件分发者",
             "author": "Guan Yuxin"
         },
@@ -128,7 +151,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "kola\\html\\Element.js",
-            "line": 849,
+            "line": 677,
             "description": "kola html Element 包，提供dom元素的封装"
         },
         "kola.lang": {
@@ -139,13 +162,14 @@
                 "Class": 1,
                 "Function": 1,
                 "Object": 1,
-                "String": 1
+                "String": 1,
+                "Ajax": 1
             },
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "kola\\lang\\String.js",
-            "line": 4,
+            "file": "kola\\net\\Ajax.js",
+            "line": 13,
             "description": "增强JS基本数据类型的功能"
         },
         "kola": {
@@ -191,7 +215,7 @@
             "module": "kola.event",
             "namespace": "",
             "file": "kola\\html\\util\\Event.js",
-            "line": 164,
+            "line": 172,
             "description": "kola的事件类"
         },
         "Element": {
@@ -205,7 +229,7 @@
             "module": "kola.html",
             "namespace": "",
             "file": "kola\\html\\Element.js",
-            "line": 849,
+            "line": 677,
             "description": "kola的Element类",
             "is_constructor": 1,
             "params": [
@@ -296,6 +320,21 @@
             "static": 1,
             "author": "Jady Yang"
         },
+        "Ajax": {
+            "name": "Ajax",
+            "shortname": "Ajax",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "kola.lang",
+            "namespace": "",
+            "file": "kola\\net\\Ajax.js",
+            "line": 13,
+            "description": "Ajax类",
+            "static": 1
+        },
         "kola": {
             "name": "kola",
             "shortname": "kola",
@@ -309,6 +348,14 @@
         }
     },
     "classitems": [
+        {
+            "file": "kola\\bom\\Selection.js",
+            "line": 1,
+            "author": "guanyuxin",
+            "date": "2011.10.26",
+            "desc": "封装浏览器的selection和range",
+            "class": "Dispatcher"
+        },
         {
             "file": "kola\\event\\Dispatcher.js",
             "line": 19,
@@ -416,7 +463,7 @@
         },
         {
             "file": "kola\\html\\util\\Event.js",
-            "line": 170,
+            "line": 178,
             "description": "监听一个事件",
             "itemtype": "method",
             "name": "on",
@@ -450,7 +497,7 @@
                         },
                         {
                             "name": "data",
-                            "description": "绑定事件时附带的参数，事件处理时会附加在event.data中",
+                            "description": "绑定事件时附带的参数，事件处理时会附加在回调函数的参数后面",
                             "type": "ANY",
                             "optional": true
                         },
@@ -461,17 +508,45 @@
                             "optional": true
                         }
                     ]
+                },
+                {
+                    "name": "hook",
+                    "description": "事件钩子，用于定制特殊事件",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "setup",
+                            "description": "事件绑定前拦截",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "teardown",
+                            "description": "事件解绑前拦截",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "domEvtName",
+                            "description": "对应的dom事件名称",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "domEvtName",
+                            "description": "对应的dom事件名称",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
                 }
             ],
-            "return": {
-                "description": "null"
-            },
             "class": "Event",
             "module": "kola.event"
         },
         {
             "file": "kola\\html\\util\\Event.js",
-            "line": 211,
+            "line": 223,
             "description": "取消元素的指定事件处理",
             "itemtype": "method",
             "name": "off",
@@ -506,7 +581,7 @@
         },
         {
             "file": "kola\\html\\util\\Event.js",
-            "line": 269,
+            "line": 281,
             "description": "派发事件",
             "itemtype": "method",
             "name": "fire",
@@ -550,7 +625,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 24,
+            "line": 21,
             "description": "获取某个属性值",
             "itemtype": "method",
             "name": "attr",
@@ -570,7 +645,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 56,
+            "line": 53,
             "description": "设置某个属性值",
             "itemtype": "method",
             "name": "attr",
@@ -592,7 +667,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 88,
+            "line": 85,
             "description": "获取某个原生属性值",
             "itemtype": "method",
             "name": "prop",
@@ -612,7 +687,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 127,
+            "line": 124,
             "description": "设置某个原生属性值",
             "itemtype": "method",
             "name": "prop",
@@ -634,7 +709,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 137,
+            "line": 134,
             "description": "得到某个元素的附加数据",
             "itemtype": "method",
             "name": "data",
@@ -654,10 +729,10 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 148,
+            "line": 145,
             "description": "设置dom上指定的附加数据",
             "itemtype": "method",
-            "name": "removeData",
+            "name": "data",
             "params": [
                 {
                     "name": "name",
@@ -676,7 +751,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 172,
+            "line": 162,
             "description": "查询一个元素的类名",
             "itemtype": "method",
             "name": "css",
@@ -696,7 +771,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 182,
+            "line": 173,
             "description": "设置一个元素的类名",
             "itemtype": "method",
             "name": "css",
@@ -718,7 +793,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 199,
+            "line": 191,
             "description": "查询一个元素的样式",
             "itemtype": "method",
             "name": "style",
@@ -738,7 +813,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 218,
+            "line": 211,
             "description": "设置一个元素的样式",
             "itemtype": "method",
             "name": "style",
@@ -760,37 +835,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 254,
-            "description": "查询一个表单的值",
-            "itemtype": "method",
-            "name": "val",
-            "return": {
-                "description": "样式的值",
-                "type": "String"
-            },
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 262,
-            "description": "设置一个表单的值",
-            "itemtype": "method",
-            "name": "val",
-            "params": [
-                {
-                    "name": "value",
-                    "description": "样式的值",
-                    "type": "String"
-                }
-            ],
-            "chainable": 1,
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 271,
+            "line": 248,
             "description": "查询一个元素的内部html",
             "itemtype": "method",
             "name": "html",
@@ -803,7 +848,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 279,
+            "line": 256,
             "description": "设置一个元素的内部html",
             "itemtype": "method",
             "name": "html",
@@ -820,10 +865,10 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 299,
+            "line": 276,
             "description": "查询一个元素的html(包含元素自身)",
             "itemtype": "method",
-            "name": "outerHtml",
+            "name": "getouter",
             "return": {
                 "description": "",
                 "type": "String"
@@ -833,10 +878,10 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 307,
+            "line": 284,
             "description": "设置一个元素的html(包含元素自身)",
             "itemtype": "method",
-            "name": "outerHtml",
+            "name": "setouter",
             "params": [
                 {
                     "name": "value",
@@ -850,7 +895,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 319,
+            "line": 296,
             "description": "查询一个元素的内部文本",
             "itemtype": "method",
             "name": "text",
@@ -863,7 +908,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 327,
+            "line": 304,
             "description": "设置一个元素的内部文本",
             "itemtype": "method",
             "name": "text",
@@ -880,7 +925,123 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 339,
+            "line": 315,
+            "description": "获取对象的样式left",
+            "itemtype": "method",
+            "name": "left",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 320,
+            "description": "设置对象的样式left",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "itemtype": "method",
+            "name": "left",
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 326,
+            "description": "获取对象的样式top",
+            "itemtype": "method",
+            "name": "top",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 331,
+            "description": "设置对象的样式top",
+            "itemtype": "method",
+            "name": "left",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 337,
+            "description": "获取对象的样式宽度",
+            "itemtype": "method",
+            "name": "width",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 342,
+            "description": "设置对象的样式宽度",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "itemtype": "method",
+            "name": "left",
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 348,
+            "description": "获取对象的样式高度",
+            "itemtype": "method",
+            "name": "height",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 353,
+            "description": "设置对象的样式高度",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "itemtype": "method",
+            "name": "left",
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 395,
             "description": "得到父元素",
             "itemtype": "method",
             "name": "parent",
@@ -893,7 +1054,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 347,
+            "line": 403,
             "description": "得到祖先元素",
             "itemtype": "method",
             "name": "parents",
@@ -914,7 +1075,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 362,
+            "line": 418,
             "description": "从当前元素开始向文档根部查找，得到第一个符合条件的元素",
             "itemtype": "method",
             "name": "closest",
@@ -934,7 +1095,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 384,
+            "line": 440,
             "description": "得到下一级元素",
             "itemtype": "method",
             "name": "children",
@@ -955,7 +1116,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 399,
+            "line": 455,
             "description": "得到元素以及元素内部符合条件的元素集合",
             "itemtype": "method",
             "name": "find",
@@ -975,10 +1136,10 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 411,
+            "line": 467,
             "description": "得到元素内部符合条件的元素集合",
             "itemtype": "method",
-            "name": "descendants",
+            "name": "down",
             "params": [
                 {
                     "name": "selector",
@@ -995,7 +1156,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 420,
+            "line": 476,
             "description": "得到前一个符合条件的节点",
             "itemtype": "method",
             "name": "prev",
@@ -1016,7 +1177,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 434,
+            "line": 490,
             "description": "得到后一个符合条件的节点",
             "itemtype": "method",
             "name": "next",
@@ -1037,7 +1198,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 449,
+            "line": 505,
             "description": "在元素内部尾部增加一些dom",
             "itemtype": "method",
             "name": "append",
@@ -1054,7 +1215,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 461,
+            "line": 518,
             "description": "在元素内部头部增加一些dom",
             "itemtype": "method",
             "name": "prepend",
@@ -1071,7 +1232,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 474,
+            "line": 531,
             "description": "在元素外部前面增加一些dom",
             "itemtype": "method",
             "name": "before",
@@ -1088,7 +1249,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 487,
+            "line": 544,
             "description": "在元素外部后面增加一些dom",
             "itemtype": "method",
             "name": "after",
@@ -1105,17 +1266,47 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 502,
+            "line": 559,
             "description": "将元素从文档中分离",
             "itemtype": "method",
-            "name": "detach",
+            "name": "remove",
             "chainable": 1,
             "class": "Element",
             "module": "kola.html"
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 523,
+            "line": 568,
+            "description": "删除节点",
+            "itemtype": "method",
+            "name": "destroy",
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 578,
+            "description": "隐藏元素",
+            "itemtype": "method",
+            "name": "hide",
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 586,
+            "description": "显示元素",
+            "itemtype": "method",
+            "name": "show",
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 614,
             "description": "取消对事件的监听",
             "itemtype": "method",
             "name": "off",
@@ -1151,7 +1342,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 533,
+            "line": 624,
             "description": "触发事件",
             "itemtype": "method",
             "name": "fire",
@@ -1173,7 +1364,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 541,
+            "line": 632,
             "description": "判断元素是否符合选择器",
             "itemtype": "method",
             "name": "is",
@@ -1193,7 +1384,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 550,
+            "line": 641,
             "description": "返回当前元素在同级元素中是第几个",
             "itemtype": "method",
             "name": "index",
@@ -1213,89 +1404,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 562,
-            "description": "获取对象的位置，相对于其定位对象的位置",
-            "itemtype": "method",
-            "name": "pos",
-            "return": {
-                "description": "left,top表示元素相对于其定位的坐标",
-                "type": "Object"
-            },
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 573,
-            "description": "获取对象在页面上的绝对位置",
-            "itemtype": "method",
-            "name": "pagePos",
-            "return": {
-                "description": "left,top表示元素相对于其定位的坐标",
-                "type": "Object"
-            },
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 617,
-            "description": "获取第一个对象的位置，相对于浏览器窗口区域的位置",
-            "return": {
-                "description": "位置"
-            },
-            "type": "Object",
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 631,
-            "description": "获取对象的宽度",
-            "params": [
-                {
-                    "name": "boundary",
-                    "description": "以什么区域界定边界， inner:只有内部;padding:包括padding;border:包括border",
-                    "type": "Stirng",
-                    "optional": true
-                }
-            ],
-            "return": {
-                "description": "宽度"
-            },
-            "type": "Number",
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 647,
-            "description": "获取对象的高度",
-            "params": [
-                {
-                    "name": "boundary",
-                    "description": "以什么区域界定边界， inner:只有内部;padding:包括padding;border:包括border",
-                    "type": "Stirng",
-                    "optional": true
-                }
-            ],
-            "return": {
-                "description": "高度"
-            },
-            "type": "Number",
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 663,
-            "description": "获取在页面中的绝对位置和大小信息",
-            "class": "Element",
-            "module": "kola.html"
-        },
-        {
-            "file": "kola\\html\\Element.js",
-            "line": 863,
+            "line": 691,
             "description": "使用选择器选择特定dom",
             "itemtype": "method",
             "name": "Element",
@@ -1315,7 +1424,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 871,
+            "line": 699,
             "description": "根据字符串生成dom，并生成Element",
             "itemtype": "method",
             "name": "Element",
@@ -1335,7 +1444,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 877,
+            "line": 705,
             "description": "将指定的dom转换为Element",
             "itemtype": "method",
             "name": "Element",
@@ -1355,7 +1464,7 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 893,
+            "line": 720,
             "description": "依次迭代内部dom，将内部每一个元素封装成Element交给callback处理",
             "itemtype": "method",
             "name": "each",
@@ -1372,13 +1481,13 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 907,
+            "line": 734,
             "description": "增加一些元素",
             "itemtype": "method",
             "name": "add",
             "params": [
                 {
-                    "name": "sets",
+                    "name": "elements",
                     "description": "要增加的dom集合",
                     "type": "DomRefer"
                 }
@@ -1389,13 +1498,13 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 923,
+            "line": 749,
             "description": "移除一些元素",
             "itemtype": "method",
-            "name": "remove",
+            "name": "not",
             "params": [
                 {
-                    "name": "sets",
+                    "name": "elements",
                     "description": "要移除的dom集合",
                     "type": "DomRefer"
                 }
@@ -1406,22 +1515,328 @@
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 940,
-            "description": "隐藏元素",
+            "line": 767,
+            "description": "将符合选择器的元素组成一个新的element",
             "itemtype": "method",
-            "name": "hide",
+            "name": "filter",
+            "params": [
+                {
+                    "name": "selector",
+                    "description": "选择器",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Element"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 792,
+            "description": "将该元素添加到某个dom之后",
+            "itemtype": "method",
+            "name": "appendTo",
+            "params": [
+                {
+                    "name": "target",
+                    "description": "被添加的元素",
+                    "type": "HtmlElement|Element"
+                }
+            ],
             "chainable": 1,
             "class": "Element",
             "module": "kola.html"
         },
         {
             "file": "kola\\html\\Element.js",
-            "line": 949,
-            "description": "显示元素",
+            "line": 902,
+            "description": "获取对象的位置的left，获取对象的位置，相对于其定位对象的位置(从自己的border外层开始，到定位对象的border内部结束)",
             "itemtype": "method",
-            "name": "show",
+            "name": "offsetLeft",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 907,
+            "description": "获取对象的位置的top，获取对象的位置，相对于其定位对象的位置(从自己的border外层开始，到定位对象的border内部结束)",
+            "itemtype": "method",
+            "name": "offsetTop",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 912,
+            "description": "获取对象的除margin外的站位宽(从border左上角开始，到border右下角结束)",
+            "itemtype": "method",
+            "name": "offsetWidth",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 917,
+            "description": "获取对象的除margin外的站位高(从border左上角开始，到border右下角结束)",
+            "itemtype": "method",
+            "name": "offsetHeight",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 922,
+            "description": "获取对象可视区域的位置的left，相对于该对象的位置(从自己的border外侧开始，到自己的border内侧结束)",
+            "itemtype": "method",
+            "name": "clientLeft",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 927,
+            "description": "获取对象可视区域的位置的top，相对于该对象的位置(从自己的border外侧开始，到自己的border内侧结束)",
+            "itemtype": "method",
+            "name": "clientTop",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 932,
+            "description": "获取对象的可视区域的宽(从border左上角内侧开始，到border右下角内侧结束)",
+            "itemtype": "method",
+            "name": "clientWidth",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 937,
+            "description": "获取对象的可视区域的高(从border左上角内侧开始，到border右下角内侧结束)",
+            "itemtype": "method",
+            "name": "clientHeight",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 942,
+            "description": "获取对象的内容区域的宽(从padding左上角外侧开始，到padding右下角外侧结束)",
+            "itemtype": "method",
+            "name": "scrollWidth",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 947,
+            "description": "获取对象的内容区域的高(从padding左上角外侧开始，到padding右下角外侧结束)",
+            "itemtype": "method",
+            "name": "scrollHeight",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 959,
+            "description": "获取对象的滚动条的位置的left",
+            "itemtype": "method",
+            "name": "scrollLeft",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 964,
+            "description": "获取对象的滚动条的位置的left",
+            "itemtype": "method",
+            "name": "scrollLeft",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
             "chainable": 1,
             "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 970,
+            "description": "获取对象的滚动条的位置的top",
+            "itemtype": "method",
+            "name": "scrollTop",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Element.js",
+            "line": 975,
+            "description": "获取对象的滚动条的位置的top",
+            "itemtype": "method",
+            "name": "scrollLeft",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                }
+            ],
+            "chainable": 1,
+            "class": "Element",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Input.js",
+            "line": 46,
+            "description": "查询一个表单的值",
+            "itemtype": "method",
+            "name": "val",
+            "return": {
+                "description": "样式的值",
+                "type": "String"
+            },
+            "class": "Array",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Input.js",
+            "line": 51,
+            "description": "设置一个表单的值",
+            "itemtype": "method",
+            "name": "val",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "样式的值",
+                    "type": "String"
+                }
+            ],
+            "chainable": 1,
+            "class": "Array",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Input.js",
+            "line": 68,
+            "description": "绑定该表单元素的oninput事件",
+            "itemtype": "method",
+            "name": "input",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "事件的回调函数",
+                    "type": "Function"
+                },
+                {
+                    "name": "options",
+                    "description": "样式的值",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Array",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Input.js",
+            "line": 82,
+            "description": "限定该输入框只能输入选中的字符",
+            "itemtype": "method",
+            "name": "restrict",
+            "params": [
+                {
+                    "name": "chars",
+                    "description": "选择的字符",
+                    "type": "String"
+                }
+            ],
+            "chainable": 1,
+            "class": "Array",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Input.js",
+            "line": 98,
+            "description": "给当前元素增加placeholder",
+            "itemtype": "method",
+            "name": "placeholder",
+            "chainable": 1,
+            "class": "Array",
+            "module": "kola.html"
+        },
+        {
+            "file": "kola\\html\\Input.js",
+            "line": 108,
+            "description": "绑定该表单元素的change事件,该表单元素的任何value改变都会触发（包括程序触发）",
+            "itemtype": "method",
+            "name": "change",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "事件的回调函数",
+                    "type": "Function"
+                },
+                {
+                    "name": "options",
+                    "description": "样式的值",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Array",
             "module": "kola.html"
         },
         {
@@ -1434,7 +1849,7 @@
         {
             "file": "kola\\lang\\Array.js",
             "line": 14,
-            "description": "仅给方法绑定scope",
+            "description": "仅给方法绑定context",
             "class": "Array",
             "module": "kola.lang"
         },
@@ -1532,7 +1947,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
@@ -1563,7 +1978,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
@@ -1579,7 +1994,7 @@
         {
             "file": "kola\\lang\\Array.js",
             "line": 179,
-            "description": "从前往后迭代数组中的每一项，并可以设置迭代器的scope",
+            "description": "从前往后迭代数组中的每一项，并可以设置迭代器的context",
             "itemtype": "method",
             "name": "forEach",
             "params": [
@@ -1594,7 +2009,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
@@ -1621,7 +2036,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
@@ -1648,7 +2063,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
@@ -1679,7 +2094,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）",
                     "type": "Any",
                     "optional": true
@@ -1859,7 +2274,7 @@
                     "type": "Function"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "方法执行时的this",
                     "type": "Any"
                 },
@@ -1896,7 +2311,7 @@
                     "type": "Number"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "方法执行时的this",
                     "type": "Any",
                     "optional": true
@@ -1934,7 +2349,7 @@
                     "type": "Number"
                 },
                 {
-                    "name": "scope",
+                    "name": "context",
                     "description": "方法执行时的this",
                     "type": "Any",
                     "optional": true
@@ -2213,6 +2628,149 @@
             "module": "kola.lang"
         },
         {
+            "file": "kola\\net\\Ajax.js",
+            "line": 1,
+            "fileoverview": "kola.net.Ajax Ajax类",
+            "author": "Jady Yang",
+            "version": "2.0.0",
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\net\\Ajax.js",
+            "line": 12,
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\net\\Ajax.js",
+            "line": 19,
+            "itemtype": "method",
+            "name": "request",
+            "type": "XMLHttpRequest",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "请求的地址，可以是绝对路径或者相对于host的路径",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "选项",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "data",
+                            "description": "发送的数据",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "format",
+                            "description": "json|text|xml请求的method",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "method",
+                            "description": "请求的method",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "scope",
+                            "description": "成功和失败回调的作用域",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "async",
+                            "description": "是否为异步请求",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "succ",
+                            "description": "成功的回调函数",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "fail",
+                            "description": "失败的回调函数",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "headers",
+                            "description": "发送请求时额外的headers",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\net\\Ajax.js",
+            "line": 107,
+            "params": [
+                {
+                    "name": "url",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "succ",
+                    "description": "",
+                    "type": "Function",
+                    "optional": true
+                },
+                {
+                    "name": "fail",
+                    "description": "",
+                    "type": "Function",
+                    "optional": true
+                },
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\net\\Ajax.js",
+            "line": 134,
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\net\\Ajax.js",
+            "line": 187,
+            "description": "获取原生的Ajax",
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
+            "file": "kola\\net\\Ajax.js",
+            "line": 205,
+            "class": "Ajax",
+            "module": "kola.lang"
+        },
+        {
             "file": "kola\\Packager.js",
             "line": 12,
             "description": "辅助方法",
@@ -2287,27 +2845,34 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 124,
+            "line": 126,
             "description": "Packages内容获取器",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 130,
+            "line": 132,
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 132,
+            "line": 134,
             "description": "Aop方法列表",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 140,
+            "line": 143,
+            "description": "创建包装方法",
+            "class": "kola",
+            "module": "kola"
+        },
+        {
+            "file": "kola\\Packager.js",
+            "line": 157,
             "description": "生成一个新的Aop方法",
             "params": [
                 {
@@ -2318,17 +2883,24 @@
                 {
                     "name": "aop",
                     "description": "aop配置参数",
-                    "type": "Object"
-                },
-                {
-                    "name": "before",
-                    "description": "之前需要调用的方法",
-                    "type": "Array<Function>"
-                },
-                {
-                    "name": "after",
-                    "description": "之后需要调用的方法",
-                    "type": "Array<Function>"
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "before",
+                            "description": "之前需要调用的方法",
+                            "type": "Array<Function>"
+                        },
+                        {
+                            "name": "around",
+                            "description": "包装方法",
+                            "type": "Array<Function>"
+                        },
+                        {
+                            "name": "after",
+                            "description": "之后需要调用的方法",
+                            "type": "Array<Function>"
+                        }
+                    ]
                 }
             ],
             "class": "kola",
@@ -2336,7 +2908,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 182,
+            "line": 207,
             "description": "创建一个加入插件的新类",
             "params": [
                 {
@@ -2360,21 +2932,21 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 257,
+            "line": 283,
             "description": "获得一系列包的实体内容。其参数大体是由方法 parsePackages 产生的，格式比较特殊",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 287,
+            "line": 313,
             "description": "getPackage私有方法",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 292,
+            "line": 318,
             "description": "保存所有包的对应控制对象。这是个Map格式的对象，键值为包的全名称，值为对应的封装对象",
             "type": "{Object}",
             "class": "kola",
@@ -2382,7 +2954,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 299,
+            "line": 325,
             "description": "获取某个package的控制对象",
             "params": [
                 {
@@ -2400,68 +2972,68 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 312,
+            "line": 338,
             "description": "Package类",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 318,
+            "line": 344,
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 320,
+            "line": 346,
             "description": "Package加载状态枚举类",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 333,
+            "line": 359,
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 335,
+            "line": 361,
             "description": "给方法绑定一个作用域",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 345,
+            "line": 371,
             "description": "加载当前包",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 374,
+            "line": 400,
             "description": "开始加载依赖包",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 390,
+            "line": 416,
             "description": "设置为待用状态",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 402,
+            "line": 428,
             "description": "设置为可用状态",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 429,
+            "line": 455,
             "description": "文件加载失败的调用方法",
             "params": [
                 {
@@ -2480,7 +3052,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 445,
+            "line": 471,
             "description": "文件加载成功后的调用方法",
             "params": [
                 {
@@ -2499,7 +3071,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 463,
+            "line": 489,
             "description": "清除script节点的相关绑定",
             "params": [
                 {
@@ -2513,13 +3085,13 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 474,
+            "line": 500,
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 478,
+            "line": 504,
             "description": "每个kola包的对应控制类",
             "params": [
                 {
@@ -2533,7 +3105,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 490,
+            "line": 516,
             "description": "获取包的状态",
             "return": {
                 "description": "",
@@ -2544,7 +3116,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 499,
+            "line": 525,
             "description": "注册包的实体信息",
             "params": [
                 {
@@ -2564,7 +3136,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 525,
+            "line": 551,
             "description": "监听可用状态事件",
             "params": [
                 {
@@ -2579,7 +3151,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 564,
+            "line": 590,
             "description": "获取包的实体内容",
             "return": {
                 "description": "包的实体内容",
@@ -2590,28 +3162,28 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 582,
+            "line": 608,
             "description": "Packager类",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 588,
+            "line": 614,
             "description": "深度复制对象",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 615,
+            "line": 641,
             "description": "删除字符串中的所有空格",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 626,
+            "line": 652,
             "description": "创建一个计数器，计数器被调用指定次数后会调用指定的回调函数",
             "params": [
                 {
@@ -2639,7 +3211,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 642,
+            "line": 668,
             "description": "packager的配置信息",
             "type": "{Object}",
             "class": "kola",
@@ -2647,14 +3219,14 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 653,
+            "line": 679,
             "description": "把包含包名（单个包名中可能包含插件名列表）列表的数组转为一个特殊格式的数组",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 692,
+            "line": 718,
             "description": "kola的Package控制管理中心",
             "static": 1,
             "class": "kola",
@@ -2662,7 +3234,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 699,
+            "line": 725,
             "description": "使用某些包执行某个方法",
             "params": [
                 {
@@ -2687,7 +3259,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 722,
+            "line": 748,
             "description": "定义一个包",
             "params": [
                 {
@@ -2711,7 +3283,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 736,
+            "line": 762,
             "description": "增量保存设置信息",
             "params": [
                 {
@@ -2725,7 +3297,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 745,
+            "line": 771,
             "description": "获取一个包的路径配置信息",
             "params": [
                 {
@@ -2743,7 +3315,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 817,
+            "line": 843,
             "description": "创建一个新类",
             "params": [
                 {
@@ -2767,14 +3339,14 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 831,
+            "line": 857,
             "description": "kola方法",
             "class": "kola",
             "module": "kola"
         },
         {
             "file": "kola\\Packager.js",
-            "line": 840,
+            "line": 866,
             "description": "定义一个包",
             "itemtype": "method",
             "name": "kola",
@@ -2801,7 +3373,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 853,
+            "line": 879,
             "description": "使用包进行某项操作",
             "itemtype": "method",
             "name": "kola",
@@ -2829,7 +3401,7 @@
         },
         {
             "file": "kola\\Packager.js",
-            "line": 865,
+            "line": 891,
             "description": "加载一个kola设置对象",
             "itemtype": "method",
             "name": "kola",

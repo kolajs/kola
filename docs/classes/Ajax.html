@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Class - kola</title>
+    <title>Ajax - kola</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.5.1&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -108,7 +108,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Class Class</h1>
+                        <h1>Ajax Class</h1>
 <div class="box meta">
     
 
@@ -116,7 +116,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;kola_lang_Class.js.html#l7"><code>kola\lang\Class.js:7</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;kola_net_Ajax.js.html#l13"><code>kola\net\Ajax.js:13</code></a>
         </div>
     
 
@@ -132,7 +132,7 @@
 
 
 <div class="box intro">
-    <p>kola的Class类，用于类的创建和检测等</p>
+    <p>Ajax类</p>
 </div>
 
 
@@ -160,7 +160,7 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method">
-                                <a href="#method_createClass">createClass</a>
+                                <a href="#method_request">request</a>
 
                                 
                                 
@@ -182,8 +182,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_createClass" class="method item">
-    <h3 class="name"><code>createClass</code></h3>
+                    <div id="method_request" class="method item">
+    <h3 class="name"><code>request</code></h3>
 
     
         <div class="args">
@@ -191,13 +191,13 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[superClass]</code>
+                        <code>url</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>prototypes</code>
+                        <code class="optional">[options]</code>
                     
                 </li>
             
@@ -205,10 +205,6 @@
         </div>
     
 
-    
-        <span class="returns-inline">
-            <span class="type"><a href="..\classes\Class.html" class="crosslink">Class</a></span>
-        </span>
     
 
     
@@ -234,7 +230,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_lang_Class.js.html#l17"><code>kola\lang\Class.js:17</code></a>
+        <a href="..&#x2F;files&#x2F;kola_net_Ajax.js.html#l19"><code>kola\net\Ajax.js:19</code></a>
         
         </p>
 
@@ -245,7 +241,7 @@
     </div>
 
     <div class="description">
-        <p>创建一个新类</p>
+        
     </div>
 
     
@@ -256,15 +252,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[superClass]</code>
-                        <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">url</code>
+                        <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>父类</p>
+                        <p>请求的地址，可以是绝对路径或者相对于host的路径</p>
                     </div>
 
                     
@@ -272,16 +267,133 @@
             
                 <li class="param">
                     
-                        <code class="param-name">prototypes</code>
+                        <code class="param-name optional">[options]</code>
                         <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>原形对象</p>
+                        <p>选项</p>
                     </div>
 
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[data]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>发送的数据</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[format]</code>
+                                    <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>json|text|xml请求的method</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[method]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>请求的method</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[scope]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>成功和失败回调的作用域</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[async]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>是否为异步请求</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[succ]</code>
+                                    <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>成功的回调函数</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[fail]</code>
+                                    <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>失败的回调函数</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[headers]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>发送请求时额外的headers</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
                     
                 </li>
             
@@ -289,19 +401,6 @@
         </div>
     
 
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="..\classes\Class.html" class="crosslink">Class</a></span>:
-                    
-                    创建的新类
-                
-            </div>
-        </div>
     
 
     

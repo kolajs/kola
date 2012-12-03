@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/Ajax.html">Ajax</a></li>
+            
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
@@ -51,13 +53,9 @@
             
                 <li><a href="..&#x2F;classes/Event.html">Event</a></li>
             
-<<<<<<< HEAD
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
-=======
-                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
->>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -114,7 +112,6 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-<<<<<<< HEAD
 &#x2F;**
  * 增强JS基本数据类型的功能
  * 
@@ -129,11 +126,11 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	var slice = Array.prototype.slice;
 	
 	&#x2F;**
-	 * 仅给方法绑定scope
+	 * 仅给方法绑定context
 	 *&#x2F;
-	var bindScope = function(fn, scope) {
+	var bindContext = function(fn, context) {
 		return function() {
-			return fn.apply(scope, arguments);
+			return fn.apply(context, arguments);
 		};
 	};
 	
@@ -154,374 +151,10 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	&#x2F;**
 	 * 获得指定名称的部分替代方法
 	 *&#x2F;
-	var supportedButScope = function(name) {
-		return function(target, callback, scope) {
+	var supportedButContext = function(name) {
+		return function(target, callback, context) {
 			return Array.prototype[name].call(target, arguments.length &gt; 2
-				? bindScope(callback, scope)	&#x2F;&#x2F; 存在scope的话，那建立一个设置了this的新方法
-				: callback);
-		};
-	};
-	
-	var isArray = partialSupport ? Array.isArray 
-		: function(target) {
-			if (typeof target != &#x27;object&#x27; || target === null) return false;
-			return Object.prototype.toString.call(target) == &#x27;[object Array]&#x27;;
-		};
-	
-	&#x2F;**
-	 * kola的Array类
-	 * 
-	 * @class Array
-	 * @static
-	 * 
-	 * @author Jady Yang
-	 *&#x2F;
-	var exports = {
-		
-		&#x2F;**
-		 * 获取指定元素在数组中的位置
-		 * 
-		 * @method indexOf
-		 * @param target {Array} 被搜索的数组
-		 * @param searchElement {Any} 要搜索的元素
-		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
-		 * @return {Number} 搜索到的位置，如果没有则返回-1
-		 *&#x2F;
-		indexOf: partialSupport ? supported(&#x27;indexOf&#x27;) 
-			: function(target, searchElement, fromIndex) {	
-				&#x2F;&#x2F;	如果数组长度为0，那就返回-1
-				var length = target.length;
-				if (length) {
-					&#x2F;&#x2F;	拿到起始位置
-					fromIndex = typeof(fromIndex) == &#x27;number&#x27; 
-						? fromIndex &gt;= 0
-							? fromIndex
-							:  Math.max(length + fromIndex, 0)
-						: 0;
-								
-					&#x2F;&#x2F;	从起始位置开始，寻找元素
-					for (var i = fromIndex, il = length; i &lt; il; i++) {
-						if (target.hasOwnProperty(i.toString())
-							&amp;&amp; target[i] === searchElement
-						) {
-							return i;
-						}
-					}
-				}
-				return -1;
-			},
-		
-		&#x2F;**
-		 * 在数组中从后往前搜索指定元素的位置
-		 * 
-		 * @method lastIndexOf
-		 * @param target {Array} 被搜索的数组
-		 * @param searchElement {Any} 要搜索的元素
-		 * @param [fromIndex] {Number} 开始位置。如果不是数字的话，则表示从0开始；如果是负数，那就表示从倒数第几个开始。
-		 * @return {Number} 搜索到的位置，如果没有则返回-1
-		 *&#x2F;
-		lastIndexOf: partialSupport ? supported(&#x27;lastIndexOf&#x27;) 
-			: function(target, searchElement, fromIndex) {
-				&#x2F;&#x2F;	如果数组长度为0，那就返回-1
-				var length = target.length;
-				if (length) {
-					&#x2F;&#x2F;	拿到起始位置
-					fromIndex = typeof(fromIndex) == &#x27;number&#x27; 
-						? fromIndex &gt;= 0
-							? fromIndex
-							: Math.max(length + fromIndex, 0)
-						: length - 1;
-					
-					&#x2F;&#x2F;	从起始位置开始，寻找元素
-					for (var i = fromIndex; i &gt;= 0; i--) {
-						if (target.hasOwnProperty(i.toString())
-							&amp;&amp; target[i] === searchElement
-						) {
-							return i;
-						}
-					}
-				}
-				
-				return -1;
-			},
-		
-		&#x2F;**
-		 * 循环数组中的每一项，依次交给迭代器，确认所有的返回值等价于true，才会返回true，其他情况返回false
-		 * 
-		 * @method every
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受三个参数：
-		 * 		item {Any} 数组当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
-		 * @return {Boolean} 返回值
-		 *&#x2F;
-		every: partialSupport ? supportedButScope(&#x27;every&#x27;) 
-			: function(target, callback, scope) {
-				for (var i = 0, il = target.length; i &lt; il; i++) {
-					if (target.hasOwnProperty(i.toString())
-						&amp;&amp; !callback.call(scope, target[i], i, target)
-					) {
-						return false;
-					}
-				}
-				return true;
-			},
-		
-		&#x2F;**
-		 * 循环数组中的每一项，依次交给迭代器，如果存在返回值等价于true，那就返回true，其他情况返回false
-		 * 
-		 * @method some
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受三个参数：
-		 * 		item {Any} 数组当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
-		 * @return {Boolean} 返回值
-		 *&#x2F;
-		some: partialSupport ? supportedButScope(&#x27;some&#x27;) 
-			: function(target, callback, scope) {
-				for (var i = 0, il = target.length; i &lt; il; i++) {
-					if (target.hasOwnProperty(i.toString())
-						&amp;&amp; callback.call(scope, target[i], i, target)
-					) {
-						return true;
-					}
-				}
-				return false;
-			},
-		
-		&#x2F;**
-		 * 从前往后迭代数组中的每一项，并可以设置迭代器的scope
-		 * 
-		 * @method forEach
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受三个参数：
-		 * 		item {Any} 数组当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
-		 *&#x2F;
-		forEach: partialSupport ? supportedButScope(&#x27;forEach&#x27;) 
-			: function(target, callback, scope) {
-				for (var i = 0, il = target.length; i &lt; il; i++) {
-					target.hasOwnProperty(i.toString())
-						&amp;&amp; callback.call(scope, target[i], i, target);
-				}
-			},
-		
-		&#x2F;**
-		 * 从前往后迭代数组中的每一项，交给迭代器执行。
-		 * 当迭代器的返回值完全等于false时，就会停止循环。
-		 * 最后的返回值代表，是否没有任何中断（数组最后一项中断也算是中断）。
-		 * 
-		 * @method each
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受三个参数：
-		 * 		item {Any} 数组当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
-		 *&#x2F;
-		each: function(target, callback, scope) {
-			for (var i = 0, il = target.length; i &lt; il; i++) {
-				if (target.hasOwnProperty(i.toString())
-					&amp;&amp; callback.call(scope, target[i], i, target) === false
-				) {
-					return false;
-				} 
-			}
-			return true;
-		},
-		
-		&#x2F;**
-		 * 循环数组中的每一项，依次交给迭代器，得到的每个返回值，依次装入得到一个新数组
-		 * 
-		 * @method map
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受三个参数：
-		 * 		item {Any} 数组当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
-		 * @return {Array} 包含每次迭代结果的新数组
-		 *&#x2F;
-		map: partialSupport ? supportedButScope(&#x27;map&#x27;) 
-			: function(target, callback, scope) {
-				var values = [];
-				for (var i = 0, il = target.length; i &lt; il; i++) {
-					if (target.hasOwnProperty(i.toString())) {
-						values[i] = callback.call(scope, target[i], i, target);
-					}
-				}
-				return values;
-			},
-		
-		&#x2F;**
-		 * 循环数组中的每一项，依次交给迭代器，如果返回值等价于true，那就将该项存储到一个新数组中
-		 * 
-		 * @method filter
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受三个参数：
-		 * 		item {Any} 数组当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
-		 * @return {Array} 过滤后的新数组
-		 *&#x2F;
-		filter: partialSupport ? supportedButScope(&#x27;filter&#x27;) 
-			: function(target, callback, scope) {
-				var values = [];
-				for (var i = 0, il = target.length; i &lt; il; i++) {
-					if (target.hasOwnProperty(i.toString())
-						&amp;&amp; callback.call(scope, target[i], i, target)
-					) {
-						values.push(target[i]);
-					}
-				}
-				return values;
-			},
-		
-		&#x2F;**
-		 * 从前向后循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回
-		 * 
-		 * @method reduce
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受四个参数：
-		 * 		value {Any} 上个方法返回的值；
-		 * 		item {Any} 当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [initialValue] {Any} 初始值
-		 * @return {Any} 最后一次处理函数的调用结果
-		 *&#x2F;
-		reduce: partialSupport ? supported(&#x27;reduce&#x27;) 
-			: function(target, callback, initialValue) {
-				var noInitialValue = arguments.length &lt; 3;
-				for (var i = 0, il = target.length; i &lt; il; i++) {
-					if (target.hasOwnProperty(i.toString())) {
-						if (noInitialValue) {
-							noInitialValue = false;
-							initialValue = target[i];
-						} else {
-							initialValue = callback(initialValue, target[i], i, target);
-						}
-					}
-				}
-				return initialValue;
-			},
-		
-		&#x2F;**
-		 * 从后往前循环数组中的每一项调用处理函数，前一项的结果交给后一项指导处理完成，将最后的结果返回
-		 * 
-		 * @method reduceRight
-		 * @param target {Array} 要循环的数组
-		 * @param callback {Function} 迭代器。其接受四个参数：
-		 * 		value {Any} 上个方法返回的值；
-		 * 		item {Any} 当前项；
-		 * 		i {Number} 在数组中的位置；
-		 * 		target {Array} 数组对象；
-		 * @param [initialValue] {Any} 初始值
-		 * @return {Any} 最后一次处理函数的调用结果
-		 *&#x2F;
-		reduceRight: partialSupport ? supported(&#x27;reduceRight&#x27;) 
-			: function(target, callback, initialValue) {
-				var noInitialValue = arguments.length &lt; 3;
-				for (var i = target.length - 1; i &gt;= 0; i--) {
-					if (target.hasOwnProperty(i.toString())) {
-						if (noInitialValue) {
-							noInitiaValue = false;
-							initialValue = target[i];
-						} else {
-							initialValue = callback(initialValue, target[i], i, target);
-						}
-					}
-				}
-				return initialValue;
-			},
-		
-		&#x2F;**
-		 * 判断指定的对象是否是Array类型
-		 * 
-		 * @method isArray
-		 * @param target {Any} 要判断的对象
-		 * @return {Boolean}
-		 *&#x2F;
-		isArray: isArray,
-		
-		&#x2F;**
-		 * 判断指定的对象是否类似于数组（存在length属性，可以转化为数组）
-		 * 
-		 * @method likeArray
-		 * @param target {Any} 要被转化的对象
-		 * @return {Boolean}
-		 *&#x2F;
-		likeArray: function(target) {
-			var type = typeof target;
-			if (type == &#x27;undefined&#x27; || type == &#x27;object&#x27; &amp;&amp; target === null) return false;
-			if (typeof target.length != &#x27;number&#x27;) return false;
-			return true;
-		},
-		
-		&#x2F;**
-		 * 把指定的对象转化为数组格式
-		 * 
-		 * @method toArray
-		 * @param target {Any} 要被转化的对象
-		 * @return {Array}
-		 *&#x2F;
-		toArray: function(target) {
-			return slice.call(target);
-		}
-	};
-	
-	return exports;
-=======
-&#x2F;**
- * 增强JS基本数据类型的功能
- * 
- * @module kola.lang
- *&#x2F;
-
-kola(&#x27;kola.lang.Array&#x27;, null, function() {
-	
-	&#x2F;**
-	 * 保存原生的slice方法
-	 *&#x2F;
-	var slice = Array.prototype.slice;
-	
-	&#x2F;**
-	 * 仅给方法绑定scope
-	 *&#x2F;
-	var bindScope = function(fn, scope) {
-		return function() {
-			return fn.apply(scope, arguments);
-		};
-	};
-	
-	&#x2F;&#x2F; 仅在IE9一下不支持这些方法，剩余的浏览器和版本都已经部分支持
-	var userAgent = navigator.userAgent;
-	var partialSupport = userAgent.indexOf(&#x27;MSIE&#x27;) == -1 
-		|| parseInt(userAgent.substr(userAgent.indexOf(&#x27;MSIE&#x27;) + 5, 3 )) &gt;= 9;
-	
-	&#x2F;**
-	 * 获得指定名称的完全替代方法
-	 *&#x2F;
-	var supported = function(name) {
-		return function(target) {
-			return Array.prototype[name].apply(target, slice.call(arguments, 1));
-		};
-	};
-	
-	&#x2F;**
-	 * 获得指定名称的部分替代方法
-	 *&#x2F;
-	var supportedButScope = function(name) {
-		return function(target, callback, scope) {
-			return Array.prototype[name].call(target, arguments.length &gt; 2
-				? bindScope(callback, scope)	&#x2F;&#x2F; 存在scope的话，那建立一个设置了this的新方法
+				? bindContext(callback, context)	&#x2F;&#x2F; 存在context的话，那建立一个设置了this的新方法
 				: callback);
 		};
 	};
@@ -618,14 +251,14 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 *&#x2F;
-		every: partialSupport ? supportedButScope(&#x27;every&#x27;) 
-			: function(target, callback, scope) {
+		every: partialSupport ? supportedButContext(&#x27;every&#x27;) 
+			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i &lt; il; i++) {
 					if (target.hasOwnProperty(i.toString())
-						&amp;&amp; !callback.call(scope, target[i], i, target)
+						&amp;&amp; !callback.call(context, target[i], i, target)
 					) {
 						return false;
 					}
@@ -642,14 +275,14 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Boolean} 返回值
 		 *&#x2F;
-		some: partialSupport ? supportedButScope(&#x27;some&#x27;) 
-			: function(target, callback, scope) {
+		some: partialSupport ? supportedButContext(&#x27;some&#x27;) 
+			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i &lt; il; i++) {
 					if (target.hasOwnProperty(i.toString())
-						&amp;&amp; callback.call(scope, target[i], i, target)
+						&amp;&amp; callback.call(context, target[i], i, target)
 					) {
 						return true;
 					}
@@ -658,7 +291,7 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 			},
 		
 		&#x2F;**
-		 * 从前往后迭代数组中的每一项，并可以设置迭代器的scope
+		 * 从前往后迭代数组中的每一项，并可以设置迭代器的context
 		 * 
 		 * @method forEach
 		 * @param target {LikeArray} 要循环的数组
@@ -666,13 +299,13 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 *&#x2F;
-		forEach: partialSupport ? supportedButScope(&#x27;forEach&#x27;) 
-			: function(target, callback, scope) {
+		forEach: partialSupport ? supportedButContext(&#x27;forEach&#x27;) 
+			: function(target, callback, context) {
 				for (var i = 0, il = target.length; i &lt; il; i++) {
 					target.hasOwnProperty(i.toString())
-						&amp;&amp; callback.call(scope, target[i], i, target);
+						&amp;&amp; callback.call(context, target[i], i, target);
 				}
 			},
 		
@@ -687,12 +320,12 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 *&#x2F;
-		each: function(target, callback, scope) {
+		each: function(target, callback, context) {
 			for (var i = 0, il = target.length; i &lt; il; i++) {
 				if (target.hasOwnProperty(i.toString())
-					&amp;&amp; callback.call(scope, target[i], i, target) === false
+					&amp;&amp; callback.call(context, target[i], i, target) === false
 				) {
 					return false;
 				} 
@@ -709,15 +342,15 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 包含每次迭代结果的新数组
 		 *&#x2F;
-		map: partialSupport ? supportedButScope(&#x27;map&#x27;) 
-			: function(target, callback, scope) {
+		map: partialSupport ? supportedButContext(&#x27;map&#x27;) 
+			: function(target, callback, context) {
 				var values = [];
 				for (var i = 0, il = target.length; i &lt; il; i++) {
 					if (target.hasOwnProperty(i.toString())) {
-						values[i] = callback.call(scope, target[i], i, target);
+						values[i] = callback.call(context, target[i], i, target);
 					}
 				}
 				return values;
@@ -732,15 +365,15 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 		 * 		item {Any} 数组当前项；
 		 * 		i {Number} 在数组中的位置；
 		 * 		target {LikeArray} 数组对象；
-		 * @param [scope] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
+		 * @param [context] {Any} 给迭代器设置的上下文。如果不存在的话，那就是当前环境对象（浏览器中一般为window）
 		 * @return {Array} 过滤后的新数组
 		 *&#x2F;
-		filter: partialSupport ? supportedButScope(&#x27;filter&#x27;) 
-			: function(target, callback, scope) {
+		filter: partialSupport ? supportedButContext(&#x27;filter&#x27;) 
+			: function(target, callback, context) {
 				var values = [];
 				for (var i = 0, il = target.length; i &lt; il; i++) {
 					if (target.hasOwnProperty(i.toString())
-						&amp;&amp; callback.call(scope, target[i], i, target)
+						&amp;&amp; callback.call(context, target[i], i, target)
 					) {
 						values.push(target[i]);
 					}
@@ -842,7 +475,6 @@ kola(&#x27;kola.lang.Array&#x27;, null, function() {
 	};
 	
 	return exports;
->>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
 });
     </pre>
 </div>

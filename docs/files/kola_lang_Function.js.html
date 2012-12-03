@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/Ajax.html">Ajax</a></li>
+            
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
@@ -51,13 +53,9 @@
             
                 <li><a href="..&#x2F;classes/Event.html">Event</a></li>
             
-<<<<<<< HEAD
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
-=======
-                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
->>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -133,14 +131,14 @@ kola(&#x27;kola.lang.Function&#x27;, null, function() {
 		 * 
 		 * @method bind
 		 * @param target {Function} 被绑定的方法
-		 * @param scope {Any} 方法执行时的this
+		 * @param context {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 *&#x2F;
-		bind: function(target, scope) {
+		bind: function(target, context) {
 			var args = slice.call(arguments, 2);
 			return function() {
-				return target.apply(scope, args.concat(slice.call(arguments)));
+				return target.apply(context, args.concat(slice.call(arguments)));
 			};
 		},
 		
@@ -150,14 +148,14 @@ kola(&#x27;kola.lang.Function&#x27;, null, function() {
 		 * @method timeout
 		 * @param target {Function} 被绑定的方法
 		 * @param second {Number} 秒数
-		 * @param [scope] {Any} 方法执行时的this
+		 * @param [context] {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 *&#x2F;
-		timeout: function(target, second, scope) {
+		timeout: function(target, second, context) {
 			var args = slice.call(arguments, 3);
 			return window.setTimeout(function() {
-				target.apply(scope, args)
+				target.apply(context, args)
 			}, second);
 		},
 		
@@ -167,14 +165,14 @@ kola(&#x27;kola.lang.Function&#x27;, null, function() {
 		 * @method interval
 		 * @param target {Function} 被绑定的方法
 		 * @param second {Number} 秒数
-		 * @param [scope] {Any} 方法执行时的this
+		 * @param [context] {Any} 方法执行时的this
 		 * @param [argument]* {Any} 要绑定的参数
 		 * @return {Function} 创建的新Function
 		 *&#x2F;
-		interval: function(target, second, scope) {
+		interval: function(target, second, context) {
 			var args = slice.call(arguments, 3);
 			return window.setInterval(function() {
-				target.apply(scope, args)
+				target.apply(context, args)
 			}, second);
 		},
 		

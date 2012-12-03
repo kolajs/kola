@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/Ajax.html">Ajax</a></li>
+            
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
@@ -53,13 +55,11 @@
             
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
             
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
+            
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
-                <li><a href="..&#x2F;classes/Packager.html">Packager</a></li>
-            
                 <li><a href="..&#x2F;classes/String.html">String</a></li>
-            
-                <li><a href="..&#x2F;classes/window.html">window</a></li>
             
             </ul>
 
@@ -116,7 +116,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l164"><code>kola\html\util\Event.js:164</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l172"><code>kola\html\util\Event.js:172</code></a>
         </div>
     
 
@@ -254,7 +254,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l269"><code>kola\html\util\Event.js:269</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l281"><code>kola\html\util\Event.js:281</code></a>
         
         </p>
 
@@ -401,7 +401,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l211"><code>kola\html\util\Event.js:211</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l223"><code>kola\html\util\Event.js:223</code></a>
         
         </p>
 
@@ -525,14 +525,16 @@
                     
                 </li>
             
+                <li class="arg">
+                    
+                        <code class="optional">[hook]</code>
+                    
+                </li>
+            
             </ul><span class="paren">)</span>
         </div>
     
 
-    
-        <span class="returns-inline">
-            <span class="type"></span>
-        </span>
     
 
     
@@ -558,7 +560,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l170"><code>kola\html\util\Event.js:170</code></a>
+        <a href="..&#x2F;files&#x2F;kola_html_util_Event.js.html#l178"><code>kola\html\util\Event.js:178</code></a>
         
         </p>
 
@@ -661,7 +663,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>绑定事件时附带的参数，事件处理时会附加在event.data中</p>
+                                    <p>绑定事件时附带的参数，事件处理时会附加在回调函数的参数后面</p>
                                 </div>
 
                                 
@@ -685,21 +687,86 @@
                     
                 </li>
             
+                <li class="param">
+                    
+                        <code class="param-name optional">[hook]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>事件钩子，用于定制特殊事件</p>
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[setup]</code>
+                                    <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>事件绑定前拦截</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[teardown]</code>
+                                    <span class="type"><a href="..\classes\Function.html" class="crosslink">Function</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>事件解绑前拦截</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[domEvtName]</code>
+                                    <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>对应的dom事件名称</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[domEvtName]</code>
+                                    <span class="type"><a href="..\classes\String.html" class="crosslink">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>对应的dom事件名称</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
             </ul>
         </div>
     
 
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                    null
-                
-            </div>
-        </div>
     
 
     

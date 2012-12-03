@@ -23,7 +23,7 @@ kola('kola.net.Ajax',[
 			 * @param [options.data] {Object} 发送的数据
 			 * @param [options.format] {String} json|text|xml请求的method
 			 * @param [options.method] {Object} 请求的method
-			 * @param [options.scope] {Object} 成功和失败回调的作用域
+			 * @param [options.context] {Object} 成功和失败回调的作用域
 			 * @param [options.async] {Boolean} 是否为异步请求
 			 * @param [options.succ] {Function} 成功的回调函数
 			 * @param [options.fail] {Function} 失败的回调函数
@@ -44,9 +44,9 @@ kola('kola.net.Ajax',[
 					for(key in data){
 						if(first){
 							first = false;
-							str += key + "=" + data[key];
+							str += encodeURIComponent(key) + "=" + encodeURIComponent(data[key]);
 						}else{
-							str += "&" + key + "=" + data[key];
+							str += "&" + encodeURIComponent(key) + "=" + encodeURIComponent(data[key]);
 						}
 					}
 					data = str;
@@ -79,7 +79,7 @@ kola('kola.net.Ajax',[
 			}
 
 			//	设置ajax的跟踪事件
-			trans.onreadystatechange = KolaFunction.bind(stateChange, null, trans, url, options);
+			trans.onreadystatechange = KolaFunction.bind(stateChange, null, trans, options);
 
 			//	发送数据
 			trans.send(data);
@@ -109,22 +109,40 @@ kola('kola.net.Ajax',[
 		 * @param [data] {Object}
 		 * @param [succ] {Function}
 		 * @param [fail] {Function}
-		 * @param [scope] {Object}
+		 * @param [context] {Object}
 		 */
-		get: function(url, data, succ, fail, scope) {
-			options.method = 'get';
+		get: function(url, data, succ, fail, context) {
 			if(typeof data == 'function'){
-				data = null
+				context = fail;
+				fail = succ;
 				succ = data;
-				options = succ;
+				data = null;
 			}
-			options = options || {};
-			options.succ = succ;
+			var options = {
+				method: 'get',
+				format: 'json',
+				succ: succ,
+				fail: fail,
+				data: data,
+				context: context
+			}
 			return this.request(url, options);
 		},
-		post: function(url, options) {
-			options = options || {};
-			options.method = 'post';
+		post: function(url, data, succ, fail, context) {
+			if(typeof data == 'function'){
+				context = fail;
+				fail = succ;
+				succ = data;
+				data = null;
+			}
+			var options = {
+				method: 'post',
+				format: 'json',
+				succ: succ,
+				fail: fail,
+				data: data,
+				context: context
+			}
 			return this.request(url, options);
 		}
 	};
@@ -155,9 +173,9 @@ kola('kola.net.Ajax',[
 							break;
 					}
 				}
-				options.succ.call(options.scope, ctt);
+				options.succ.call(options.context, ctt);
 			} else {
-					if (typeof(options.fail) == 'function') {
+				if (typeof(options.fail) == 'function') {
 					var error = {
 						status: trans.status,
 						statusText: trans.statusText,
@@ -179,7 +197,7 @@ kola('kola.net.Ajax',[
 								break;
 						}
 					}
-					options.fail.call(options.scope, error);
+					options.fail.call(options.context, error);
 				}
 			}
 		}

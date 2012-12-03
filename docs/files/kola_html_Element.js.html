@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/Ajax.html">Ajax</a></li>
+            
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
@@ -51,13 +53,9 @@
             
                 <li><a href="..&#x2F;classes/Event.html">Event</a></li>
             
-<<<<<<< HEAD
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
-=======
-                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
->>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -119,23 +117,20 @@
  * 
  * @module kola.html
  *&#x2F;
-
+ 
 kola(&#x27;kola.html.Element&#x27;,[
 	&#x27;kola.lang.Class&#x27;,
 	&#x27;kola.lang.Array&#x27;,
 	&#x27;kola.lang.Function&#x27;,
 	&#x27;kola.lang.String&#x27;,
 	&#x27;kola.html.util.Selector&#x27;,
-	&#x27;kola.html.util.Event&#x27;
-],function(KolaClass, KolaArray, KolaFunction, KolaString, Selector, KolaDomEvent){
+	&#x27;kola.html.util.Event&#x27;,
+	&#x27;kola.event.Dispatcher&#x27;
+],function(KolaClass, KolaArray, KolaFunction, KolaString, Selector, KolaDomEvent, Dispatcher){
 	var IEStyle = (navigator.userAgent.indexOf(&#x27;MSIE&#x27;) != -1 &amp;&amp; parseInt(navigator.userAgent.substr(navigator.userAgent.indexOf( &#x27;MSIE&#x27; ) + 5, 3)) &lt; 9);
-	&#x2F;&#x2F;用于element.data的存储
-	var cache = {};
 	&#x2F;&#x2F;使用随机名称，防止冲突
-	var cache_attr_name = &#x27;kola&#x27; + new Date().getTime();
-	&#x2F;&#x2F;从1开始，方便检测
-	var cacheSize = 1;
-	
+	var data_name = &#x27;kola&#x27; + new Date().getTime();
+	var domDispatcher = new Dispatcher();
 	var Operation = {
 		&#x2F;**
 		 * 获取某个属性值
@@ -161,7 +156,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 							value = targetElement.attributes.getNamedItem(name);
 							return !!value ? value.value : null;
 						}else{
-							if(KolaClass.isUndefined(value))
+							if(value === undefined)
 								return;
 							return value.toString();
 						}
@@ -183,7 +178,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 			}
 			switch(name){
 				case &#x27;class&#x27;:
-					targetElement.className.toLowerCase() = value;
+					targetElement.className = value.toLowerCase();
 					break;
 				case &#x27;style&#x27;:
 					targetElement.style.cssText = value;
@@ -257,32 +252,25 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * @return {Any} dom上name对应的数据
 		 *&#x2F;
 		getdata: function (targetElement, name) {
-			index = targetElement[cache_attr_name];
-			if(!index || !cache[index]) return undefined;
-			return cache[index][name];
+			var dataset = targetElement[data_name];
+			if(!dataset) return undefined;
+			return dataset[name];
 		},
 		&#x2F;**
 		 * 设置dom上指定的附加数据
-		 * @method removeData
+		 * @method data
 		 * @param name {String} 要删除的数据名称,如果为undefined，则表示删除全部数据
 		 * @param value {Any} 指定数据的名称，如果为undefined，则删除该数据
 		 * @chainable
 		 *&#x2F;
 		setdata: function (targetElement, name, value) {
-			index = targetElement[cache_attr_name];
+			var dataset = targetElement[data_name];
 			if(name === undefined &amp;&amp; index){
-				cache[index] = undefined;
-				targetElement[cache_attr_name] = undefined;
-			}else if(value === undefined &amp;&amp; index &amp;&amp; cache[index]){
-				cache[index][name] = undefined;
+				delete targetElement[data_name];
+			}else if(value === undefined &amp;&amp; dataset){
+				delete dataset[name];
 			}else{
-				if(!index){
-					index = cacheSize++;
-					targetElement[cache_attr_name] = index;
-				}
-				if(!cache[index])
-					cache[index] = {};
-				cache[index][name] = value;
+				(targetElement[data_name] || (targetElement[data_name] = {}))[name] = value;
 			}
 		},
 		&#x2F;**
@@ -291,6 +279,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * @param name {String} 要设置的类名的名称
 		 * @return {Boolean} 该类名是否存在
 		 *&#x2F;
+		 &#x2F;&#x2F;to do :confirm
 		getcss: function (targetElement, name) {&#x2F;&#x2F;这是要查询一个类名
 			var className = targetElement.className;
 			return className.length &gt; 0 &amp;&amp; (&#x27; &#x27; + className + &#x27; &#x27;).indexOf(&#x27; &#x27; + name + &#x27; &#x27;) != -1;
@@ -303,12 +292,13 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * @chainable
 		 *&#x2F;
 		setcss: function (targetElement, name, value) {
-			var className = targetElement.className;
+			var className = &#x27; &#x27; + targetElement.className + &#x27; &#x27;;
+			var safeName = &#x27; &#x27; + name + &#x27; &#x27;
 			if(!value){&#x2F;&#x2F;这是要删除一个类名
-				if ((&#x27; &#x27; + className + &#x27; &#x27;).indexOf(&#x27; &#x27; + name + &#x27; &#x27;) != -1) {
-					targetElement.className = KolaString.trim(className.split(name).join(&#x27; &#x27;).replace(&#x2F;[ ]{2,}&#x2F;g,&#x27; &#x27;));
+				if ((className).indexOf(safeName) != -1) {
+					targetElement.className = KolaString.trim(className.split(safeName).join(&#x27; &#x27;).replace(&#x2F;[ ]{2,}&#x2F;g,&#x27; &#x27;));
 				}
-			}else if((&#x27; &#x27; + className + &#x27; &#x27;).indexOf(name) == -1){&#x2F;&#x2F;这是要增加一个类名
+			}else if((className).indexOf(safeName) == -1){&#x2F;&#x2F;这是要增加一个类名
 				targetElement.className += &#x27; &#x27; + name;
 			}
 		},
@@ -319,6 +309,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		 * @return {String|Number} 样式的值
 		 *&#x2F;
 		getstyle: function (targetElement, name) {
+			name = antihyphenate(name);
 			var st = targetElement.style;
 			if(name == &#x27;opacity&#x27;){
 				var filter;
@@ -339,6 +330,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		* @chainable
 		*&#x2F;
 		setstyle: function (targetElement, name, value) {
+			name = antihyphenate(name);
 			var elementStyle = targetElement.style;
 			if(value == undefined){&#x2F;&#x2F;要删除一个样式
 				if (elementStyle.removeProperty){
@@ -368,23 +360,6 @@ kola(&#x27;kola.html.Element&#x27;,[
 			}
 		},
 		&#x2F;**
-		 * 查询一个表单的值
-		 * @method val
-		 * @return {String} 样式的值
-		 *&#x2F;
-		getval: function (targetElement) {
-			return targetElement.value;
-		},
-		&#x2F;**
-		 * 设置一个表单的值
-		 * @method val
-		 * @param value {String} 样式的值
-		 * @chainable
-		 *&#x2F;
-		setval: function (targetElement, value) {
-			targetElement.value = value;
-		},
-		&#x2F;**
 		 * 查询一个元素的内部html
 		 * @method html
 		 * @return {String} 内部的html
@@ -410,26 +385,26 @@ kola(&#x27;kola.html.Element&#x27;,[
 					innerHtml(targetElement, value);
 				}
 			}
-			&#x2F;&#x2F;Dispatcher.global.fire({type: &#x27;DOMNodeInserted&#x27;, data: targetElement.childNodes});
+			domDispatcher.fire(&quot;DomCreate&quot;, targetElement.children);
 		},
 		&#x2F;**
 		 * 查询一个元素的html(包含元素自身)
-		 * @method outerHtml
+		 * @method getouter
 		 * @return {String}
 		 *&#x2F;
-		getouterHtml: function(element){
+		getouter: function(element){
 			return element.outerHTML;
 		},
 		&#x2F;**
 		 * 设置一个元素的html(包含元素自身)
-		 * @method outerHtml
+		 * @method setouter
 		 * @param value {String} 要设置的html
 		 * @chainable
 		*&#x2F;
-		setouterHtml: function(element, value){
+		setouter: function(element, value){
 			var newElements = toElements(value)
 			Operation.before(element, newElements);
-			Operation.detach(element);
+			Operation.destroy(element);
 			return newElements;
 		},
 		&#x2F;**
@@ -450,6 +425,85 @@ kola(&#x27;kola.html.Element&#x27;,[
 			typeof(targetElement.innerText) != &#x27;undefined&#x27; ? 
 				targetElement.innerText = value :
 				targetElement.textContent = value;
+		},
+		&#x2F;**
+		 * 获取对象的样式left
+		 * @method left
+		 * @return {Number}
+		 *&#x2F;
+		&#x2F;**
+		 * 设置对象的样式left
+		 * @param value
+		 * @method left
+		 * @chainable
+		 *&#x2F;
+		&#x2F;**
+		 * 获取对象的样式top
+		 * @method top
+		 * @return {Number}
+		 *&#x2F;
+		&#x2F;**
+		 * 设置对象的样式top
+		 * @method left
+		 * @param value
+		 * @chainable
+		 *&#x2F;
+		&#x2F;**
+		 * 获取对象的样式宽度
+		 * @method width
+		 * @return {Number}
+		 *&#x2F;
+		&#x2F;**
+		 * 设置对象的样式宽度
+		 * @param value
+		 * @method left
+		 * @chainable
+		 *&#x2F;
+		&#x2F;**
+		 * 获取对象的样式高度
+		 * @method height
+		 * @return {Number}
+		 *&#x2F;
+		&#x2F;**
+		 * 设置对象的样式高度
+		 * @param value
+		 * @method left
+		 * @chainable
+		 *&#x2F;
+		getleft: function(targetElement){
+			return targetElement.offsetLeft;
+		},
+		setleft: function(targetElement, value){
+			targetElement.style.left = value + &#x27;px&#x27;;
+		},
+		gettop: function(targetElement){
+			return targetElement.offsetTop;
+		},
+		settop: function(targetElement, value){
+			targetElement.style.top = value + &#x27;px&#x27;;
+		},
+		getwidth: function(targetElement){
+			&#x2F;&#x2F;如果style上面直接写了width，则直接使用
+			&#x2F;&#x2F;ISSUE: 使用getwidth时，如果在css中有带!important的宽度覆盖了style上面的值，则getwidth得到的仍然是style上面的值
+			var styleWidth = targetElement.style.width;
+			if(styleWidth != &#x27;&#x27;){
+				return parseFloat(styleWidth);
+			}
+			&#x2F;&#x2F;否则计算width
+			return parseFloat(getComputedStyle(targetElement, &#x27;width&#x27;));
+		},
+		setwidth: function(targetElement, value){
+			targetElement.style.width = value + &#x27;px&#x27;;
+		},
+		getheight: function(targetElement){
+			var styleHeight = targetElement.style.height
+			if(styleHeight != &#x27;&#x27;){
+				return parseFloat(styleHeight);
+			}
+			return parseFloat(getComputedStyle(targetElement, &#x27;height&#x27;));
+		},
+		setheight: function(targetElement, value){
+			targetElement.style.height = value + &#x27;px&#x27;;
 		},
 		&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;
 		&#x2F;**
@@ -526,11 +580,11 @@ kola(&#x27;kola.html.Element&#x27;,[
 		},
 		&#x2F;**
 		 * 得到元素内部符合条件的元素集合
-		 * @method descendants
+		 * @method down
 		 * @param selector {String} 选择器，用于指定要查找的元素类型
 		 * @return {Element} 新的元素集合
 		 *&#x2F;
-		descendants: function (targetElement, selector) {
+		down: function (targetElement, selector) {
 			return Selector(selector, targetElement);
 		},
 		&#x2F;**
@@ -568,6 +622,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 		* @param elements {DomRefer} 要增加的dom
 		* @chainable
 		*&#x2F;
+		&#x2F;&#x2F;add appendto prependto
 		append: function(targetElement, elements){
 			elements = toElements(elements);
 			for(var i = 0, il = elements.length; i &lt; il; i++){
@@ -608,8 +663,8 @@ kola(&#x27;kola.html.Element&#x27;,[
 		*&#x2F;
 		after: function(targetElement, elements){
 			elements = toElements(elements);
-			var parent = element.parentNode;
-			var offset = element.nextSibling;
+			var parent = targetElement.parentNode;
+			var offset = targetElement.nextSibling;
 			var func = !!offset ? insertBefore : appendChild;
 			for(var i = 0, il = elements.length; i &lt; il; i++){
 				func(parent, elements[i], offset);
@@ -617,12 +672,46 @@ kola(&#x27;kola.html.Element&#x27;,[
 		},
 		&#x2F;**
 		* 将元素从文档中分离
-		* @method detach
+		* @method remove
 		* @chainable
 		*&#x2F;
-		detach: function(targetElement){
+		remove: function(targetElement){
 			if (targetElement.parentNode) 
 				targetElement.parentNode.removeChild(targetElement);
+		},
+		&#x2F;**
+		* 删除节点
+		* @method destroy
+		* @chainable
+		*&#x2F;
+		destroy: function(targetElement){
+			if (targetElement.parentNode) 
+				targetElement.parentNode.removeChild(targetElement);
+			purgeChildren(targetElement);
+		},
+		&#x2F;**
+		 * 隐藏元素
+		 * @method hide
+		 * @chainable
+		 *&#x2F;
+		getshow:function(targetElement){
+			return !(targetElement.style.display === &#x27;none&#x27;);
+		},
+		&#x2F;**
+		 * 显示元素
+		 * @method show
+		 * @chainable
+		 *&#x2F;
+		setshow:function(targetElement, value){
+			if(value){
+				var oldDisplay = Operation.getdata(targetElement, &#x27;oldDisplay&#x27;) || &#x27;&#x27;;
+				if(oldDisplay == &#x27;none&#x27;) oldDisplay = &#x27;&#x27;;
+				targetElement.style.display = oldDisplay;
+			}else{
+				var oldDisplay = targetElement.style.display;
+				Operation.setdata(targetElement, &#x27;oldDisplay&#x27;, oldDisplay);
+				targetElement.style.display = &#x27;none&#x27;;
+			}
 		},
 		&#x2F;*
 		 * 监听一个事件
@@ -675,125 +764,348 @@ kola(&#x27;kola.html.Element&#x27;,[
 			else
 				return KolaArray.indexOf(elem.parentNode.children,elem);
 		},
-		&#x2F;**
-		 * 获取对象的位置，相对于其定位对象的位置
-		 * @method pos
-		 * @return {Object} left,top表示元素相对于其定位的坐标
-		 *&#x2F;
-		pos: function(targetElement) {
-			return {
-				left: targetElement.offsetLeft,
-				top: targetElement.offsetTop
-			};
-		},
-		&#x2F;**
-		 * 获取对象在页面上的绝对位置
-		 * @method pagePos
-		 * @return {Object} left,top表示元素相对于其定位的坐标
-		 *&#x2F;
-		pagePos: function(targetElement) {
-			var left = 0,
-			top = 0,
-			doc = document,
-			de = doc.documentElement,
-			db = doc.body,
-			add = function(l, t) {
-				left += l || 0;
-				top += t || 0;
-			};
-			
-			if (targetElement.getBoundingClientRect) {
-				&#x2F;&#x2F;	存在方法直接获取位置，那就直接获取之
-				
-				var box = targetElement.getBoundingClientRect();
-				add(box.left + Math.max(de.scrollLeft, db.scrollLeft) - de.clientLeft,
-						box.top + Math.max(de.scrollTop, db.scrollTop) - de.clientTop);
-			} else {
-				&#x2F;&#x2F;	只能进行位置累加获取
-				
-				var op = targetElement.offsetParent,
-					parent = targetElement.parentNode;
-					
-				add(targetElement.offsetLeft, targetElement.offsetTop);
-				
-				&#x2F;&#x2F;	逐个累加每个offsetParent的位置
-				while (op) {
-					add(op.offsetLeft, op.offsetTop);
-					op = op.offsetParent;
-				}
-
-				&#x2F;&#x2F;	循环所有parentNode
-				while (parent &amp;&amp; parent.tagName &amp;&amp; !isBody.test(parent.tagName)) {
-					add(-parent.scrollLeft, -parent.scrollTop);
-					parent = parent.parentNode;
-				}
+		pagePosition: function(targetElement, refer, set){
+			if(refer){
+				var refer = refer.getBoundingClientRect();
+			}else{
+				refer = {top: -document.body.scrollTop || -document.documentElement.scrollTop, left: -document.body.scrollLeft || -document.documentElement.scrollLeft}
 			}
-			return {left: left, top: top};
+			var client = targetElement.getBoundingClientRect();
+			if(set){
+				Operation.setstyle(targetElement, &quot;top&quot;, targetElement.offsetTop - client.top + refer.top + set.top);
+				Operation.setstyle(targetElement, &quot;left&quot;, targetElement.offsetLeft - client.left + refer.left + set.left);
+			}else{
+				return {top:client.top - refer.top, left:client.left - refer.left};
+			}
 		},
-		&#x2F;**
-		 * 获取第一个对象的位置，相对于浏览器窗口区域的位置
-		 * @return 位置
-		 * @type Object
-		 *&#x2F;
-		clientPos: function(targetElement) {
-			var pos = Operation.pagePos(targetElement),
-				db = document.body,
-				de = document.documentElement;
-			return {
-				left: pos.left - Math.max(db.scrollLeft, de.scrollLeft),
-				top: pos.top - Math.max(db.scrollTop, de.scrollTop)
-			};
-		},
-		&#x2F;**
-		 * 获取对象的宽度
-		 * @param [boundary] {Stirng} 以什么区域界定边界， inner:只有内部;padding:包括padding;border:包括border
-		 * @return 宽度
-		 * @type Number
-		 *&#x2F;
-		width: function(targetElement, boundary){
-			var width = targetElement.offsetWidth;
-			if(!boundary || boundary == &quot;inner&quot;)
-				return width;
-			width += parseFloat(this.style(&quot;padding-left&quot;) || &quot;0&quot;) + parseFloat(this.style(&quot;padding-right&quot;) || &quot;0&quot;)
-			if(boundary == &quot;padding&quot;)
-				return width;
-			width += parseFloat(this.style(&quot;border-left&quot;) || &quot;0&quot;) + parseFloat(this.style(&quot;border-right&quot;) || &quot;0&quot;)
-			return width;
-		},
-		&#x2F;**
-		 * 获取对象的高度
-		 * @param [boundary] {Stirng} 以什么区域界定边界， inner:只有内部;padding:包括padding;border:包括border
-		 * @return 高度
-		 * @type Number
-		 *&#x2F;
-		height: function(targetElement, boundary){
-			var height = targetElement.offsetHeight;
-			if(!boundary || boundary == &quot;inner&quot;)
-				return height;
-			height += parseFloat(this.style(&quot;padding-top&quot;) || &quot;0&quot;) + parseFloat(this.style(&quot;padding-bottom&quot;) || &quot;0&quot;)
-			if(boundary == &quot;padding&quot;)
-				return height;
-			height += parseFloat(this.style(&quot;border-top&quot;) || &quot;0&quot;) + parseFloat(this.style(&quot;border-bottom&quot;) || &quot;0&quot;)
-			return height;
-		},
-		&#x2F;**
-		 * 获取在页面中的绝对位置和大小信息
-		 *&#x2F;
-		bound: function(targetElement) {
-			if (targetElement.getBoundingClientRect) {
+		clientPosition: function(targetElement, refer){
+			if(!refer)
 				return targetElement.getBoundingClientRect();
-			} else {
-				var box = {};
-				box = Operation.clientPos(targetElement);
-				box.width = Operation.width(targetElement);
-				box.height = Operation.height(targetElement);
-				box.right = box.left + box.width;
-				box.bottom = box.top + box.height;
-			}
-			return box;
+			var relativeToPage = Operation.pagePosition(targetElement, refer);
+			relativeToPage.top -= refer.clientTop;
+			relativeToPage.left -= refer.clientLeft;
+			return relativeToPage;
 		},
 		toElements: toElements
 	};
+	&#x2F;**
+	 * kola的Element类
+	 * 
+	 * @class Element
+	 * @constructor
+	 * @param elements {Array&lt;HTMLElement&gt;}
+	 *&#x2F;
+	var exports = KolaClass.create({
+		__ME:function(elements){
+			&#x2F;&#x2F;instanceof当涉及跨iframe时会工作不正常
+			if(typeof elements === &quot;string&quot; &amp;&amp; elements.charAt(0) != &#x27;&lt;&#x27;){
+				&#x2F;*
+					define DomRefer Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|Element|String
+				*&#x2F;
+				&#x2F;**
+				* 使用选择器选择特定dom
+				* @method Element
+				* @param elements {String}
+				* @return {Element}
+				*&#x2F;
+				return new this(Selector(elements));
+			}else{
+				&#x2F;**
+				* 根据字符串生成dom，并生成Element
+				* @method Element
+				* @param elements {String} 要转换的字符串，以html &lt; 格式开头
+				* @return {Element}
+				*&#x2F;
+				&#x2F;**
+				* 将指定的dom转换为Element
+				* @method Element
+				* @param elements {Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|Element}
+				* @return {Element}
+				*&#x2F;
+				return new this(Operation.toElements(elements));
+			}
+		},
+		_init:function(elements){
+			this.length = elements.length;
+			for(var i = 0, il = this.length; i &lt; il; i ++)
+				this[i] = elements[i];
+		},
+
+		&#x2F;**
+		* 依次迭代内部dom，将内部每一个元素封装成Element交给callback处理
+		* @method each
+		* @param callback {Function} 回调函数
+		* @chainable
+		*&#x2F;
+		each: function (callback) {
+			&#x2F;&#x2F;	使用迭代器循环每个元素
+			for(var i = 0, il = this.length; i &lt; il; i++){
+				callback.call(this, new this.constructor([this[i]]), i);
+			}
+			return this;
+		},
+
+		&#x2F;**
+		 * 增加一些元素
+		 * @method add
+		 * @param elements {DomRefer} 要增加的dom集合
+		 * @chainable
+		 *&#x2F;
+		add: function(elements){
+			var elements = Operation.toElements(elements);
+			for(var i = 0, il = elements.length; i &lt; il ; i ++){
+				this[this.length++] = elements[i];
+			}
+			unique(this);
+			return this;
+		},
+
+		&#x2F;**
+		 * 移除一些元素
+		 * @method not
+		 * @param elements {DomRefer} 要移除的dom集合
+		 * @chainable
+		 *&#x2F;
+		not: function(elements) {
+			var elements = Operation.toElements(elements);
+			for(var i=0, il = elements.length; i &lt; il; i++){
+				for(var j=0, jl = this.length; j &lt; jl; j++){
+					if(this[j] == elements[i]){
+						this.splice(j,1);
+					}
+				}
+			}
+			return this;
+		},
+
+		&#x2F;**
+		 * 将符合选择器的元素组成一个新的element
+		 * @method filter
+		 * @param selector {String} 选择器
+		 * @return {Element}
+		 *&#x2F;
+		filter: function(selector){
+			var res = [];
+			for(var i = 0, il = this.length; i&lt;il; i++){
+				if(Selector.matchesSelector(this[i], selector)){
+					res.push(this[i]);
+				}
+			}
+			return new this.constructor(res);
+		},
+		outer: function(value){
+			if (arguments.length == 0) {
+				return Operation.getouter(this[0])
+			}else{
+				for(var i = 0; i &lt; this.length; i++){
+					this[i] = Operation.setouter(this[i], value)[0]
+				}
+				return this;
+			}
+		},
+		&#x2F;**
+		 * 将该元素添加到某个dom之后
+		 * @method appendTo
+		 * @param target {HtmlElement|Element} 被添加的元素
+		 * @chainable
+		 *&#x2F;
+		appendTo: function(target){
+			this.constructor(target).append(this);
+			return this;
+		},
+		getData:function(){
+			return Array.prototype.slice.call(this);
+		},
+		&#x2F;&#x2F;使得浏览器认为实例是一个数组，方便调试
+		splice:[].splice
+	});
+	exports._operations = Operation
+	&#x2F;&#x2F;定义一个针对节点读取属性或设置属性的操作
+	function getSet(getFunction, setFunction){
+		var functionGroup = [];
+		getFunction.isGet = true;
+		functionGroup[getFunction.length - 1] = getFunction;
+		functionGroup[setFunction.length - 1] = setFunction;
+		return functionGroup;
+	}
+	&#x2F;&#x2F;getSet
+	KolaArray.forEach(&#x27;attr,prop,data,css,style,html,text,show,left,top,width,height&#x27;.split(&#x27;,&#x27;),function(functionName){
+		var getSetFunction = getSet(Operation[&#x27;get&#x27; + functionName], Operation[&#x27;set&#x27; + functionName]);
+		exports.prototype[functionName] = function(name, value){
+			var operater = getSetFunction[arguments.length];
+			if(operater.isGet){
+				if(!this[0]) return null;
+				return operater.call(this, this[0], name);
+			}else{
+				for(var i = 0; i &lt; this.length; i++){
+					operater.call(this, this[i], name, value);
+				}
+				return this;
+			}
+		}
+	});
+	&#x2F;&#x2F;first
+	KolaArray.forEach(&#x27;clientPosition,pagePosition,index,is&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(value, set){
+			if(!this[0] || this[0].nodeType != 1)
+				return;
+			return Operation[functionName].call(this, this[0], value, set);
+		}
+	});
+	&#x2F;&#x2F;each
+	KolaArray.forEach(&#x27;fire,remove,destroy,append,prepend,before,after&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(p0, p1){
+			for(var i = 0; i &lt; this.length; i++){
+				Operation[functionName].call(this, this[i], p0, p1);
+			}
+			return this
+		}
+	});
+	&#x2F;&#x2F;on and off
+	KolaArray.forEach(&#x27;on,off&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(delegate, name, callback, option){
+			if(typeof name == &quot;string&quot;){
+				option = option || {};
+				option.delegate = delegate;
+			}else{
+				option = callback;
+				callback = name;
+				name = delegate;
+			}
+			for(var i = 0; i &lt; this.length; i++){
+				Operation[functionName].call(this, this[i], name, callback, option);
+			}
+			return this
+		}
+	});
+	&#x2F;&#x2F;traveller
+	KolaArray.forEach(&#x27;parent,parents,closest,children,find,down,prev,next&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(p0, p1){
+			var results = [];
+			for(var i = 0; i &lt; this.length; i++){
+				var res = Operation[functionName].call(this, this[i], p0, p1);
+				if(KolaArray.isArray(res))
+					results = results.concat(res);
+				else if(res)
+					results.push(res);
+			}
+			return new exports(unique(results));
+		}
+	});
+	&#x2F;&#x2F;shortcut for events
+	KolaArray.forEach(&#x27;click,mouseenter,mouseleave,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,change&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(delegate, callback, option){
+			if(typeof delegate == &quot;string&quot;){
+				option = option || {};
+				option.delegate = delegate;
+			}else if(typeof delegate == &#x27;function&#x27;){
+				option = callback;
+				callback = delegate
+			}else{
+				for(var i = 0; i &lt; this.length; i++){
+					KolaDomEvent.fire(this[i], functionName, delegate);
+				}
+				return this;
+			}
+			for(var i = 0; i &lt; this.length; i++){
+				KolaDomEvent.on(this[i], functionName, callback, option);
+			}
+			return this;
+		}
+	});
+	&#x2F;**
+	 * 获取对象的位置的left，获取对象的位置，相对于其定位对象的位置(从自己的border外层开始，到定位对象的border内部结束)
+	 * @method offsetLeft
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的位置的top，获取对象的位置，相对于其定位对象的位置(从自己的border外层开始，到定位对象的border内部结束)
+	 * @method offsetTop
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的除margin外的站位宽(从border左上角开始，到border右下角结束)
+	 * @method offsetWidth
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的除margin外的站位高(从border左上角开始，到border右下角结束)
+	 * @method offsetHeight
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象可视区域的位置的left，相对于该对象的位置(从自己的border外侧开始，到自己的border内侧结束)
+	 * @method clientLeft
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象可视区域的位置的top，相对于该对象的位置(从自己的border外侧开始，到自己的border内侧结束)
+	 * @method clientTop
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的可视区域的宽(从border左上角内侧开始，到border右下角内侧结束)
+	 * @method clientWidth
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的可视区域的高(从border左上角内侧开始，到border右下角内侧结束)
+	 * @method clientHeight
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的内容区域的宽(从padding左上角外侧开始，到padding右下角外侧结束)
+	 * @method scrollWidth
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的内容区域的高(从padding左上角外侧开始，到padding右下角外侧结束)
+	 * @method scrollHeight
+	 * @return {Number}
+	 *&#x2F;
+	KolaArray.forEach(&#x27;offsetLeft,offsetTop,offsetWidth,offsetHeight,clientLeft,clientTop,clientWidth,clientHeight,scrollWidth,scrollHeight&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(){
+			if(this.length&gt;0){
+				return this[0][functionName];
+			}
+		}
+	});
+	&#x2F;**
+	 * 获取对象的滚动条的位置的left
+	 * @method scrollLeft
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的滚动条的位置的left
+	 * @method scrollLeft
+	 * @param value
+	 * @chainable
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的滚动条的位置的top
+	 * @method scrollTop
+	 * @return {Number}
+	 *&#x2F;
+	&#x2F;**
+	 * 获取对象的滚动条的位置的top
+	 * @method scrollLeft
+	 * @param value
+	 * @chainable
+	 *&#x2F;
+	KolaArray.forEach(&#x27;scrollTop,scrollLeft&#x27;.split(&#x27;,&#x27;),function(functionName){
+		exports.prototype[functionName] = function(value){
+			if (arguments.length == 0) {
+				if(this.length&gt;0){
+					return this[0][functionName];
+				}
+			}else{
+				for(var i = 0; i &lt; this.length; i++){
+					this[i][functionName] == value;
+				}
+				return this;
+			}
+		}
+	});
 	&#x2F;*
 	 * 得到元素数组
 	 * @method toElements
@@ -810,7 +1122,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 			for(var i = newDom.children.length - 1; i &gt;= 0; i --){
 				arr[i] = newDom.children[i];
 			}
-			&#x2F;&#x2F;Dispatcher.global.fire({type: &#x27;DOMNodeInserted&#x27;,data: arr});
+			domDispatcher.fire(&quot;DomCreate&quot;, arr);
 			return arr;
 		}
 		&#x2F;&#x2F; 如果是window
@@ -843,6 +1155,12 @@ kola(&#x27;kola.html.Element&#x27;,[
 	function hyphenate(name) {
 		return name.replace(&#x2F;[A-Z]&#x2F;g, function(match) {
 			return &#x27;-&#x27; + match.toLowerCase();
+		});
+	}
+	&#x2F;&#x2F;将驼峰式转换为css写法
+	function antihyphenate(name) {
+		return name.replace(&#x2F;-([a-z])&#x2F;ig,function( all, letter ) {
+			return letter.toUpperCase();
 		});
 	}
 	&#x2F;*
@@ -946,13 +1264,14 @@ kola(&#x27;kola.html.Element&#x27;,[
 
 		return el.childNodes;
 	};
+
 	&#x2F;&#x2F;移除某个节点所有子孙节点对js的引用，避免内存泄露
 	if(IEStyle){&#x2F;&#x2F;IE6,7需要移除所有事件
 		var purgeChildren = function(element) {
 			var nodes = element.all,count;
 			for (var i = nodes.length - 1; i &gt;= 0; i--){
 				KolaDomEvent.off(nodes[i]);
-				node[cache_attr_name] = null;
+				nodes[data_name] = null;
 			}
 		};
 		&#x2F;&#x2F;如果会引起内存泄露，那就跟踪unload事件，处理这些
@@ -962,220 +1281,7 @@ kola(&#x27;kola.html.Element&#x27;,[
 	}else{
 		var purgeChildren = KolaFunction.empty;
 	}
-	&#x2F;**
-	 * kola的Element类
-	 * 
-	 * @class Element
-	 * @constructor
-	 * @param elements {Array&lt;HTMLElement&gt;}
-	 *&#x2F;
-	var exports = function(elements){
-		if(this.constructor != exports){
-			&#x2F;&#x2F;instanceof当涉及跨iframe时会工作不正常
-			if(typeof elements === &quot;string&quot; &amp;&amp; elements.charAt(0) != &#x27;&lt;&#x27;){
-				&#x2F;*
-					define DomRefer Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|Element|String
-				*&#x2F;
-				&#x2F;**
-				* 使用选择器选择特定dom
-				* @method Element
-				* @param elements {String}
-				* @return {Element}
-				*&#x2F;
-				return new exports(Selector(elements));
-			}else{
-				&#x2F;**
-				* 根据字符串生成dom，并生成Element
-				* @method Element
-				* @param elements {String} 要转换的字符串，以html &lt; 格式开头
-				* @return {Element}
-				*&#x2F;
-				&#x2F;**
-				* 将指定的dom转换为Element
-				* @method Element
-				* @param elements {Array&lt;HTMLElement&gt;|NodeList|HtmlCollection|HtmlElement|Element}
-				* @return {Element}
-				*&#x2F;
-				return new exports(Operation.toElements(elements));
-			}
-		}
-		this.length = elements.length;
-		for(var i = 0, il = this.length; i &lt; il; i ++)
-			this[i] = elements[i];
-	};
 
-	exports.prototype = {
-		constructor: exports,
-		&#x2F;**
-		* 依次迭代内部dom，将内部每一个元素封装成Element交给callback处理
-		* @method each
-		* @param callback {Function} 回调函数
-		* @chainable
-		*&#x2F;
-		each: function (callback) {
-			&#x2F;&#x2F;	使用迭代器循环每个元素
-			for(var i = 0, il = this.length; i &lt; il; i++){
-				callback.call(this, new exports([this[i]]), i);
-			}
-			return this;
-		},
-
-		&#x2F;**
-		 * 增加一些元素
-		 * @method add
-		 * @param sets {DomRefer} 要增加的dom集合
-		 * @chainable
-		 *&#x2F;
-		add: function(sets){
-			var elements = Operation.toElements(sets);
-			for(var i = 0, il = elements.length; i &lt; il ; i ++){
-				this[this.length] = elements[i];
-			}
-			this.length += elements.length;
-			unique(this);
-			return this;
-		},
-
-		&#x2F;**
-		 * 移除一些元素
-		 * @method remove
-		 * @param sets {DomRefer} 要移除的dom集合
-		 * @chainable
-		 *&#x2F;
-		remove: function(sets){
-			var elements = Operation.toElements(sets);
-			for(var i=0, il = elements.length; i &lt; il; i++){
-				for(var j=0, jl = this.length; j &lt; jl; j++){
-					if(this[j] == elements[i]){
-						this.splice(j,1);
-					}
-				}
-			}
-			return this;
-		},
-		&#x2F;**
-		 * 隐藏元素
-		 * @method hide
-		 * @chainable
-		 *&#x2F;
-		hide:function(){
-			return this.css(&quot;___Kola___Hidden&quot;, true);
-		},
-		
-		&#x2F;**
-		 * 显示元素
-		 * @method show
-		 * @chainable
-		 *&#x2F;
-		show:function(){
-			return this.css(&quot;___Kola___Hidden&quot;, false);
-		},
-
-		outerHtml: function(value){
-			if (arguments.length == 0) {
-				return Operation.getouterHtml(this[0])
-			}else{
-				for(var i = 0; i &lt; this.length; i++){
-					this[i] = Operation.setouterHtml(this[i], value)[0]
-				}
-				return this;
-			}
-		},
-		&#x2F;&#x2F;使得浏览器认为实例是一个数组，方便调试
-		splice:[].splice
-	};
-	&#x2F;&#x2F;定义一个针对节点读取属性或设置属性的操作
-	function getSet(getFunction, setFunction){
-		var functionGroup = [];
-		getFunction.isGet = true;
-		functionGroup[getFunction.length - 1] = getFunction;
-		functionGroup[setFunction.length - 1] = setFunction;
-		return functionGroup;
-	}
-	&#x2F;&#x2F;getSet
-	KolaArray.forEach(&#x27;attr,prop,data,css,style,val,html,text&#x27;.split(&#x27;,&#x27;),function(functionName){
-		var getSetFunction = getSet(Operation[&#x27;get&#x27; + functionName], Operation[&#x27;set&#x27; + functionName]);
-		exports.prototype[functionName] = function(name, value){
-			var operater = getSetFunction[arguments.length];
-			if(operater.isGet){
-				return operater.call(this, this[0], name);
-			}else{
-				for(var i = 0; i &lt; this.length; i++){
-					operater.call(this, this[i], name, value);
-				}
-				return this;
-			}
-		}
-	});
-	&#x2F;&#x2F;first
-	KolaArray.forEach(&#x27;bound,height,width,clientPos,pagePos,pos,index,is&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(value){
-			if(!this[0] || this[0].nodeType != 1)
-				return;
-			return Operation[functionName].call(this, this[0], value);
-		}
-	});
-	&#x2F;&#x2F;each
-	KolaArray.forEach(&#x27;fire,detach,append,prepend,before,after&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(p0, p1){
-			for(var i = 0; i &lt; this.length; i++){
-				Operation[functionName].call(this, this[i], p0, p1);
-			}
-			return this
-		}
-	});
-	&#x2F;&#x2F;on and off
-	KolaArray.forEach(&#x27;on,off&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(delegate, name, callback, option){
-			if(typeof name == &quot;string&quot;){
-				option = option || {};
-				option.delegate = delegate;
-			}else{
-				option = callback;
-				callback = name;
-				name = delegate;
-			}
-			for(var i = 0; i &lt; this.length; i++){
-				Operation[functionName].call(this, this[i], name, callback, option);
-			}
-			return this
-		}
-	});
-	&#x2F;&#x2F;traveller
-	KolaArray.forEach(&#x27;parent,parents,closest,children,find,descendants,prev,next&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(p0, p1){
-			var results = [];
-			for(var i = 0; i &lt; this.length; i++){
-				var res = Operation[functionName].call(this, this[i], p0, p1);
-				if(KolaArray.isArray(res))
-					results = results.concat(res);
-				else if(res)
-					results.push(res);
-			}
-			return new exports(unique(results));
-		}
-	});
-	&#x2F;&#x2F;shortcut for events
-	KolaArray.forEach(&#x27;click,mouseenter,mouseleave,mouseover,mouseout,mouseup,mousedown,mousemove,keyup,keydown,keypress,focus,blur,submit,change&#x27;.split(&#x27;,&#x27;),function(functionName){
-		exports.prototype[functionName] = function(delegate, callback, option){
-			if(typeof delegate == &quot;string&quot;){
-				option = option || {};
-				option.delegate = delegate;
-			}else if(typeof delegate == &#x27;function&#x27;){
-				option = callback;
-				callback = delegate
-			}else{
-				for(var i = 0; i &lt; this.length; i++){
-					KolaDomEvent.fire(this[i], functionName, delegate);
-				}
-				return this;
-			}
-			for(var i = 0; i &lt; this.length; i++){
-				KolaDomEvent.on(this[i], functionName, callback, option);
-			}
-			return this;
-		}
-	});
 	&#x2F;&#x2F;数组排重
 	function unique(array) {
 		var flag = false;

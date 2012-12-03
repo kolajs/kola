@@ -102,12 +102,12 @@ kola('kola.html.util.Event',[
 				return;
 			e.currentTarget = elem;
 		}		
-		callback.call(options.scope || this, e, options.data);
+		callback.call(options.context || this, e, options.data);
 	};
 	//light bind
-	function eventBind(target, scope, callback, options) {
+	function eventBind(target, context, callback, options) {
 		return function(e) {
-			return target.call(scope, callback, options, e);
+			return target.call(context, callback, options, e);
 		};
 	}
 	//删除指定的事件
@@ -182,7 +182,7 @@ kola('kola.html.util.Event',[
 		 * @param name {String} 事件名称
 		 * @param callback {function} 事件的处理函数
 		 * @param [options] {object} 配置参数
-			 *	@param [options.scope] {Object} 指定处理函数的this，如果没有，则默认为element
+			 *	@param [options.context] {Object} 指定处理函数的this，如果没有，则默认为element
 			 *	@param [options.data] {ANY} 绑定事件时附带的参数，事件处理时会附加在回调函数的参数后面
 			 *	@param [options.delegate] {Stirng} 代理事件，如果设置，只有符合该选择器的子元素才会触发事件，并且currentTarget指向被代理的元素
 		 * @param [hook] 事件钩子，用于定制特殊事件
@@ -306,7 +306,7 @@ kola('kola.html.util.Event',[
 			}
 		}
 	};
-	var comparePropertys = ['scope', 'data', 'delegate'];
+	var comparePropertys = ['context', 'data', 'delegate'];
 	function compareOptions(optionsA, optionsB){
 		if(!optionsA || !optionsB)
 			return false;

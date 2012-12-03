@@ -293,6 +293,7 @@ window.kola = (function(kola) {
 				if (plugin) {
 					// 获取每个插件的实体内容
 					for (var j = 0, jl = plugin.length; j < jl; j++) {
+						if (typeof plugin[j] != 'string') continue;
 						plugin[j] = getPackage(plugin[j]).entity();
 					}
 					

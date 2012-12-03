@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/Ajax.html">Ajax</a></li>
+            
                 <li><a href="..&#x2F;classes/Array.html">Array</a></li>
             
                 <li><a href="..&#x2F;classes/Class.html">Class</a></li>
@@ -51,13 +53,9 @@
             
                 <li><a href="..&#x2F;classes/Event.html">Event</a></li>
             
-<<<<<<< HEAD
                 <li><a href="..&#x2F;classes/Function.html">Function</a></li>
-=======
-                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
-                <li><a href="..&#x2F;classes/KolaElement.html">KolaElement</a></li>
->>>>>>> 0491f467cb3f8a4f360302f73b0ca73673f518e1
+                <li><a href="..&#x2F;classes/kola.html">kola</a></li>
             
                 <li><a href="..&#x2F;classes/Object.html">Object</a></li>
             
@@ -129,7 +127,7 @@ kola(&#x27;kola.event.Dispatcher&#x27;,[
 	 * @class Dispatcher
 	 * 
 	 *&#x2F;
-	var Dispatcher = KolaClass({
+	var Dispatcher = KolaClass.create({
 		_init: function() {
 		},
 		&#x2F;**
@@ -182,10 +180,11 @@ kola(&#x27;kola.event.Dispatcher&#x27;,[
 		 * @param e {Object} 事件对象
 		 * @chainable
 		 *&#x2F;
-		fire: function(e) {
-			if(KolaClass.isString(e)){
+		fire: function(e, data) {
+			if(typeof(e) == &quot;string&quot;){
 				e = {
-					type:e
+					type: e,
+					data: data
 				}
 			}
 			e.target = this;

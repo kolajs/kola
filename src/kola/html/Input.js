@@ -16,8 +16,9 @@ kola('kola.html.Input',[
 				_program_change = true;
 				targetElement.value = value;
 				_program_change = false;
-				targetElement.blur();
-				targetElement.focus();
+				//???
+				//targetElement.blur();
+				//targetElement.focus();
 			}
 		};
 	}else{
@@ -112,7 +113,7 @@ kola('kola.html.Input',[
 		 * @param options {Object} 样式的值
 		 * @chainable
 		 */
-		change: function(callback, options){
+		valuechange: function(callback, options){
 			var elements = this.getData();
 			if(IEStyle){
 				for(var i = 0; i < elements.length; i++){

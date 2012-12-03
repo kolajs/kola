@@ -446,7 +446,7 @@ kola('kola.html.Element',[
 		children: function (targetElement, selector) {
 			var children = [];
 			for(var child = targetElement.firstChild; child; child = child.nextSibling){
-				if(child.nodeType == 1 && Selector.matchesSelector(child, selector)){
+				if(child.nodeType == 1 && (!selector || Selector.matchesSelector(child, selector))){
 					children.push(child);
 				}
 			}
@@ -646,9 +646,9 @@ kola('kola.html.Element',[
 		*/
 		index: function(targetElement, selector){
 			if(selector)
-				return KolaArray.indexOf(Operation(elem.parentNode).children(selector),elem);
+				return KolaArray.indexOf(new this.constructor(targetElement.parentNode).children(selector), targetElement);
 			else
-				return KolaArray.indexOf(elem.parentNode.children,elem);
+				return KolaArray.indexOf(targetElement.parentNode.children, targetElement);
 		},
 		pagePosition: function(targetElement, refer, set){
 			if(refer){
@@ -726,7 +726,7 @@ kola('kola.html.Element',[
 		each: function (callback) {
 			//	使用迭代器循环每个元素
 			for(var i = 0, il = this.length; i < il; i++){
-				callback.call(this, new this.constructor([this[i]]), i);
+				if(callback.call(this, new this.constructor([this[i]]), i)===false)	return this;
 			}
 			return this;
 		},
@@ -875,7 +875,7 @@ kola('kola.html.Element',[
 				else if(res)
 					results.push(res);
 			}
-			return new exports(unique(results));
+			return new this.constructor(unique(results));
 		}
 	});
 	//shortcut for events
